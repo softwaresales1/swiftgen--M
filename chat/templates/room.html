@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat Application</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background-color: #b1b1b1;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #333;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 1rem;
+    }
+
+    .room-list {
+      list-style-type: none;
+      width: 100%;
+      padding: 0;
+    }
+
+    .room-list li {
+      width: 100%;
+      padding: 0.5rem;
+      background-color: #444;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+    }
+
+    .room-list li:hover {
+      background-color: #555555;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .content {
+      width: 100%;
+      max-width: 600px;
+      padding: 2rem;
+      max-height: 90vh;
+      background-color: #eef0f2;
+      border-radius: 1rem;
+      box-shadow: 0px 0px 1rem 0px rgba(0, 0, 0, 0.2);
+      display: grid;
+      grid-template-rows: fit-content auto fit-content;
+      overflow: hidden;
+    }
+
+    .content::-webkit-scrollbar,
+    textarea::-webkit-scrollbar,
+    .chats-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    textarea {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .chats-container {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      word-break: break-word;
+    }
+
+    input[type="text"] {
+      outline: none;
+      border: none;
+      padding: 0.5rem 1rem;
+      background-color: #dadee1;
+      border-radius: 2rem;
+      width: 100%;
+      text-align: center;
+    }
+
+    button {
+      border: 0;
+      outline: 0;
+      padding: 0.5rem 0.75rem;
+      background-color: #1b1f24;
+      border-radius: 2rem;
+      color: #ffffff;
+      font-size: 1.25rem;
+      font-weight: bold;
+      transition: 0.25s ease;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #353a41;
+    }
+
+    form {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: auto 2.5rem;
+      gap: 0.5rem;
+    }
+
+    textarea {
+      height: 3rem;
+      resize: none;
+      outline: none;
+      border: none;
+      padding: 0.0rem 0.1rem;
+      background-color: #dadee1;
+      border-radius: 0.5rem;
+      width: 100%;
+      overflow-y: scroll;
+    }
+
+    .single-message {
+      width: fit-content;
+      max-width: 60%;
+      clear: both;
+    }
+
+    .msg-body {
+      margin-top: 0.25rem;
+      padding: 0.5rem;
+      background-color: #a3520f;
+      color: #ffffff;
+      font-size: 0.605rem;
+      border-radius: 0.25rem;
+      word-wrap: break-word;
+    }
+
+    .sent {
+      float: right;
+    }
+
+    .sent>.msg-body {
+      background-color: #8c00ff;
+    }
+
+    .sender {
+      margin-top: 0.25rem;
+      font-size: 0.75rem;
+    }
+
+    .chats-container {
+      width: 100%;
+      height: 60vh;
+      overflow-y: scroll;
+    }
+
+    @media (max-width: 800px) {
+      .sidebar {
+        width: 200px;
+      }
+
+      .main-content {
+        padding: 0.5rem;
+      }
+
+      .content {
+        padding: 1rem;
+      }
+
+      form {
+        grid-template-columns: 1fr 2.5rem;
+      }
+
+      textarea {
+        height: 4rem;
+      }
+
+      button {
+        padding: 0.5rem 0.5rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .sidebar {
+        width: 150px;
+      }
+
+      h1 {
+        font-size: 1.25rem;
+      }
+
+      .msg-body {
+        font-size: 0.875rem;
+      }
+
+      button {
+        font-size: 1rem;
+      }
+
+      form {
+        gap: 0.25rem;
+      }
+
+      textarea {
+        height: 3rem;
+      }
+    }
+    .room-button {
+        padding: 0.75rem 1.5rem;
+        background-color: #1b1f24;
+        color: #fff;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .room-button img {
+        width: 5px; /* Adjust size as needed */
+        height: 5px; /* Adjust size as needed */
+        margin-right: 0.1rem; /* Adjust spacing */
+        border-radius: 40%; /* Makes the image round */
+    }
+
+    .room-button:hover {
+        background-color: #353a41;
+    }
+    
+    
+  </style>
+</head>
+
+<body>
+  <div class="sidebar">
+    <div style="padding-top: 60px;">
+      
+    </div>
+    <h3><a href="{% url 'Portal:home' %}?username={{ username }}" style="text-decoration:none;">GO Dashboard</a>
+      <h3>Inbox</h3>
+    <ul class="room-list">
+        {% for room in rooms %}
+            
+                <form action="{% url 'chat:room' room_name=room.room_name username=user %}" method="GET">
+                    <button type="submit" class="room-button">{{ room.room_name }}</button>
+                </form>
+               <!--  <span class="room-status">Active</span> Example status -->
+            
+        {% endfor %}
+    </ul>
+ </div>
+
+ 
+  <div class="main-content">
+    <div class="content">
+      <h1>Chat with {{ room_name }}</h1>
+      <div class="chats-container" id="chats-container">
+        {% for message in messages %}
+        {% if message.sender.lower == user.lower %}
+        <div class="single-message sent">
+          <div class="msg-body">{{ message.message }}</div>
+          <p class="sender">Me</p>
+        </div>
+        {% else %}
+        <div class="single-message">
+          <div class="msg-body">{{ message.message }}</div>
+          <p class="sender">{{ message.sender }}</p>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      <form action="" id="msg-form" method="post">
+        {% csrf_token %}
+        <textarea name="message" id="message" cols="30" rows="10" placeholder="Enter your message"></textarea>
+        <button type="submit">&#10003;</button>
+      </form>
+    </div>
+  </div>
+  
+  <script>
+    const socketURL = `ws://${window.location.host}/ws/messages/{{ room_name }}/`;
+    const socket = new WebSocket(socketURL);
+    const messageForm = document.getElementById("msg-form");
+    const messageInput = document.getElementById("message");
+    const chatsDiv = document.getElementById("chats-container");
+
+    const scrollToBottom = () => {
+      chatsDiv.scrollTop = chatsDiv.scrollHeight;
+    };
+
+    socket.addEventListener("message", (e) => {
+      const data = JSON.parse(e.data)["message"];
+      let sender = data["sender"];
+      let content = data["message"];
+
+      if (sender == "{{ user }}") {
+        messageInput.value = "";
+      }
+
+      if (sender == "{{ user }}") {
+        chatsDiv.innerHTML += `<div class="single-message sent">
+          <div class="msg-body">${content}</div>
+          <p class="sender">Me</p>
+        </div>`;
+      } else {
+        chatsDiv.innerHTML += `<div class="single-message">
+          <div class="msg-body">${content}</div>
+          <p class="sender">${sender}</p>
+        </div>`;
+      }
+
+      scrollToBottom();
+    });
+
+    messageForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      let messageSent = messageInput.value;
+      if (messageSent.trim() !== "") {
+        socket.send(JSON.stringify({
+          message: messageSent,
+          room_name: "{{ room_name }}",
+          sender: "{{ user }}"
+        }));
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", scrollToBottom);
+  </script>
+</body>
+
+</html>

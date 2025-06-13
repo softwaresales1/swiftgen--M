@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SwiftTalentForge - Our Services</title>
+    <style>
+        body {
+            background-image: url('SP121.jpg');
+            background-size: cover;
+            background-position: center;
+            background: -webkit-linear-gradient(left, #e6eeed, #7d79b9);
+        }
+
+        .card {
+            background: -webkit-linear-gradient(left, #5f9778, #8a6092);
+            color: white;
+        }
+
+        .frame {
+            border: 1px solid black;
+            padding: 20px;
+        }
+
+        .content {
+            background-color: lightblue;
+            padding: 20px;
+        }
+
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        .navlink {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+        .navlink:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'Portal:index' %}" class="navlink">Home</a>
+        <a href="{% url 'Portal:services' %}" class="navlink">Services</a>
+        <a href="{% url 'Portal:contactus' %}" class="navlink">Contact Us</a>
+        <a href="{% url 'Portal:login' %}" class="navlink">Login</a>
+        <a href="{% url 'Portal:signup' %}" class="navlink">Sign Up</a>
+        <a href="{% url 'Portal:post_project' %}" class="navlink">Post a Project</a>
+    </div>
+
+    <header>
+        <h1 style="text-align:center">Golden Ink Services</h1>
+    </header>
+
+    <section id="services" style="text-align:center;">
+        <h2>Services</h2>
+        <p>Golden Ink offers a wide range of Technical and research services to help you meet your business needs. Our team of experienced writers and researchers can provide high-quality content related to finance, economics, and business management. Whether you need a report, a whitepaper, a case study, or any other type of business-related content, we can help.</p>
+        <p>Moreover, if you need content for your website, advertisements, or other marketing materials, our skilled writers can craft engaging and persuasive content to help you stand out. We can also help with press releases and sales pages to help you communicate your message effectively.</p>
+    </section>
+
+    <section id="top-skills">
+        <h2 style="text-align:center">Top Skills</h2>
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-evenly">
+            <ul style="flex-basis:45%">
+                <li><a href="Task.html">Data Entry Specialists</a></li>
+                <li><a href="Task.html">Video Editors</a></li>
+                <li><a href="Task.html">Data Analyst</a></li>
+                <li><a href="Task.html">Shopify Developer</a></li>
+                <li><a href="Task.html">Ruby on Rails Developer</a></li>
+                <li><a href="Task.html">Android Developer</a></li>
+                <li><a href="Task.html">Bookkeeper</a></li>
+                <li><a href="Task.html">Content Writer</a></li>
+                <li><a href="Task.html">Copywriter</a></li>
+                <li><a href="Task.html">Database Administrator</a></li>
+                <li><a href="Task.html">Data Scientist</a></li>
+            </ul>
+            <ul style="flex-basis:45%">
+                <li><a href="Task.html">Front-End Developer</a></li>
+                <li><a href="Task.html">Game Developer</a></li>
+                <li><a href="Task.html">Graphic Designer</a></li>
+                <li><a href="Task.html">iOS Developer</a></li>
+                <li><a href="Task.html">Java Developer</a></li>
+                <li><a href="Task.html">JavaScript Developer</a></li>
+                <li><a href="Task.html">Logo Designer</a></li>
+                <li><a href="Task.html">Mobile App Developer</a></li>
+                <li><a href="Task.html">PHP Developer</a></li>
+                <li><a href="Task.html">Python Developer</a></li>
+                <li><a href="Task.html">Resume Writer</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <div style="border: 2px solid black; text-align: center; padding: 20px; background-color: purple;">
+        <section id="contact">
+            <h2>Contact Us</h2>
+            <p>For inquiries or to request a quote, please fill out the form below:</p>
+            <form action="mag.php" method="post">
+                <label for="name">Name:</label><br>
+                <input type="text" id="name" name="name"><br>
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email"><br>
+                <label for="message">Message:</label><br>
+                <textarea id="message" name="message"></textarea><br><br>
+                <input type="submit" value="Submit">
+            </form>
+        </section>
+    </div>
+</body>
+</html>

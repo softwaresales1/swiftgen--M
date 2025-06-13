@@ -1,0 +1,173 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contact Us - Golden Writing Services</title>
+    <!-- Add application icons -->
+    <link rel="icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'images/site.webmanifest' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #140d70;
+        }
+        .navbar {
+            background-color: #490a49;
+        }
+        .navbar a {
+            color: #470909 !important;
+        }
+        .contact-section {
+            background-color: #ffffff;
+            padding: 2em;
+            margin-top: 2em;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            font-size: 2em;
+            margin-bottom: 0.5em;
+        }
+        .section-description {
+            font-size: 1.2em;
+            margin-bottom: 1.5em;
+        }
+        .cta-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1em;
+            margin-bottom: 1.5em;
+        }
+        .cta-button {
+            padding: 0.75em 1.5em;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1em;
+        }
+        .cta-button.whatsapp { background-color: #25D366; }
+        .cta-button.wechat { background-color: #7BB32E; }
+        .cta-button.telegram { background-color: #0088cc; }
+        .cta-button.facebook { background-color: #3b5998; }
+        .cta-button.twitter { background-color: #1DA1F2; }
+        .cta-button.email { background-color: #FFBF00; }
+        .cta-button.skype { background-color: #00aff0; }
+        .contact-form .form-group {
+            margin-bottom: 1.5em;
+        }
+        .contact-form .form-control {
+            width: 100%;
+            padding: 0.75em;
+            font-size: 1em;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+        .contact-form .btn {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 0.75em 1.5em;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        .contact-form .btn:hover {
+            background-color: #23272b;
+        }
+        /* Spinner styles */
+        #loader {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            z-index: 9999;
+            width: 100px;
+            height: 100px;
+            margin: -50px 0 0 -50px;
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="loader"></div> <!-- Spinner element -->
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div>
+                <img src="{% static 'assets/img/paean_media/sound_wave.png' %}" alt="Swift | Talent Forge" style="padding-top:10px; width: 20% !important;">
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'Portal:index' %}">Home</a>
+                    </li> 
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'Portal:services' %}">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'Portal:contactus' %}">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'Portal:login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'Portal:signup' %}">Sign Up</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'Portal:post_project' %}">Post a Project</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mt-5">
+        <section class="contact-section">
+            <h2 class="section-title">Contact Us</h2>
+            <p class="section-description">We are here to help you with all your writing needs. Please feel free to reach out to us through the following channels:</p>
+            <div class="cta-container">
+                <a href="https://www.whatsapp.com" class="cta-button whatsapp" target="_blank">WhatsApp</a>
+                <a href="https://weixin.qq.com/" class="cta-button wechat" target="_blank">WeChat</a>
+                <a href="https://telegram.org/" class="cta-button telegram" target="_blank">Telegram</a>
+                <a href="https://www.facebook.com/" class="cta-button facebook" target="_blank">Facebook</a>
+                <a href="https://twitter.com/" class="cta-button twitter" target="_blank">Twitter</a>
+                <a href="mailto:waterdrop198@gmail.com" class="cta-button email">Email</a>
+                <a href="skype:yourskypeusername?call" class="cta-button skype">Skype</a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Hide loader after the page has loaded and delay for 5 seconds
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loader').style.display = 'none';
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project.project_name }} - Project Overview</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        .project-header { border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+        .project-title { color: #333; margin-bottom: 10px; }
+        .task-list { margin-top: 20px; }
+        .task-item { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #007bff; }
+        .btn { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn:hover { background: #0056b3; }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #218838; }
+        .status-completed { color: #28a745; font-weight: bold; }
+        .status-pending { color: #ffc107; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Project Header -->
+        <div class="project-header">
+            <h1 class="project-title">{{ project.project_name }}</h1>
+            <p><strong>Posted by:</strong> {{ project.leader.user.first_name }} {{ project.leader.user.last_name }}</p>
+            <p><strong>Description:</strong> {{ project.description }}</p>
+            <p><strong>Deadline:</strong> {{ project.deadline|date:"M d, Y" }}</p>
+            <p><strong>Status:</strong> 
+                {% if project.isCompleted %}
+                    <span class="status-completed">✓ Completed</span>
+                {% else %}
+                    <span class="status-pending">⏳ In Progress</span>
+                {% endif %}
+            </p>
+            
+            {% if is_leader %}
+                <div style="margin-top: 15px;">
+                    <a href="{% url 'Portal:add_task' project.id %}" class="btn btn-success">+ Add New Task</a>
+                    <a href="{% url 'Portal:project_detail' project.id %}" class="btn">View Project Details</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Tasks Section -->
+        <div class="tasks-section">
+            <h3>Project Tasks ({{ added_tasks|length }})</h3>
+            
+            {% if added_tasks %}
+                <div class="task-list">
+                    {% for task in added_tasks %}
+                        <div class="task-item">
+                            <h4>{{ task.task_name }}</h4>
+                            <p>{{ task.task_description }}</p>
+                            <p><strong>Credits:</strong> {{ task.credits }}
+                                {% if task.credits == "Paid" and task.amount %}
+                                    - ${{ task.amount }}
+                                {% elif task.credits == "Other" and task.mention %}
+                                    - {{ task.mention }}
+                                {% endif %}
+                            </p>
+                            <p><strong>Deadline:</strong> {{ task.deadline|date:"M d, Y" }}</p>
+                            <p><strong>Status:</strong> 
+                                {% if task.isCompleted %}
+                                    <span class="status-completed">✓ Completed</span>
+                                {% else %}
+                                    <span class="status-pending">⏳ Open</span>
+                                {% endif %}
+                            </p>
+                            
+                            <div style="margin-top: 10px;">
+                                <a href="{% url 'Portal:task_description' project.id task.id %}" class="btn">View Task Details</a>
+                                {% if is_leader %}
+                                    <a href="{% url 'Portal:applicants' task.id %}" class="btn">View Applicants</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 40px; color: #666;">
+                    <h4>No tasks added yet</h4>
+                    <p>Start by adding your first task to this project.</p>
+                    {% if is_leader %}
+                        <a href="{% url 'Portal:add_task' project.id %}" class="btn btn-success">+ Add First Task</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Back Button -->
+        <div style="margin-top: 30px;">
+            <a href="{% url 'Portal:home' %}" class="btn">← Back to Dashboard</a>
+            <a href="{% url 'Portal:browse_projects' %}" class="btn">Browse All Projects</a>
+        </div>
+    </div>
+</body>
+</html>

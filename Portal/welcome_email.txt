@@ -1,0 +1,12 @@
+Dear {first_name},
+
+    Welcome aboard to {platform_name}! We're thrilled to have you join our community of talented freelancers and clients. Your account has been successfully created, and you're now part of a platform designed to connect you with exciting freelance opportunities.
+
+    Feel free to explore our platform and set up your profile to showcase your skills and experience. Whether you're looking for projects or hiring talent, we're here to support you every step of the way.
+
+    To get started, visit your <a href="{dashboard_url}">dashboard</a>.
+
+    If you have any questions or need assistance, don't hesitate to reach out to our support team at {support_email}.
+
+    Best regards,
+    {platform_name} Team

@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+        
+        <!-- Internal Stylesheet -->
+        <link rel="stylesheet" href="{% static 'assets/css/utilities.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/style1.css' %}">
+
+        <link rel="icon" href="{% static 'assets/img/favicon.png' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/spinner.css' %}"> <!-- Include spinner CSS -->
+        <title>Swift | Talent Forge</title>
+    </head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="container flex">
+            <img src="{% static '/assets/img/paean_media/sound_wave.png' %}" alt="Swift | Talent Forge" style="padding-top:10px; width: 20% !important;">
+            
+            <!-- <h1 class="logo">Paean</h1> -->
+            <nav>
+                <ul>
+                    <li><a href="{% url 'Portal:home' %}"><strong>Home</strong></a></li>
+                    <li><a href="{% url 'Portal:signup' %}"><strong>Signup</strong></a></li>
+                    <li><a href="{% url 'Portal:login' %}" ><strong>Login</strong></a></li>
+                    <li><a href="{% url 'Portal:post_project' %}" ><strong>Post project</strong></a></li>
+                    
+                    <li><a href="{% url 'Portal:services' %}"><strong>Key Features</strong></a></li>
+                    <li><a href="{% url 'Portal:contactus' %}" ><strong>Contact Us</strong></a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Head -->
+    <section class="features-head bg-primary py-3">
+        <div class="container grid">
+            <div>
+                <h1 class="xl">Features</h1>
+                <p class="lead">
+                    Check out the features of Swift Talent Forge that separate us from the
+						competition
+                </p>
+            </div>
+            <img src="{% static 'assets/img/server.png' %}" alt="">
+            <div id="loader"></div> <!-- Spinner element -->
+        </div>
+    </section>
+
+    <!-- Sub head -->
+    <section class="features-sub-head bg-light py-3">
+        <div class="container grid">
+            <div>
+                <h1 class="md">The Swift Talent Forge Platform</h1>
+                <p>
+                    Swift Talent Forge is a platform dedicated to empowering freelancers and businesses alike. We harness cutting-edge technology and expert talent to forge seamless connections and deliver exceptional results.
+
+
+                </p>
+            </div>
+            <img src="images/server2.png" alt="">
+        </div>
+    </section>
+
+    <section class="features-main my-2">
+        <div class="container grid grid-3">
+            <div class="card flex">
+                <i class="fas fa-server fa-3x"></i>
+                <p>
+                    Whether you're on the move or away from your workspace, navigating the complexities of freelancing shouldn't require a computer science degree. Swift Talent Forge simplifies the process, ensuring setup is easy and intuitive, just like Quick Talk simplifies communication for families. Join us and forge seamless connections to thrive in the world of freelancing.
+                </p>
+            </div>
+            <div class="card flex">
+                <i class="fas fa-network-wired fa-3x"></i>
+                <p>
+                    Swift Talent Forge provides a robust platform with powerful features tailored for every freelancer. 
+                    From customizable profiles to seamless project management, leverage our advanced tools and resources 
+                    to enhance your freelance experience.
+                </p>
+            </div>
+            <div class="card flex">
+                <i class="fas fa-laptop-code fa-3x"></i>
+                <p>
+                    Swift Talent Forge is designed to be as flexible as your freelance lifestyle. Whether you're at home, 
+                    in a coffee shop, or traveling, access our platform from any device. With Swift Talent Forge, you can 
+                    connect with clients, manage projects, and thrive in the freelance world, all at your own pace.
+                </p>
+            </div>
+            <div class="card flex">
+                <i class="fas fa-database fa-3x"></i>
+                <p>
+                    Swift Talent Forge offers a comprehensive suite of tools to support freelancers at every stage of 
+                    their career:
+
+                    Access to a high-resolution library of resources
+                    Advanced customization options tailored to individual needs
+                    Powerful tools for efficient project management
+                    Multiuser support for collaborative projects
+                    Intuitive features designed to enhance productivity and creativity
+                    
+                </p>
+            </div>
+            <div class="card flex">
+                <i class="fas fa-power-off fa-3x"></i>
+                <p>
+                    Work Smart, Not Hard
+
+                    At Swift Talent Forge, we believe in software that adapts to your needs, not the other way around. 
+                    Just as Quick Talk allows for personalized communication, our platform empowers freelancers with 
+                    customizable tools that fit your unique style and workflow. Focus on your work, not setup or 
+                    restrictions—join Swift Talent Forge and elevate your freelance experience.
+                
+                </p>
+            </div>
+            <div class="card flex">
+                <i class="fas fa-download fa-3x"></i>
+                <p>
+                    Access Anywhere, Anytime
+
+                    Swift Talent Forge is accessible across multiple platforms, ensuring you can connect and work 
+                    seamlessly from any device. Whether you prefer Windows, iOS, MIUI, Linux, AndroidOS, OxygenOS, 
+                    or more, our platform supports your flexibility and needs. Join Swift Talent Forge and access your 
+                    freelance tools wherever your work takes you.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark py-5">
+        <div class="container grid grid-3">
+            <div>
+                <h1>SwiftTalentForge
+                </h1>
+                <p>Copyright &copy Swift Talent Forge 2024 - Vurudi  || Omolo</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="features.html">Features</a></li>
+                    <li><a href="docs.html">Docs</a></li>
+                </ul>
+            </nav>
+            <div class="social">
+                <a href="#"><i class="fab fa-github fa-2x"></i></a>
+                <a href="#"><i class="fab fa-linkedin fa-2x"></i></a>
+                <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
+                <a href="#"><i class="fab fa-twitter fa-2x"></i></a>
+            </div>
+        </div>
+    </footer>
+    <script src="{% static 'assets/js/spinner.js' %}"></script> <!-- Include spinner JS -->
+</body>
+</html>

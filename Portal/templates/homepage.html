@@ -1,0 +1,221 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8Y0CW3RQDR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-8Y0CW3RQDR');
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+    
+    <!-- Internal Stylesheet -->
+    <link rel="stylesheet" href="{% static 'assets/css/utilities.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style1.css' %}">
+
+    <link rel="icon" href="{% static 'assets/img/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/spinner.css' %}"> <!-- Include spinner CSS -->
+
+    
+    
+    <title>Swift | Talent Forge</title>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="container flex">
+            <img src="{% static '/assets/img/paean_media/sound_wave.png' %}" alt="Swift | Talent Forge" style="padding-top:10px; width: 20% !important;">
+            
+            <!-- <h1 class="logo">Paean</h1> -->
+            <nav>
+                <ul>
+                    <li><a href="{% url 'Portal:home' %}"><strong>Home</strong></a></li>
+                    <li><a href="{% url 'Portal:signup' %}"><strong>Signup</strong></a></li>
+                    <li><a href="{% url 'Portal:login' %}" ><strong>Login</strong></a></li>
+                    <li><a href="{% url 'Portal:post_project' %}" ><strong>Post project</strong></a></li>
+                    
+                    <li><a href="{% url 'Portal:services' %}"><strong>Key Features</strong></a></li>
+                    <li><a href="{% url 'Portal:contactus' %}" ><strong>Contact Us</strong></a></li>
+                    <li><a href="{% url 'Portal:get_started' %}"><strong>tutorial</strong></a></li>
+                    
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+    
+    <!-- Showcase -->
+    <section class="showcase">
+        <div class="container grid">
+            <div class="showcase-text">
+                <h1><strong>Find the Perfect Freelancer for Your Project</strong></h1>
+                <p>
+                    Welcome to SwiftTalentForge Your one-stop destination for all your content writing needs. 
+					Our goal is to connect individuals and organizations with a team of expert writers who can 
+					craft engaging and professional content for a variety of purposes.
+                    
+
+                </p>
+                <a href="{% url 'Portal:post_project' %}" class="btn btn-outline"><strong>I want to hire</strong></a>
+                <a href="{% url 'Portal:browse_jobs' %}" class="btn btn-outline"><strong>I want to work</strong></a>
+            </div>
+            <div id="loader"></div> <!-- Spinner element -->
+
+            <!-- your_template.html -->
+            <div class="showcase-form card">
+                <h2>Coming soon!! Join our wait list</h2>
+                {% if message %}
+                    <p>{{ message }}</p>
+                {% endif %}
+                <form method="post" action="{% url 'Portal:join_wait_list' %}">
+                    {% csrf_token %}
+                    <div class="form-control">
+                        <input type="text" name="name" placeholder="Name" required>
+                    </div>
+                    <div class="form-control">
+                        <input type="text" name="phone_number" placeholder="Phone Number" required>
+                    </div>
+                    <div class="form-control">
+                        <input type="email" name="email" placeholder="Email" required>
+                    </div>
+                    <input type="submit" value="Send" class="btn btn-dark">
+                </form>
+            </div>
+            
+        </div>  
+    </section>
+
+    <!-- Stats -->
+    <section class="stats">
+        <div class="container">
+            <h3 class="stats-heading text-center my-1">
+
+                Swift Talent Forge- The Future of Freelancing!
+
+                Just give us the details about the work you need completed, and our 
+				freelancers will get it done faster, better, and cheaper than you could possibly imagine.
+            </h3>
+
+            <div class="grid grid-3 text-center my-4">
+                <div>
+                    <i class="fas fa-server fa-3x"></i>
+                    <h3>100% satisfaction</h3>
+                    <p class="text-secondary">customer reviews calculated</p>
+                </div>
+                <div>
+                    <i class="fas fa-download fa-3x"></i>
+                    <h3>98.5%</h3>
+                    <p class="text-secondary">Application efficiency</p>
+                </div>
+                <div>
+                    <i class="fas fa-project-diagram fa-3x"></i>
+                    <h3>1,34,405</h3>
+                    <p class="text-secondary">Active Users</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cli -->
+    <section class="cli">
+        <div class="container grid">
+            <img src="{% static 'assets/img/AAC.jpg' %}" alt="">
+       
+            <div class="card">
+                <h3>Easy to use, cross platform application</h3>
+            </div>
+            <div class="card">
+                <h3>Zero-latency Computational Capability</h3>
+            </div>
+            <div class="card">
+                <h3>Massive Edge Data Computing Capacity</h3>
+            </div>
+            <div class="card">
+                <h3>Active User Adaptibility Feature Set</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cloud -->
+    <section class="cloud bg-primary my-5 py-4">
+        <div class="container grid">
+            <div class="text-center">
+                <h2 class="lg">Why Choose Swift Talent Forge ?</h2>
+               
+                <p class="lead my-1">Wide Talent Pool: Access a diverse range of freelancers with various skills and expertise.</p>
+                <a href="{% url 'Portal:signup' %}" class="btn btn-dark">Create an account today</a>
+
+      
+            </div>
+            <img src="{% static 'assets/img/cloud.png' %}" alt="">
+        </div>
+    </section>
+
+    <!-- Languages -->
+    <section class="languages">
+        <h2 class="md text-center my-5">
+            <strong>Supported Platforms</strong>
+        </h2>
+        <div class="container flex">
+            <div class="card">
+                <h4>Windows OS</h4>
+                <img src="{% static 'assets/img/logos/windows.png' %}" alt="" style="height: 82px !important; width: 80px !important;">
+            </div>
+            <div class="card">
+                <h4>iOS</h4>
+                <img src="{% static 'assets/img/logos/iOS.png' %}" alt="" style="height: 82px !important; width: 80px !important;">
+            </div>
+            <div class="card">
+                <h4>Linux OS</h4>
+                <img src="{% static 'assets/img/logos/linux.png' %}" alt="" style="height: 82px !important; width: 80px !important;">
+            </div>
+            <div class="card">
+                <h4>Android OS</h4>
+                <img src="{% static 'assets/img/logos/android.png' %}" alt="" style="height: 82px !important; width: 80px !important;">
+            </div>
+            <div class="card">
+                <h4>Oxygen OS</h4>
+                <img src="{% static 'assets/img/logos/oxygen.png' %}" alt=""style="height: 82px !important; width: 80px !important;" >
+            </div>
+            <div class="card">
+                <h4>MIUI 12</h4>
+                <img src="{% static 'assets/img/logos/miui.png' %}" alt=""style="height: 82px !important; width: 110px !important;" >
+            
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark py-5">
+        <div class="container grid grid-3">
+            <div>
+                <h1>SwiftTalentForge
+                </h1>
+                <p>Copyright &copy Swift Talent Forge 2024 - Vurudi  || Omolo</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'Portal:home' %}"><strong>Home</strong></a></li>
+                    <li><a href="{% url 'Portal:services' %}"><strong>Key Features</strong></a></li>
+                    <li><a href="{% url 'Portal:contactus' %}" ><strong>Contact Us</strong></a></li>
+                </ul>
+                </ul>
+            </nav>
+            <div class="social">
+                <a href="#"><i class="fab fa-github fa-2x"></i></a>
+                <a href="#"><i class="fab fa-linkedin fa-2x"></i></a>
+                <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
+                <a href="#"><i class="fab fa-twitter fa-2x"></i></a>
+            </div>
+        </div>
+    </footer>
+    <script src="{% static 'assets/js/spinner.js' %}"></script> <!-- Include spinner JS -->
+
+</body>
+</html>
