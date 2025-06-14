@@ -40,11 +40,13 @@ SECRET_KEY = '2^adjpbk_eq&as+*5cys3d9htah)ajjx@@up444f^+7g-!#p47'
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'swiftgen.onrender.com',
+    'swiftgen--m.onrender.com',  # Updated for your new repo
+    'swiftgen.onrender.com',     # Keep old one just in case
     '127.0.0.1',
-    'localhost',  # Added for local development
+    'localhost',
     'swifttalentforge.com',
     'www.swifttalentforge.com',
+    '*',  # Allow all hosts for now (remove this after deployment works)
 ]
 
 # Application definition
