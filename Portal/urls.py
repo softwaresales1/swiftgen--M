@@ -1,5 +1,11 @@
 from django.urls import path
 from . import views
+from .payment_views import (
+    create_payment, payment_success, payment_cancelled, 
+    stripe_webhook, release_payment, payment_dashboard, payment_options,
+    paypal_payment, paypal_success, paypal_cancel, paypal_return,
+    cancel_payment, cleanup_stuck_payments, debug_payments  # Added new debug functions
+)
 
 app_name = 'Portal'
 urlpatterns = [
@@ -28,9 +34,25 @@ urlpatterns = [
     path('applicants/<int:task_id>/', views.applicants, name="applicants"),
     path('browse_projects/', views.browse_projects, name='browse_projects'),
     path('post_project_enhanced/', views.post_project_enhanced, name='post_project_enhanced'),
-    # ADD THIS LINE:
     path('join_wait_list/', views.join_wait_list, name='join_wait_list'),
     path('project/<int:project_id>/', views.project_detail, name='project_detail'),
-    path('project_description/<int:project_id>/', views.project_description, name='project_description'),
-    path('browse_projects/', views.browse_projects, name='browse_projects'),
+    path('accept-bid/<int:bid_id>/', views.accept_bid, name='accept_bid'),
+    
+    # Payment URLs (Stripe & General)
+    path('payment/options/<int:project_id>/', payment_options, name='payment_options'),
+    path('payment/create/<int:project_id>/', create_payment, name='create_payment'),
+    path('payment/success/<str:payment_id>/', payment_success, name='payment_success'),
+    path('payment/cancelled/<str:payment_id>/', payment_cancelled, name='payment_cancelled'),
+    path('payment/cancel/<int:project_id>/', cancel_payment, name='cancel_payment'),
+    path('payment/cleanup/<int:project_id>/', cleanup_stuck_payments, name='cleanup_stuck_payments'),  # NEW: Manual cleanup
+    path('payment/debug/<int:project_id>/', debug_payments, name='debug_payments'),  # NEW: Debug view
+    path('payment/release/<str:payment_id>/', release_payment, name='release_payment'),
+    path('payment/dashboard/', payment_dashboard, name='payment_dashboard'),
+    path('stripe/webhook/', stripe_webhook, name='stripe_webhook'),
+    
+    # PayPal URLs (Complete integration)
+    path('payment/paypal/<int:project_id>/', paypal_payment, name='paypal_payment'),
+    path('payment/paypal/return/<int:project_id>/', paypal_return, name='paypal_return'),
+    path('payment/paypal/cancel/<int:project_id>/', paypal_cancel, name='paypal_cancel'),
+    path('payment/paypal/success/<str:payment_id>/', paypal_success, name='paypal_success'),
 ]

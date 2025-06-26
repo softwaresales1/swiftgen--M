@@ -1,3 +1,5 @@
+{% load math_filters %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -359,6 +361,169 @@
             gap: 8px;
         }
 
+        /* Accept Freelancer Button Styles */
+        .accept-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .accept-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .bid-status-accepted {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Payment Section Styles */
+        .payment-section {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #3b82f6;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .payment-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .payment-details {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .payment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .payment-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #059669;
+            border-top: 2px solid #e5e7eb;
+            margin-top: 10px;
+            padding-top: 15px;
+        }
+
+        .payment-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .payment-value {
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .choose-payment-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            margin: 20px 0;
+        }
+
+        .choose-payment-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .payment-methods-preview {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .payment-method-icon {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #6b7280;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method-icon:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .escrow-notice {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .escrow-icon {
+            font-size: 2rem;
+            color: #d97706;
+        }
+
+        .escrow-text {
+            color: #92400e;
+            font-weight: 500;
+            text-align: left;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 0 15px;
@@ -378,6 +543,11 @@
             
             .project-meta {
                 grid-template-columns: 1fr;
+            }
+
+            .payment-methods-preview {
+                flex-direction: column;
+                align-items: center;
             }
         }
     </style>
@@ -455,6 +625,140 @@
                         <i class="fas fa-info-circle"></i>
                         No specific skills listed
                     </div>
+                {% endif %}
+
+                <!-- Payment Section for Accepted Bid -->
+                {% if project.bids.all %}
+                    {% for bid in project.bids.all %}
+                        {% if bid.status == 'accepted' %}
+                            <div class="payment-section">
+                                <h3 class="payment-title">
+                                    <i class="fas fa-credit-card"></i>
+                                    Ready to Start Your Project?
+                                </h3>
+                                <p>Make a secure payment to begin work with <strong>{{ bid.freelancer.user.get_full_name }}</strong></p>
+                                
+                                <div class="payment-details">
+                                    <div class="payment-item">
+                                        <span class="payment-label">Project Amount:</span>
+                                        <span class="payment-value">${{ bid.bid_amount }}</span>
+                                    </div>
+                                    <div class="payment-item">
+                                        <span class="payment-label">Platform Fee (10%):</span>
+                                        <span class="payment-value">${{ bid.bid_amount|mul:0.1|floatformat:2 }}</span>
+                                    </div>
+                                    <div class="payment-item">
+                                        <span class="payment-label">Processing Fee (~3%):</span>
+                                        <span class="payment-value">${{ bid.bid_amount|mul:0.03|floatformat:2 }}</span>
+                                    </div>
+                                    <div class="payment-item">
+                                        <span class="payment-label">Total You Pay:</span>
+                                        <span class="payment-value">${{ bid.bid_amount }}</span>
+                                    </div>
+                                </div>
+
+                                {% if request.user.customuser == project.leader %}
+                                    <!-- Check if payment already exists -->
+                                    {% if not project.payments.all %}
+                                        <a href="{% url 'Portal:payment_options' project.id %}" class="choose-payment-btn">
+                                            <i class="fas fa-credit-card"></i>
+                                            Choose Payment Method
+                                        </a>
+                                        
+                                        <div class="payment-methods-preview">
+                                            <div class="payment-method-icon">
+                                                <i class="fab fa-cc-visa"></i>
+                                                <span>Visa</span>
+                                            </div>
+                                            <div class="payment-method-icon">
+                                                <i class="fab fa-cc-mastercard"></i>
+                                                <span>Mastercard</span>
+                                            </div>
+                                            <div class="payment-method-icon">
+                                                <i class="fab fa-paypal"></i>
+                                                <span>PayPal</span>
+                                            </div>
+                                            <div class="payment-method-icon">
+                                                <i class="fab fa-apple-pay"></i>
+                                                <span>Apple Pay</span>
+                                            </div>
+                                            <div class="payment-method-icon">
+                                                <i class="fab fa-google-pay"></i>
+                                                <span>Google Pay</span>
+                                            </div>
+                                            <div class="payment-method-icon">
+                                                <i class="fas fa-mobile-alt"></i>
+                                                <span>Alipay</span>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        {% for payment in project.payments.all %}
+                                            {% if payment.status == 'completed' %}
+                                                <div style="background: #d1fae5; color: #065f46; padding: 20px; border-radius: 12px; margin: 20px 0;">
+                                                    <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                                                    <h4>Payment Completed!</h4>
+                                                    <p>Payment ID: {{ payment.payment_id }}</p>
+                                                    <p>Amount: ${{ payment.gross_amount }}</p>
+                                                    <p>Method: 
+                                                        {% if payment.payment_method == 'paypal' %}
+                                                            <i class="fab fa-paypal" style="color: #0070ba;"></i> PayPal
+                                                        {% elif payment.payment_method == 'card' %}
+                                                            <i class="fas fa-credit-card"></i> Credit/Debit Card
+                                                        {% else %}
+                                                            {{ payment.payment_method|title }}
+                                                        {% endif %}
+                                                    </p>
+                                                    {% if payment.escrow_held %}
+                                                        <a href="{% url 'Portal:release_payment' payment.payment_id %}" 
+                                                        class="choose-payment-btn" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); margin-top: 15px;"
+                                                        onclick="return confirm('Are you sure you want to release this payment? The freelancer will receive ${{ payment.net_amount }}')">
+                                                            <i class="fas fa-unlock"></i>
+                                                            Release Payment (${{ payment.net_amount }})
+                                                        </a>
+                                                    {% else %}
+                                                        <p style="margin-top: 15px; font-weight: 600;">
+                                                            <i class="fas fa-check"></i>
+                                                            Payment Released to Freelancer
+                                                        </p>
+                                                    {% endif %}
+                                                </div>
+                                            {% elif payment.status == 'pending' %}
+                                                <div style="background: #fef3c7; color: #92400e; padding: 20px; border-radius: 12px; margin: 20px 0;">
+                                                    <i class="fas fa-clock" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                                                    <h4>Payment Processing...</h4>
+                                                    <p>Your payment is being processed. This usually takes a few minutes.</p>
+                                                    <p>Method: 
+                                                        {% if payment.payment_method == 'paypal' %}
+                                                            <i class="fab fa-paypal" style="color: #0070ba;"></i> PayPal
+                                                        {% elif payment.payment_method == 'card' %}
+                                                            <i class="fas fa-credit-card"></i> Credit/Debit Card
+                                                        {% else %}
+                                                            {{ payment.payment_method|title }}
+                                                        {% endif %}
+                                                    </p>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% else %}
+                                    <p style="color: #6b7280; font-style: italic;">
+                                        Only the project owner can make payments.
+                                    </p>
+                                {% endif %}
+
+                                <div class="escrow-notice">
+                                    <div class="escrow-icon">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div class="escrow-text">
+                                        <strong>Your payment is protected!</strong><br>
+                                        Funds are held securely in escrow until you approve the completed work. 
+                                        You can release payment once you're satisfied with the delivery.
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
 
                 <!-- Proposals Section -->
@@ -555,15 +859,17 @@
                                     </div>
                                     
                                     <div style="margin-top: 20px;">
-                                        {% if not bid.is_selected %}
-                                            <button class="btn" onclick="selectFreelancer({{ bid.id }})">
-                                                <i class="fas fa-user-check"></i>
-                                                Select This Freelancer
-                                            </button>
-                                        {% else %}
-                                            <span class="selected-badge">
+                                        {% if bid.status != 'accepted' %}
+                                            <a href="{% url 'Portal:accept_bid' bid.id %}" 
+                                               onclick="return confirm('Are you sure you want to accept this bid and proceed to payment?')"
+                                               class="accept-btn">
                                                 <i class="fas fa-check"></i>
-                                                Selected
+                                                Accept & Proceed to Payment
+                                            </a>
+                                        {% else %}
+                                            <span class="bid-status-accepted">
+                                                <i class="fas fa-check"></i>
+                                                BID ACCEPTED
                                             </span>
                                         {% endif %}
                                     </div>
@@ -595,13 +901,6 @@
     </div>
 
     <script>
-        function selectFreelancer(bidId) {
-            if (confirm('Are you sure you want to select this freelancer?')) {
-                // Add AJAX call here to select freelancer
-                alert('Feature coming soon: Select freelancer functionality');
-            }
-        }
-
         // Add smooth animations
         document.addEventListener('DOMContentLoaded', function() {
             const bidItems = document.querySelectorAll('.bid-item');

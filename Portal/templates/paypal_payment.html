@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal Payment - SwiftTalentForge</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .payment-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .payment-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .paypal-logo {
+            font-size: 3rem;
+            color: #0070ba;
+            margin-bottom: 15px;
+        }
+
+        .payment-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .payment-subtitle {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .project-info {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .project-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+
+        .freelancer-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .freelancer-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .freelancer-details h4 {
+            color: #1f2937;
+            margin-bottom: 3px;
+        }
+
+        .freelancer-details p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .payment-breakdown {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .breakdown-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .breakdown-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #059669;
+            border-top: 2px solid #e5e7eb;
+            margin-top: 10px;
+            padding-top: 15px;
+        }
+
+        .breakdown-label {
+            color: #6b7280;
+        }
+
+        .breakdown-value {
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        .paypal-button-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .payment-security {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .security-icon {
+            font-size: 2rem;
+            color: #059669;
+        }
+
+        .security-text {
+            color: #065f46;
+            font-weight: 500;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: #f3f4f6;
+            color: #374151;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            background: #e5e7eb;
+            transform: translateY(-1px);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            font-size: 3rem;
+            color: #0070ba;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <a href="{% url 'Portal:payment_options' project.id %}" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back to Payment Options
+        </a>
+
+        <div class="payment-header">
+            <div class="paypal-logo">
+                <i class="fab fa-paypal"></i>
+            </div>
+            <h1 class="payment-title">PayPal Payment</h1>
+            <p class="payment-subtitle">Complete your payment securely with PayPal</p>
+        </div>
+
+        <div class="project-info">
+            <h3 class="project-title">{{ project.project_name }}</h3>
+            
+            <div class="freelancer-info">
+                <div class="freelancer-avatar">
+                    {{ freelancer.user.first_name|first }}{{ freelancer.user.last_name|first }}
+                </div>
+                <div class="freelancer-details">
+                    <h4>{{ freelancer.user.get_full_name }}</h4>
+                    <p>Freelancer</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="payment-breakdown">
+            <h3 class="breakdown-title">Payment Breakdown</h3>
+            <div class="breakdown-row">
+                <span class="breakdown-label">Project Amount:</span>
+                <span class="breakdown-value">${{ gross_amount }}</span>
+            </div>
+            <div class="breakdown-row">
+                <span class="breakdown-label">Platform Fee (10%):</span>
+                <span class="breakdown-value">${{ payment.platform_fee }}</span>
+            </div>
+            <div class="breakdown-row">
+                <span class="breakdown-label">Processing Fee (~3%):</span>
+                <span class="breakdown-value">${{ payment.processing_fee }}</span>
+            </div>
+            <div class="breakdown-row">
+                <span class="breakdown-label">Total Amount:</span>
+                <span class="breakdown-value">${{ gross_amount }}</span>
+            </div>
+        </div>
+
+        <div class="payment-security">
+            <div class="security-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="security-text">
+                <strong>Secure Escrow Protection</strong><br>
+                Your payment is protected! Funds are held securely until you approve the completed work.
+            </div>
+        </div>
+
+        <!-- PayPal Button Container -->
+        <div id="paypal-button-container" class="paypal-button-container"></div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner"></i>
+            </div>
+            <h3>Processing Payment...</h3>
+            <p>Please wait while we process your PayPal payment.</p>
+        </div>
+    </div>
+
+    <!-- PayPal SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&currency=USD"></script>
+    
+    <script>
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '{{ gross_amount }}'
+                        },
+                        description: 'Payment for project: {{ project.project_name }}'
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                // Show loading overlay
+                document.getElementById('loading-overlay').style.display = 'flex';
+                
+                return actions.order.capture().then(function(details) {
+                    // Send payment data to server
+                    fetch('{% url "Portal:paypal_success" payment.payment_id %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({
+                            orderID: data.orderID,
+                            payer: details.payer
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = data.redirect_url;
+                        } else {
+                            document.getElementById('loading-overlay').style.display = 'none';
+                            alert('Payment processing failed: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('loading-overlay').style.display = 'none';
+                        console.error('Error:', error);
+                        alert('Payment processing failed. Please try again.');
+                    });
+                });
+            },
+            onCancel: function(data) {
+                // Handle payment cancellation
+                fetch('{% url "Portal:paypal_cancel" payment.payment_id %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = data.redirect_url;
+                    }
+                });
+            },
+            onError: function(err) {
+                console.error('PayPal Error:', err);
+                alert('PayPal payment failed. Please try again or choose a different payment method.');
+            }
+        }).render('#paypal-button-container');
+    </script>
+</body>
+</html>

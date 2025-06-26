@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 import locale
 import sys
+import environ
 
 # Set UTF-8 encoding for Unicode handling - CRITICAL FIX
 os.environ['PYTHONIOENCODING'] = 'utf-8'
@@ -40,11 +41,13 @@ SECRET_KEY = '2^adjpbk_eq&as+*5cys3d9htah)ajjx@@up444f^+7g-!#p47'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'swiftgen.onrender.com',
+    'swiftgen--m.onrender.com',  # Updated for your new repo
+    'swiftgen.onrender.com',     # Keep old one just in case
     '127.0.0.1',
-    'localhost',  # Added for local development
+    'localhost',
     'swifttalentforge.com',
     'www.swifttalentforge.com',
+    '*',  # Allow all hosts for now (remove this after deployment works)
 ]
 
 # Application definition
@@ -133,6 +136,29 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Initialize environment
+env = environ.Env()
+
+# Stripe Configuration
+STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY', default='pk_test_your_key_here')
+STRIPE_PUBLIC_KEY = env('STRIPE_PUBLISHABLE_KEY', default='pk_test_your_key_here')  # Added for consistency
+STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', default='sk_test_your_key_here')
+STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET', default='whsec_your_webhook_secret')
+
+# PayPal Configuration
+PAYPAL_CLIENT_ID = 'AU2GxpRv6pTxVTMKiLqmZh8DO7wTTZ17Ic7h81PXwTdcXSKERtQBcdQlWCQg03Ja3gCDQlJ5RUtHFX72'
+PAYPAL_CLIENT_SECRET = 'ED8CteOgNY2yDUKszLXNOYnUS5Ph78j0in3ZEQ7H9bcNtSA3qEk90mOM0v_D87Artkz9fv7VIl8vEWl_'
+PAYPAL_MODE = 'sandbox'  # Change to 'live' for production
+
+# Platform Settings
+PLATFORM_FEE_PERCENTAGE = 10  # 10% like Upwork
+STRIPE_PROCESSING_FEE_PERCENTAGE = 2.9  # Stripe's fee
+STRIPE_PROCESSING_FEE_FIXED = 0.30  # Stripe's fixed fee
+
+# Configure Stripe
+import stripe
+stripe.api_key = STRIPE_SECRET_KEY
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/

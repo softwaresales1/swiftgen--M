@@ -1,6 +1,10 @@
 from django.apps import AppConfig
 from django.db import models
 from django.contrib.auth.models import User
+import stripe
+from django.conf import settings
+from decimal import Decimal
+from django.utils import timezone
 import os
 
 class PortalConfig(AppConfig):
@@ -24,7 +28,11 @@ class CustomUser(models.Model):
         return self.user.username
 
     def delete(self, *args, **kwargs):
-        os.remove(self.image.path)
+        if self.image and self.image.path:
+            try:
+                os.remove(self.image.path)
+            except:
+                pass
         super(CustomUser, self).delete(*args, **kwargs)
 
 class Skill(models.Model):
@@ -82,9 +90,9 @@ class Project(models.Model):
     proposals_count = models.IntegerField(default=0)
     
     def __str__(self):
-        return self.project_name  # Fixed: was project_name2
+        return self.project_name
 
-# ADD THE MISSING TASK MODEL
+# TASK MODEL
 class Task(models.Model):
     task_name = models.CharField(max_length=100)
     task_description = models.CharField(max_length=300, default=None)
@@ -103,23 +111,43 @@ class Task(models.Model):
     def __str__(self):
         return self.task_name
 
-# NEW MODEL: Project Bids/Proposals
+# UPDATED PROJECT BID MODEL WITH STATUS FIELD
 class ProjectBid(models.Model):
+    # Status choices for bid tracking
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    ]
+    
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='bids')
     freelancer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     bid_amount = models.DecimalField(max_digits=10, decimal_places=2)
     delivery_time = models.IntegerField(help_text="Delivery time in days")
     cover_letter = models.TextField(max_length=1000)
     submitted_on = models.DateTimeField(auto_now_add=True)
+    
+    # ADDED STATUS FIELD - THIS WAS MISSING!
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    
+    # Keep backward compatibility
     is_selected = models.BooleanField(default=False)
     
     class Meta:
         unique_together = ('project', 'freelancer')
     
+    def save(self, *args, **kwargs):
+        # Keep is_selected in sync with status for backward compatibility
+        if self.status == 'accepted':
+            self.is_selected = True
+        else:
+            self.is_selected = False
+        super().save(*args, **kwargs)
+    
     def __str__(self):
-        return f"{self.freelancer.user.username} - {self.project.project_name}"
+        return f"{self.freelancer.user.username} - {self.project.project_name} ({self.status})"
 
-# NEW MODEL: Project Skills Required  
+# PROJECT SKILLS REQUIRED MODEL
 class ProjectSkillsRequired(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
@@ -160,11 +188,10 @@ class Contributor(models.Model):
     def __str__(self):
         return f"{self.user.user.username}[id={self.user.id}]"
 
-
 class UserRating(models.Model):
     task = models.OneToOneField(Task, on_delete=models.CASCADE, primary_key=True)
-    emp = models.ForeignKey(CustomUser, related_name='rating_by', on_delete=models.CASCADE, null=True, blank=True)  # Added null=True, blank=True
-    fre = models.ForeignKey(CustomUser, related_name='rating_to', on_delete=models.CASCADE, null=True, blank=True)  # Added null=True, blank=True
+    emp = models.ForeignKey(CustomUser, related_name='rating_by', on_delete=models.CASCADE, null=True, blank=True)
+    fre = models.ForeignKey(CustomUser, related_name='rating_to', on_delete=models.CASCADE, null=True, blank=True)
     f_rating = models.DecimalField(default=0, max_digits=2, decimal_places=1)
     e_rating = models.DecimalField(default=0, max_digits=2, decimal_places=1)
 
@@ -181,3 +208,134 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"From: {self._from.user.username}, To: {self._to.user.username}"
+
+class Payment(models.Model):
+    PAYMENT_STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+        ('refunded', 'Refunded'),
+        ('disputed', 'Disputed'),
+    ]
+    
+    PAYMENT_TYPE_CHOICES = [
+        ('project_payment', 'Project Payment'),
+        ('milestone_payment', 'Milestone Payment'),
+        ('tip', 'Tip'),
+        ('subscription', 'Subscription'),
+    ]
+
+    PAYMENT_METHOD_CHOICES = [
+        ('stripe', 'Stripe'),
+        ('paypal', 'PayPal'),
+        ('apple_pay', 'Apple Pay'),
+        ('google_pay', 'Google Pay'),
+        ('alipay', 'Alipay'),
+    ]
+
+    # Payment Details
+    payment_id = models.CharField(max_length=100, unique=True, blank=True)
+    stripe_payment_intent_id = models.CharField(max_length=200, blank=True, null=True)
+    stripe_checkout_session_id = models.CharField(max_length=200, blank=True, null=True)
+    
+    # ADDED PAYPAL FIELDS
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='stripe')
+    paypal_order_id = models.CharField(max_length=200, blank=True, null=True)
+    paypal_payer_id = models.CharField(max_length=200, blank=True, null=True)
+    paypal_transaction_id = models.CharField(max_length=200, blank=True, null=True)
+    
+    # Parties
+    client = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='payments_made')
+    freelancer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='payments_received')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='payments')
+    
+    # Amount Details
+    gross_amount = models.DecimalField(max_digits=10, decimal_places=2)  # Total client pays
+    platform_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Our commission
+    processing_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Stripe fees
+    net_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Freelancer receives
+    
+    # Status and Type
+    status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='pending')
+    payment_type = models.CharField(max_length=20, choices=PAYMENT_TYPE_CHOICES, default='project_payment')
+    
+    # Escrow Management
+    escrow_held = models.BooleanField(default=True)  # Money held until work approved
+    released_at = models.DateTimeField(null=True, blank=True)  # When money released to freelancer
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    # Metadata
+    description = models.TextField(blank=True)
+    client_ip = models.GenericIPAddressField(null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def save(self, *args, **kwargs):
+        if not self.payment_id:
+            self.payment_id = f"PAY_{self.project.id}_{timezone.now().strftime('%Y%m%d%H%M%S')}"
+        
+        # Calculate platform fee (10% like Upwork)
+        if not self.platform_fee:
+            self.platform_fee = self.gross_amount * Decimal('0.10')
+        
+        # Calculate processing fee (Stripe ~3%)
+        if not self.processing_fee:
+            self.processing_fee = self.gross_amount * Decimal('0.029') + Decimal('0.30')
+        
+        # Calculate net amount (what freelancer gets)
+        if not self.net_amount:
+            self.net_amount = self.gross_amount - self.platform_fee - self.processing_fee
+        
+        super().save(*args, **kwargs)
+    
+    def __str__(self):
+        return f"Payment {self.payment_id} - ${self.gross_amount}"
+
+class Milestone(models.Model):
+    """For breaking projects into payment milestones like Upwork"""
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='milestones')
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    due_date = models.DateField()
+    
+    # Status
+    is_completed = models.BooleanField(default=False)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    approved_by_client = models.BooleanField(default=False)
+    approved_at = models.DateTimeField(null=True, blank=True)
+    
+    # Associated payment
+    payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['due_date']
+    
+    def __str__(self):
+        return f"{self.project.project_name} - {self.title}"
+
+class Dispute(models.Model):
+    """Handle payment disputes like Fiverr/Upwork"""
+    DISPUTE_STATUS_CHOICES = [
+        ('open', 'Open'),
+        ('resolved', 'Resolved'),
+        ('escalated', 'Escalated to Admin'),
+    ]
+    
+    payment = models.ForeignKey(Payment, on_delete=models.CASCADE)
+    opened_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    reason = models.TextField()
+    status = models.CharField(max_length=20, choices=DISPUTE_STATUS_CHOICES, default='open')
+    
+    admin_notes = models.TextField(blank=True)
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Dispute for {self.payment.payment_id}"

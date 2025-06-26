@@ -9,7 +9,6 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import *
 from .utils import safe_cookie_value, get_cookie_value, safe_string_for_database  
 from django.contrib.auth.models import User
-
 from datetime import datetime
 from django.utils import timezone
 
@@ -27,6 +26,7 @@ from email.mime.base import MIMEBase
 from email import encoders
 from django.db.models import Q
 from django.shortcuts import render, HttpResponseRedirect, reverse
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
@@ -51,6 +51,7 @@ clientSecret = "445b354949599afbcc454441543297a9a827b477dd3eb78d1cdd478f1482b5da
 from django.conf import settings
 from django.core.mail import send_mail
 logger = logging.getLogger(__name__)
+
 def join_wait_list(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -100,6 +101,7 @@ def get_started(request):
 # Create your views here.
 def contactus(request):
         return render(request, 'Contactus.html')
+
 @csrf_exempt
 def check_username(request):
     data = json.loads(request.body.decode('utf-8'))
@@ -110,7 +112,32 @@ def check_username(request):
             return HttpResponse('<b>Username must be unique.</b>')
     except User.DoesNotExist:
         return HttpResponse('user not in database')
-
+    
+@login_required
+def accept_bid(request, bid_id):
+    bid = get_object_or_404(ProjectBid, id=bid_id)
+    project = bid.project
+    
+    # Check if user is project owner
+    if request.user.customuser != project.leader:
+        messages.error(request, "You can only accept bids for your own projects.")
+        return redirect('Portal:project_detail', project_id=project.id)
+    
+    # Check if bid is already accepted
+    if bid.status == 'accepted':
+        messages.info(request, "This bid is already accepted.")
+        return redirect('Portal:project_detail', project_id=project.id)
+    
+    # Reject all other bids for this project
+    ProjectBid.objects.filter(project=project).update(status='rejected')
+    
+    # Accept this bid
+    bid.status = 'accepted'
+    bid.save()
+    
+    # FIXED: Changed bid.applicant to bid.freelancer
+    messages.success(request, f"Bid accepted! You can now proceed with payment to {bid.freelancer.user.get_full_name()}.")
+    return redirect('Portal:project_detail', project_id=project.id)
  
 @csrf_exempt
 def check_email(request):
@@ -123,7 +150,6 @@ def check_email(request):
             return HttpResponse('<b>Email must be unique.</b>')
     except User.DoesNotExist:
         return HttpResponse('email not in db')
-
 
 @csrf_exempt
 def open_close_project(request):
@@ -155,8 +181,6 @@ def send_simple_message(reciever,subject,text):
     x=server.sendmail(fromaddr, toaddr, text)
     print(x,"sent mail")
     server.quit()
-
-
 
 def send_signup_email(user_email, first_name, request):
     """Send welcome email to newly registered users with error handling and timeout."""
@@ -368,7 +392,6 @@ def recommended_jobs(cuser):
                 jobs_recommended.append(job)
     return jobs_recommended
 
-
 def home(request):
     if not request.user.is_superuser and request.user.is_authenticated:
         context = dict()
@@ -416,7 +439,6 @@ def home(request):
     else:
         return HttpResponseRedirect(reverse('Portal:index'))
 
-
 def auth_callback_token(request, token):
     payload = {
         'token': token,
@@ -442,7 +464,6 @@ def auth_callback_token(request, token):
         context['language_list'] = language_list
     return render(request, 'signup.html', context)
     
-
 logger = logging.getLogger(__name__)
 
 class LoginForm(forms.Form):
@@ -505,12 +526,10 @@ def login_user(request):
     # Add form to context and render
     context['form'] = form
     return render(request, 'login.html', context)
-# services 
 
 def logout_user(request):
     logout(request)
     return HttpResponseRedirect(reverse('Portal:index'))
-
 
 def applicable_jobs(cuser):
     '''
@@ -534,26 +553,6 @@ def applicable_jobs(cuser):
         print(jobs)
         sorted(jobs, key=lambda x: x.addedOn, reverse=True)
     return jobs
-
-
-# def applicable_jobs(cuser):
-#     '''
-#     Use this function when using MySQL as a database
-#     '''
-#     cur = connection.cursor()
-#     if not cuser:
-#         id=0
-#     else:
-#         id=cuser.id
-#     cur.callproc('applicable_jobs', [id])
-#     results = cur.fetchall()
-#     cur.close()
-#     jobs = [Task(*row) for row in results]
-#     if jobs:
-#         jobs = [Task.objects.get(id=job.id) for job in jobs]
-#         sorted(jobs, key=lambda x: x.addedOn, reverse=True)
-#     return jobs
-
 
 @csrf_exempt
 def jobs_update(request):
@@ -622,7 +621,6 @@ def jobs_update(request):
     print(jobs)
     return render(request, 'jobs.html', context)
 
-
 def browse_jobs(request):
     """Enhanced project browsing with Upwork-style features"""
     context = dict()
@@ -650,8 +648,6 @@ def browse_jobs(request):
     context['skill_list'] = Skill.objects.all()
     
     return render(request, 'browsejobs.html', context)
-
-
 
 def form_state(request, id=1):
     """Unicode-safe form state handling with proper cookie encoding"""
@@ -688,7 +684,6 @@ def form_state(request, id=1):
         response.delete_cookie('deadline')
         
         return response
-
 
 def post_project(request):
     """Enhanced project posting with budget and requirements - Unicode safe"""
@@ -739,8 +734,6 @@ def post_project(request):
     context['skill_list'] = Skill.objects.all()  # Changed from 'available_skills'
     context['selected_skills'] = []
     return render(request, "postproject.html", context)
-
-
 
 def browse_projects(request):
     """Enhanced project browsing with Upwork-style features"""
@@ -859,8 +852,6 @@ def post_project_enhanced(request):
     context['skill_list'] = Skill.objects.all()
     return render(request, "post_project_enhanced.html", context)
 
-
-
 def project_description(request, project_id):
     project = Project.objects.get(id=project_id)
     if not project.isCompleted:
@@ -893,7 +884,6 @@ def project_description(request, project_id):
     
     # Use the project_detail template instead of projectdescription.html
     return render(request, 'project_detail.html', context)
-
 
 def add_task(request, project_id):
     context = {}
@@ -964,22 +954,18 @@ def status_update(request, task):
         print("some error in task_description")
     task.save()
 
-
 def apply_for_task(request, task):
     applicant = Applicant()
     applicant.task = Task.objects.get(id=task.id)
     applicant.user = CustomUser.objects.get(user=request.user.id)
     applicant.save()
 
-
 def submit_task_review(request, task):
     print("We will accept/reject the students work here")
-
 
 def user_task_rating(request,task):
     task.rating=request.POST.get("rating",None)
     task.save()
-
 
 def user_user_rating(request,task,context):
     try:
@@ -994,7 +980,6 @@ def user_user_rating(request,task,context):
     elif(context["is_leader"]):
         uurating.f_rating=request.POST.get("rating",None)
     uurating.save()
-
 
 def select_user(request, task, context):
     user_id = request.POST["user_id"]
@@ -1018,7 +1003,6 @@ def select_user(request, task, context):
     else:
         print("Not an applicant")
 
-
 def applicants(request, task_id):
     task = Task.objects.get(id=task_id)
     if (not request.user.is_authenticated or (request.user != task.project.leader.user)):
@@ -1036,7 +1020,6 @@ def applicants(request, task_id):
             select_user(request, task, context)
         return redirect("Portal:applicants", task_id)
     return render(request, "applicants.html", context)
-
 
 def task_description(request, project_id, task_id):
     task = get_object_or_404(Task, id=task_id, project_id=project_id)
@@ -1085,8 +1068,10 @@ def task_description(request, project_id, task_id):
         return redirect("Portal:task_description", project_id, task_id)
 
     return render(request, 'taskdescription.html', context)
+
 def start_end_working(request, task):
     pass
+
 def admin(request):
     if not request.user.is_authenticated:
         return render(request, 'login.html')
@@ -1096,11 +1081,10 @@ def admin(request):
             no_of_users = len(User.objects.filter(is_superuser=False))
             tasks = Task.objects.filter(isCompleted=False)
             context['no_of_users'] = no_of_users
-            no_of_jobs =context['no_of_jobs'] 
-            print(no_of_jobs)
+            context['no_of_jobs'] = len(tasks)  # Fixed this line
+            print(context['no_of_jobs'])
             return render(request, 'admindashboard.html', context)
         return HttpResponse('<center><h1>You are not admin.</h1></center>')
-
 
 def user_profile(request, username):
     context = dict()
@@ -1144,15 +1128,12 @@ def user_profile(request, username):
     context['erating'], context['frating'] = give_rating(cuser)
     return render(request, 'profile.html', context)
 
-
 def usetochatname(request, username):
     context = dict()
     user = User.objects.get(username=username)
     cuser = CustomUser.objects.get(user=user)
     user_name=username
     return user_name
-
-
 
 def give_rating(cuser):
     etasks = cuser.rating_by.all()
