@@ -65,17 +65,6 @@ class UsersCommunicationLanguage(models.Model):
 
 # Updated Project model with Upwork-style features
 class Project(models.Model):
-    STATUS_CHOICES = [
-        ('posted', 'Posted'),
-        ('bidding', 'Receiving Bids'),
-        ('hired', 'Freelancer Hired'),
-        ('in_progress', 'Work in Progress'),
-        ('submitted', 'Work Submitted'),
-        ('revision', 'Revision Requested'),
-        ('completed', 'Completed'),
-        ('cancelled', 'Cancelled'),
-    ]
-    
     project_name = models.CharField(max_length=100)  # Removed unique=True
     description = models.CharField(max_length=300, default=None)
     postedOn = models.DateTimeField(auto_now_add=True)
@@ -83,7 +72,6 @@ class Project(models.Model):
     isCompleted = models.BooleanField(default=False)
     deadline = models.DateField()
     task_count = models.IntegerField(default=0)
-    
     # NEW FIELDS FOR UPWORK-STYLE FEATURES
     budget_min = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     budget_max = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -100,9 +88,6 @@ class Project(models.Model):
         ("More than 6 months", "More than 6 months")
     ], default="1 to 3 months")
     proposals_count = models.IntegerField(default=0)
-    
-    # ADD PROJECT STATUS TRACKING
-    project_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='posted')
     
     def __str__(self):
         return self.project_name
@@ -354,167 +339,3 @@ class Dispute(models.Model):
     
     def __str__(self):
         return f"Dispute for {self.payment.payment_id}"
-
-# ===== NEW MODELS FOR FILE MANAGEMENT & WORKSPACE =====
-
-class ProjectFile(models.Model):
-    """Files uploaded by client for project requirements"""
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='files')
-    uploaded_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='project_files/')
-    original_filename = models.CharField(max_length=255)
-    file_type = models.CharField(max_length=50)  # document, image, video, etc.
-    file_size = models.BigIntegerField()  # in bytes
-    description = models.TextField(blank=True)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-
-    # Access level field
-    access_level = models.CharField(
-        max_length=20,
-        choices=[
-            ('public', 'Available During Bidding'),
-            ('private', 'Available After Hiring'),
-        ],
-        default='private',
-        help_text="Choose when freelancers can access this file"
-    )
-    
-    # NEW CATEGORY FIELD - THIS WAS MISSING!
-    category = models.CharField(
-        max_length=30,
-        choices=[
-            ('requirement', 'Project Requirement'),
-            ('reference', 'Reference Material'),
-            ('example', 'Example Work'),
-            ('specification', 'Technical Specification'),
-            ('other', 'Other'),
-        ],
-        default='requirement',
-        help_text="Categorize this file for better organization"
-    )
-    
-    # NEW PRIORITY FIELD - THIS WAS MISSING!
-    priority = models.CharField(
-        max_length=20,
-        choices=[
-            ('low', 'Low'),
-            ('normal', 'Normal'),
-            ('high', 'High'),
-            ('critical', 'Critical'),
-        ],
-        default='normal',
-        help_text="Priority level of this file"
-    )
-    
-    # Access control
-    is_requirement = models.BooleanField(default=True)  # True = requirement file, False = reference
-    
-    class Meta:
-        ordering = ['-uploaded_at']
-    
-    def __str__(self):
-        return f"{self.project.project_name} - {self.original_filename}"
-    
-    def get_file_size_display(self):
-        """Human readable file size"""
-        size = self.file_size
-        for unit in ['B', 'KB', 'MB', 'GB']:
-            if size < 1024:
-                return f"{size:.1f} {unit}"
-            size /= 1024
-        return f"{size:.1f} TB"
-
-class WorkSubmission(models.Model):
-    """Files and work submitted by freelancer"""
-    SUBMISSION_STATUS_CHOICES = [
-        ('draft', 'Draft'),
-        ('submitted', 'Submitted'),
-        ('revision_requested', 'Revision Requested'),
-        ('approved', 'Approved'),
-        ('rejected', 'Rejected'),
-    ]
-    
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='submissions')
-    freelancer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    submission_title = models.CharField(max_length=200)
-    description = models.TextField()
-    status = models.CharField(max_length=20, choices=SUBMISSION_STATUS_CHOICES, default='draft')
-    
-    # Timestamps
-    created_at = models.DateTimeField(auto_now_add=True)
-    submitted_at = models.DateTimeField(null=True, blank=True)
-    reviewed_at = models.DateTimeField(null=True, blank=True)
-    
-    # Client feedback
-    client_feedback = models.TextField(blank=True)
-    revision_notes = models.TextField(blank=True)
-    
-    # Version control
-    version_number = models.IntegerField(default=1)
-    is_final = models.BooleanField(default=False)
-    
-    class Meta:
-        ordering = ['-created_at']
-    
-    def __str__(self):
-        return f"{self.project.project_name} - {self.submission_title} (v{self.version_number})"
-
-class SubmissionFile(models.Model):
-    """Individual files in a work submission"""
-    submission = models.ForeignKey(WorkSubmission, on_delete=models.CASCADE, related_name='files')
-    file = models.FileField(upload_to='submissions/')
-    original_filename = models.CharField(max_length=255)
-    file_type = models.CharField(max_length=50)
-    file_size = models.BigIntegerField()
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-    
-    def __str__(self):
-        return f"{self.submission.submission_title} - {self.original_filename}"
-
-class ProjectStatus(models.Model):
-    """Track project status updates (like Upwork)"""
-    STATUS_CHOICES = [
-        ('posted', 'Posted'),
-        ('bidding', 'Receiving Bids'),
-        ('hired', 'Freelancer Hired'),
-        ('in_progress', 'Work in Progress'),
-        ('submitted', 'Work Submitted'),
-        ('revision', 'Revision Requested'),
-        ('completed', 'Completed'),
-        ('cancelled', 'Cancelled'),
-    ]
-    
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='status_updates')
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
-    updated_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    notes = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    class Meta:
-        ordering = ['-created_at']
-    
-    def __str__(self):
-        return f"{self.project.project_name} - {self.status}"
-
-class FreelancerAccess(models.Model):
-    """Control what freelancers can access after being hired"""
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    freelancer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    bid = models.ForeignKey(ProjectBid, on_delete=models.CASCADE)
-    
-    # Access permissions
-    can_download_files = models.BooleanField(default=False)
-    can_submit_work = models.BooleanField(default=False)
-    can_communicate = models.BooleanField(default=False)
-    
-    # Access granted when payment is completed
-    access_granted_at = models.DateTimeField(null=True, blank=True)
-    granted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='access_granted')
-    
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    class Meta:
-        unique_together = ('project', 'freelancer')
-    
-    def __str__(self):
-        return f"{self.freelancer.user.username} - {self.project.project_name}"

@@ -1,0 +1,342 @@
+{% extends "Portal/base.html" %}
+{% load static %}
+
+{% block title %}File Manager - {{ project.project_name }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;">
+    <div class="container py-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb bg-transparent">
+                <li class="breadcrumb-item">
+                    {% if is_owner %}
+                    <a href="{% url 'Portal:myprojects' %}" class="text-white">
+                        <i class="fas fa-folder me-1"></i>My Projects
+                    </a>
+                    {% else %}
+                    <a href="{% url 'Portal:freelancer_workspace' %}" class="text-white">
+                        <i class="fas fa-briefcase me-1"></i>Workspace
+                    </a>
+                    {% endif %}
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'Portal:project_detail' project.id %}" class="text-white">{{ project.project_name }}</a>
+                </li>
+                <li class="breadcrumb-item active text-white-50" aria-current="page">File Manager</li>
+            </ol>
+        </nav>
+
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-lg border-0" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h1 class="h3 fw-bold text-primary mb-2">
+                                    <i class="fas fa-folder-open me-2"></i>File Manager
+                                </h1>
+                                <p class="text-muted mb-0">Manage files for <strong>{{ project.project_name }}</strong></p>
+                            </div>
+                            <div class="d-flex gap-2">
+                                {% if is_owner %}
+                                <a href="{% url 'Portal:upload_project_files' project.id %}" class="btn btn-success rounded-pill">
+                                    <i class="fas fa-plus me-2"></i>Upload Files
+                                </a>
+                                {% endif %}
+                                <span class="badge bg-primary fs-6 px-3 py-2">
+                                    <i class="fas fa-file me-1"></i>{{ files|length }} File{{ files|length|pluralize }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Filters -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow border-0" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-body p-3">
+                        <div class="d-flex flex-wrap gap-2 align-items-center">
+                            <span class="text-muted me-2">Filter by type:</span>
+                            <button class="btn btn-sm btn-outline-primary rounded-pill filter-btn active" data-filter="all">
+                                <i class="fas fa-th me-1"></i>All Files
+                            </button>
+                            <button class="btn btn-sm btn-outline-info rounded-pill filter-btn" data-filter="document">
+                                <i class="fas fa-file-alt me-1"></i>Documents
+                            </button>
+                            <button class="btn btn-sm btn-outline-success rounded-pill filter-btn" data-filter="image">
+                                <i class="fas fa-image me-1"></i>Images
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger rounded-pill filter-btn" data-filter="video">
+                                <i class="fas fa-video me-1"></i>Videos
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary rounded-pill filter-btn" data-filter="reference">
+                                <i class="fas fa-bookmark me-1"></i>References
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Files Grid -->
+        {% if files %}
+        <div class="row" id="filesGrid">
+            {% for file in files %}
+            <div class="col-lg-4 col-md-6 mb-4 file-item" data-type="{{ file.file_type }}">
+                <div class="card shadow-lg border-0 h-100" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95); transition: all 0.3s ease;">
+                    <!-- File Header -->
+                    <div class="card-header border-0 p-4" style="background: linear-gradient(45deg, 
+                        {% if file.file_type == 'image' %}#00BCD4, #0097A7
+                        {% elif file.file_type == 'video' %}#F44336, #D32F2F
+                        {% elif file.file_type == 'document' %}#2196F3, #1976D2
+                        {% else %}#9E9E9E, #757575{% endif %}); 
+                        border-radius: 15px 15px 0 0; color: white;">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="file-icon">
+                                {% if file.file_type == 'image' %}
+                                <i class="fas fa-image" style="font-size: 2rem;"></i>
+                                {% elif file.file_type == 'video' %}
+                                <i class="fas fa-video" style="font-size: 2rem;"></i>
+                                {% elif file.file_type == 'document' %}
+                                <i class="fas fa-file-alt" style="font-size: 2rem;"></i>
+                                {% else %}
+                                <i class="fas fa-file" style="font-size: 2rem;"></i>
+                                {% endif %}
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-light text-dark">{{ file.file_type|title }}</span>
+                                {% if file.is_requirement %}
+                                <span class="badge bg-warning text-dark mt-1 d-block">
+                                    <i class="fas fa-star me-1"></i>Required
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Content -->
+                    <div class="card-body p-4">
+                        <h6 class="card-title mb-2 fw-bold">{{ file.original_filename }}</h6>
+                        <p class="text-muted small mb-3">{{ file.description|default:"No description provided"|truncatechars:80 }}</p>
+                        
+                        <!-- File Details -->
+                        <div class="row text-center mb-3">
+                            <div class="col-6">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-weight-hanging text-primary"></i>
+                                    <div class="small fw-bold">{{ file.get_file_size_display }}</div>
+                                    <div class="small text-muted">Size</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-calendar text-info"></i>
+                                    <div class="small fw-bold">{{ file.uploaded_at|date:"M d" }}</div>
+                                    <div class="small text-muted">{{ file.uploaded_at|date:"Y" }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Uploader Info -->
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3">
+                                <i class="fas fa-user-circle text-secondary" style="font-size: 1.5rem;"></i>
+                            </div>
+                            <div>
+                                <div class="small fw-bold">{{ file.uploaded_by.user.get_full_name|default:file.uploaded_by.user.username }}</div>
+                                <div class="small text-muted">{{ file.uploaded_at|date:"M d, Y H:i" }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Actions -->
+                    <div class="card-footer bg-transparent border-0 p-4 pt-0">
+                        <div class="d-flex gap-2">
+                            {% if is_owner or freelancer_access.can_download_files %}
+                            <a href="{% url 'Portal:download_file' file.id %}" 
+                               class="btn btn-primary flex-fill btn-sm rounded-pill">
+                                <i class="fas fa-download me-2"></i>Download
+                            </a>
+                            {% else %}
+                            <button class="btn btn-outline-secondary flex-fill btn-sm rounded-pill" disabled>
+                                <i class="fas fa-lock me-2"></i>Locked
+                            </button>
+                            {% endif %}
+                            
+                            <button class="btn btn-outline-info btn-sm rounded-pill" onclick="showFileDetails({{ file.id }})">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- No Files State -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-lg border-0" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-body text-center p-5">
+                        <div class="mb-4">
+                            <i class="fas fa-folder-open" style="font-size: 4rem; color: #ddd;"></i>
+                        </div>
+                        <h3 class="text-muted mb-3">No Files Available</h3>
+                        {% if is_owner %}
+                        <p class="text-muted mb-4">Upload project files and requirements for your freelancers to access.</p>
+                        <a href="{% url 'Portal:upload_project_files' project.id %}" class="btn btn-primary btn-lg rounded-pill px-5">
+                            <i class="fas fa-cloud-upload-alt me-2"></i>Upload First File
+                        </a>
+                        {% else %}
+                        <p class="text-muted mb-4">The client hasn't uploaded any project files yet.</p>
+                        <a href="{% url 'Portal:freelancer_workspace' %}" class="btn btn-outline-primary btn-lg rounded-pill px-5">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Workspace
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Work Submissions Section (if freelancer) -->
+        {% if not is_owner and submissions %}
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card shadow-lg border-0" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #4CAF50, #45a049); border-radius: 20px 20px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-upload me-2"></i>Work Submissions
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            {% for submission in submissions %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card border">
+                                    <div class="card-body p-3">
+                                        <h6 class="card-title mb-1">{{ submission.submission_title }}</h6>
+                                        <p class="text-muted small mb-2">{{ submission.description|truncatechars:60 }}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="badge 
+                                                {% if submission.status == 'approved' %}bg-success
+                                                {% elif submission.status == 'submitted' %}bg-primary
+                                                {% elif submission.status == 'revision_requested' %}bg-warning
+                                                {% else %}bg-secondary{% endif %}">
+                                                {{ submission.status|title }}
+                                            </span>
+                                            <a href="{% url 'Portal:view_submission' submission.id %}" class="btn btn-sm btn-outline-primary rounded-pill">
+                                                <i class="fas fa-eye me-1"></i>View
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- File Details Modal -->
+<div class="modal fade" id="fileDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">File Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="fileDetailsContent">
+                <!-- Content loaded via JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;
+}
+
+.filter-btn {
+    transition: all 0.3s ease;
+}
+
+.filter-btn.active {
+    background-color: var(--bs-primary);
+    color: white;
+    border-color: var(--bs-primary);
+}
+
+.file-item.hidden {
+    display: none;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.badge {
+    font-size: 0.7rem;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // File filtering
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const fileItems = document.querySelectorAll('.file-item');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            const filterType = this.dataset.filter;
+
+            // Filter files
+            fileItems.forEach(item => {
+                if (filterType === 'all' || item.dataset.type === filterType) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        });
+    });
+});
+
+function showFileDetails(fileId) {
+    // This would load file details via AJAX
+    const modal = new bootstrap.Modal(document.getElementById('fileDetailsModal'));
+    document.getElementById('fileDetailsContent').innerHTML = `
+        <div class="text-center p-4">
+            <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+            <p class="mt-3">Loading file details...</p>
+        </div>
+    `;
+    modal.show();
+    
+    // In a real implementation, you'd load details via AJAX
+    setTimeout(() => {
+        document.getElementById('fileDetailsContent').innerHTML = `
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                File details functionality would be implemented here with AJAX calls.
+            </div>
+        `;
+    }, 1000);
+}
+</script>
+{% endblock %}

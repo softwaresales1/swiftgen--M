@@ -1,0 +1,1063 @@
+{% extends "Portal/base.html" %}
+{% load static %}
+
+{% block title %}Upload Files - {{ project.project_name }} - {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .file-drop-area {
+        border: 3px dashed #ddd;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .file-drop-area::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(0, 123, 255, 0.05), transparent);
+        transform: rotate(45deg);
+        transition: all 0.3s ease;
+        opacity: 0;
+    }
+
+    .file-drop-area:hover,
+    .file-drop-area.dragover {
+        border-color: #007bff;
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(0, 123, 255, 0.15);
+    }
+
+    .file-drop-area:hover::before,
+    .file-drop-area.dragover::before {
+        opacity: 1;
+    }
+
+    .file-drop-area.dragover {
+        border-color: #28a745;
+        background: linear-gradient(135deg, #f0fff4 0%, #dcfce7 100%);
+    }
+
+    .file-item {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .file-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 4px;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        transition: all 0.3s ease;
+    }
+
+    .file-item:hover {
+        border-color: #007bff;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 123, 255, 0.1);
+    }
+
+    .file-item:hover::before {
+        width: 8px;
+    }
+
+    .file-item .remove-file {
+        color: #dc3545;
+        cursor: pointer;
+        font-size: 1.3rem;
+        transition: all 0.3s ease;
+        padding: 8px;
+        border-radius: 50%;
+        background: rgba(220, 53, 69, 0.1);
+    }
+
+    .file-item .remove-file:hover {
+        color: #ffffff;
+        background: #dc3545;
+        transform: scale(1.1);
+    }
+
+    .upload-icon-animation {
+        animation: uploadPulse 2s infinite;
+    }
+
+    @keyframes uploadPulse {
+        0%, 100% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    .progress-bar {
+        transition: width 0.3s ease;
+        background: linear-gradient(45deg, #007bff, #0056b3);
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .breadcrumb-item a {
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .breadcrumb-item a:hover {
+        color: #ffffff !important;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .card {
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+    }
+
+    .form-select, .form-control {
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+    .form-select:focus, .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .btn {
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .file-type-indicator {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        margin-right: 15px;
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .loading-overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .loading-spinner {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .success-animation {
+        animation: successPulse 0.6s ease-out;
+    }
+
+    @keyframes successPulse {
+        0% { transform: scale(0.8); opacity: 0; }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* NEW: Access Control Styles */
+    .access-control-indicator {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+    }
+    
+    .access-badge {
+        padding: 4px 8px;
+        border-radius: 15px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .access-public {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+    }
+    
+    .access-private {
+        background: linear-gradient(135deg, #dc3545, #fd7e14);
+        color: white;
+    }
+    
+    .access-control-section {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border: 2px solid #dee2e6;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .access-option {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .access-option:hover {
+        border-color: #007bff;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.1);
+    }
+    
+    .access-option.selected {
+        border-color: #007bff;
+        background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    }
+    
+    .access-option .radio-custom {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #007bff;
+        border-radius: 50%;
+        background: white;
+    }
+    
+    .access-option.selected .radio-custom::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 10px;
+        height: 10px;
+        background: #007bff;
+        border-radius: 50%;
+    }
+
+    .global-access-control {
+        background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+        border: 2px solid #ff9800;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h5 class="mt-3 text-primary">Uploading Files...</h5>
+        <p class="text-muted mb-0">Please wait while we process your files</p>
+        <div class="progress mt-3" style="height: 6px;">
+            <div class="progress-bar" id="uploadProgress" role="progressbar" style="width: 0%"></div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;">
+    <div class="container py-4">
+        <!-- Enhanced Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb bg-transparent">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'Portal:myprojects' %}" class="text-white">
+                        <i class="fas fa-folder me-1"></i>My Projects
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'Portal:project_detail' project.id %}" class="text-white">{{ project.project_name|truncatechars:25 }}</a>
+                </li>
+                <li class="breadcrumb-item active text-white-50" aria-current="page">
+                    <i class="fas fa-upload me-1"></i>Upload Files
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Enhanced Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-lg border-0" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h1 class="h3 fw-bold text-primary mb-2">
+                                    <i class="fas fa-cloud-upload-alt me-2 upload-icon-animation"></i>Upload Project Files
+                                </h1>
+                                <p class="text-muted mb-0">
+                                    Upload requirement files, documents, and references for 
+                                    <strong class="text-primary">{{ project.project_name }}</strong>
+                                </p>
+                                <div class="d-flex align-items-center mt-2">
+                                    <small class="text-muted me-3">
+                                        <i class="fas fa-calendar me-1"></i>Project Deadline: {{ project.deadline|date:"M d, Y" }}
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="fas fa-user me-1"></i>Owner: {{ project.leader.user.get_full_name }}
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <a href="{% url 'Portal:project_detail' project.id %}" class="btn btn-outline-primary me-2">
+                                    <i class="fas fa-arrow-left me-1"></i>Back to Project
+                                </a>
+                                <a href="{% url 'Portal:project_file_manager' project.id %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-folder-open me-1"></i>File Manager
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Enhanced Upload Form -->
+            <div class="col-lg-8 mb-4">
+                <div class="card shadow-lg border-0" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #4CAF50, #45a049); border-radius: 20px 20px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-upload me-2"></i>Upload New Files
+                        </h5>
+                        <small class="opacity-75">Drag and drop files or click to browse</small>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post" enctype="multipart/form-data" id="uploadForm">
+                            {% csrf_token %}
+                            
+                            <!-- Enhanced File Upload Area -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-paperclip me-2"></i>Select Files
+                                </label>
+                                <div class="file-drop-area" id="fileDropArea">
+                                    <div class="text-center p-5">
+                                        <i class="fas fa-cloud-upload-alt text-primary upload-icon-animation" style="font-size: 4rem;"></i>
+                                        <h4 class="mt-3 mb-2 text-primary fw-bold">Drag & Drop Files Here</h4>
+                                        <p class="text-muted mb-3">or click anywhere to browse files from your device</p>
+                                        <input type="file" name="files" multiple id="fileInput" class="d-none" 
+                                               accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif,.mp4,.avi,.mov,.zip,.rar,.pptx,.xlsx">
+                                        <button type="button" class="btn btn-outline-primary btn-lg rounded-pill px-4" onclick="document.getElementById('fileInput').click()">
+                                            <i class="fas fa-folder-open me-2"></i>Browse Files
+                                        </button>
+                                        <div class="mt-3">
+                                            <small class="text-muted">
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                Supported: PDF, DOC, DOCX, TXT, Images, Videos, Archives (Max 50MB each)
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Enhanced Selected Files Display -->
+                            <div id="selectedFiles" class="mb-4" style="display: none;">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-list me-2"></i>Selected Files (<span id="fileCount">0</span>)
+                                </label>
+                                <div id="filesList"></div>
+                            </div>
+
+                            <!-- NEW: Global Access Control Section -->
+                            <div id="globalAccessControl" class="mb-4" style="display: none;">
+                                <div class="global-access-control">
+                                    <h6 class="fw-bold mb-3">
+                                        <i class="fas fa-shield-alt me-2 text-warning"></i>File Access Control
+                                    </h6>
+                                    <p class="text-muted small mb-3">Choose when freelancers can access these files</p>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="access-option" data-access="public" onclick="selectGlobalAccess('public')">
+                                                <div class="radio-custom"></div>
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <i class="fas fa-unlock-alt text-success me-2" style="font-size: 1.2rem;"></i>
+                                                    <h6 class="mb-0 text-success">Available During Bidding</h6>
+                                                </div>
+                                                <small class="text-muted">
+                                                    Freelancers can download and review files while submitting proposals. 
+                                                    Best for project requirements and specifications.
+                                                </small>
+                                                <div class="mt-2">
+                                                    <span class="badge bg-success">Recommended for Requirements</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="access-option selected" data-access="private" onclick="selectGlobalAccess('private')">
+                                                <div class="radio-custom"></div>
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <i class="fas fa-lock text-warning me-2" style="font-size: 1.2rem;"></i>
+                                                    <h6 class="mb-0 text-warning">Available After Hiring</h6>
+                                                </div>
+                                                <small class="text-muted">
+                                                    Files are protected until you hire a freelancer. 
+                                                    Perfect for sensitive documents and proprietary materials.
+                                                </small>
+                                                <div class="mt-2">
+                                                    <span class="badge bg-warning">Default Setting</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-center mt-3">
+                                        <button type="button" class="btn btn-outline-warning btn-sm" onclick="applyGlobalAccess()">
+                                            <i class="fas fa-magic me-1"></i>Apply to All Files
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Global File Settings -->
+                            <div id="globalSettings" class="mb-4" style="display: none;">
+                                <div class="card border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-cogs me-2"></i>Global Settings (Apply to All Files)
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label class="form-label">Default Category</label>
+                                                <select class="form-select" id="globalCategory">
+                                                    <option value="">Choose...</option>
+                                                    <option value="requirement">Requirements</option>
+                                                    <option value="specification">Specifications</option>
+                                                    <option value="reference">Reference Material</option>
+                                                    <option value="example">Examples</option>
+                                                    <option value="other">Other</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Default Priority</label>
+                                                <select class="form-select" id="globalPriority">
+                                                    <option value="">Choose...</option>
+                                                    <option value="normal">Normal</option>
+                                                    <option value="high">High</option>
+                                                    <option value="critical">Critical</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Actions</label>
+                                                <div>
+                                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="applyGlobalSettings()">
+                                                        <i class="fas fa-magic me-1"></i>Apply to All
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Enhanced Submit Section -->
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-success btn-lg rounded-pill px-5 shadow" id="submitBtn" disabled>
+                                    <i class="fas fa-cloud-upload-alt me-2"></i>Upload Files
+                                </button>
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        <i class="fas fa-shield-alt me-1"></i>
+                                        Your files are securely encrypted during upload
+                                    </small>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Sidebar -->
+            <div class="col-lg-4">
+                <!-- NEW: Access Control Info -->
+                <div class="card shadow-lg border-0 mb-4" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #FF5722, #E64A19); border-radius: 20px 20px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-shield-alt me-2"></i>File Access Control
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <h6 class="text-success">
+                                <i class="fas fa-unlock-alt me-2"></i>During Bidding Access
+                            </h6>
+                            <small class="text-muted">
+                                Freelancers can view and download files immediately. 
+                                Perfect for requirements, specifications, and examples that help freelancers understand your project.
+                            </small>
+                        </div>
+                        <div class="mb-3">
+                            <h6 class="text-warning">
+                                <i class="fas fa-lock me-2"></i>After Hiring Access
+                            </h6>
+                            <small class="text-muted">
+                                Files remain private until you hire a freelancer. 
+                                Ideal for sensitive data, proprietary information, or detailed project materials.
+                            </small>
+                        </div>
+                        <div class="alert alert-warning border-0" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2);">
+                            <small>
+                                <i class="fas fa-lightbulb me-1"></i>
+                                <strong>Tip:</strong> Make requirements publicly accessible to receive better proposals, but keep sensitive materials private.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Upload Guidelines -->
+                <div class="card shadow-lg border-0 mb-4" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #2196F3, #1976D2); border-radius: 20px 20px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-info-circle me-2"></i>Upload Guidelines
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <h6 class="text-success">
+                                <i class="fas fa-check-circle me-2"></i>Allowed File Types
+                            </h6>
+                            <div class="d-flex flex-wrap gap-1">
+                                <span class="badge bg-light text-dark">PDF</span>
+                                <span class="badge bg-light text-dark">DOC</span>
+                                <span class="badge bg-light text-dark">DOCX</span>
+                                <span class="badge bg-light text-dark">TXT</span>
+                                <span class="badge bg-light text-dark">JPG</span>
+                                <span class="badge bg-light text-dark">PNG</span>
+                                <span class="badge bg-light text-dark">GIF</span>
+                                <span class="badge bg-light text-dark">MP4</span>
+                                <span class="badge bg-light text-dark">ZIP</span>
+                                <span class="badge bg-light text-dark">RAR</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <h6 class="text-warning">
+                                <i class="fas fa-weight-hanging me-2"></i>File Size Limits
+                            </h6>
+                            <small class="text-muted">Maximum 50MB per file, 500MB total per upload</small>
+                        </div>
+                        <div class="mb-3">
+                            <h6 class="text-info">
+                                <i class="fas fa-lightbulb me-2"></i>Best Practices
+                            </h6>
+                            <ul class="small text-muted mb-0">
+                                <li>Use descriptive file names</li>
+                                <li>Add detailed descriptions</li>
+                                <li>Compress large files when possible</li>
+                                <li>Upload requirements before examples</li>
+                                <li>Organize files by category</li>
+                            </ul>
+                        </div>
+                        <div class="alert alert-info border-0" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb);">
+                            <small>
+                                <i class="fas fa-users me-1"></i>
+                                <strong>Tip:</strong> Well-organized files help freelancers understand your project better and submit more accurate proposals.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Existing Files -->
+                {% if existing_files %}
+                <div class="card shadow-lg border-0" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #FF9800, #F57C00); border-radius: 20px 20px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-folder me-2"></i>Existing Files ({{ existing_files|length }})
+                        </h5>
+                        <small class="opacity-75">Previously uploaded files</small>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="max-height-300" style="max-height: 300px; overflow-y: auto;">
+                            {% for file in existing_files %}
+                            <div class="d-flex align-items-center mb-3 p-3 bg-light rounded-3 hover-shadow" style="position: relative;">
+                                <!-- Access Level Badge -->
+                                <div class="position-absolute" style="top: 5px; right: 5px;">
+                                    {% if file.access_level == 'public' %}
+                                    <span class="badge bg-success" style="font-size: 0.6rem;">
+                                        <i class="fas fa-unlock-alt me-1"></i>Public
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-warning" style="font-size: 0.6rem;">
+                                        <i class="fas fa-lock me-1"></i>Private
+                                    </span>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="file-type-indicator" style="background: 
+                                    {% if file.file_type == 'image' %}linear-gradient(135deg, #00BCD4, #0097A7)
+                                    {% elif file.file_type == 'document' %}linear-gradient(135deg, #2196F3, #1976D2)
+                                    {% elif file.file_type == 'video' %}linear-gradient(135deg, #F44336, #D32F2F)
+                                    {% else %}linear-gradient(135deg, #9E9E9E, #757575){% endif %}; color: white;">
+                                    {% if file.file_type == 'image' %}
+                                    <i class="fas fa-image"></i>
+                                    {% elif file.file_type == 'document' %}
+                                    <i class="fas fa-file-alt"></i>
+                                    {% elif file.file_type == 'video' %}
+                                    <i class="fas fa-video"></i>
+                                    {% else %}
+                                    <i class="fas fa-file"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 small fw-bold">{{ file.original_filename|truncatechars:20 }}</h6>
+                                    <div class="d-flex justify-content-between">
+                                        <small class="text-muted">{{ file.get_file_size_display }}</small>
+                                        <small class="text-muted">{{ file.uploaded_at|date:"M d" }}</small>
+                                    </div>
+                                    {% if file.category %}
+                                    <span class="badge bg-primary badge-sm">{{ file.category|title }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'Portal:project_file_manager' project.id %}" class="btn btn-outline-primary btn-sm rounded-pill">
+                                <i class="fas fa-folder-open me-1"></i>Manage All Files
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="card shadow-lg border-0" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-folder-open text-muted" style="font-size: 3rem;"></i>
+                        <h6 class="text-muted mt-2">No files uploaded yet</h6>
+                        <small class="text-muted">This will be your first upload for this project</small>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('fileInput');
+    const fileDropArea = document.getElementById('fileDropArea');
+    const selectedFiles = document.getElementById('selectedFiles');
+    const filesList = document.getElementById('filesList');
+    const submitBtn = document.getElementById('submitBtn');
+    const uploadForm = document.getElementById('uploadForm');
+    const fileCount = document.getElementById('fileCount');
+    const globalSettings = document.getElementById('globalSettings');
+    const globalAccessControl = document.getElementById('globalAccessControl');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const uploadProgress = document.getElementById('uploadProgress');
+    
+    let selectedFilesArray = [];
+    let totalSize = 0;
+    let selectedGlobalAccess = 'private'; // Default access level
+    const maxFileSize = 50 * 1024 * 1024; // 50MB
+    const maxTotalSize = 500 * 1024 * 1024; // 500MB
+
+    // File input change handler
+    fileInput.addEventListener('change', function(e) {
+        handleFiles(e.target.files);
+    });
+
+    // Enhanced drag and drop handlers
+    fileDropArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        fileDropArea.classList.add('dragover');
+    });
+
+    fileDropArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        fileDropArea.classList.remove('dragover');
+    });
+
+    fileDropArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        fileDropArea.classList.remove('dragover');
+        handleFiles(e.dataTransfer.files);
+    });
+
+    // Click to upload
+    fileDropArea.addEventListener('click', function(e) {
+        if (e.target.tagName !== 'BUTTON') {
+            fileInput.click();
+        }
+    });
+
+    function handleFiles(files) {
+        const newFiles = Array.from(files);
+        let validFiles = [];
+        let errors = [];
+
+        newFiles.forEach(file => {
+            if (file.size > maxFileSize) {
+                errors.push(`${file.name} is too large (max 50MB)`);
+                return;
+            }
+            
+            if (totalSize + file.size > maxTotalSize) {
+                errors.push(`Adding ${file.name} would exceed total size limit (500MB)`);
+                return;
+            }
+            
+            validFiles.push(file);
+            totalSize += file.size;
+        });
+
+        if (errors.length > 0) {
+            alert('Some files were skipped:\n' + errors.join('\n'));
+        }
+
+        selectedFilesArray = [...selectedFilesArray, ...validFiles];
+        displaySelectedFiles();
+        updateSubmitButton();
+        updateGlobalSettings();
+    }
+
+    function displaySelectedFiles() {
+        if (selectedFilesArray.length === 0) {
+            selectedFiles.style.display = 'none';
+            globalSettings.style.display = 'none';
+            globalAccessControl.style.display = 'none';
+            return;
+        }
+
+        selectedFiles.style.display = 'block';
+        globalSettings.style.display = 'block';
+        globalAccessControl.style.display = 'block';
+        fileCount.textContent = selectedFilesArray.length;
+        filesList.innerHTML = '';
+
+        selectedFilesArray.forEach((file, index) => {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.style.position = 'relative';
+            
+            const fileTypeIcon = getFileTypeIcon(file.type);
+            const fileSize = formatFileSize(file.size);
+            const fileTypeClass = getFileTypeClass(file.type);
+            
+            fileItem.innerHTML = `
+                <!-- Access Control Indicator -->
+                <div class="access-control-indicator">
+                    <span class="access-badge access-private" id="accessBadge-${index}">
+                        <i class="fas fa-lock me-1"></i>After Hiring
+                    </span>
+                </div>
+                
+                <div class="d-flex align-items-start">
+                    <div class="file-type-indicator ${fileTypeClass} me-3">
+                        <i class="${fileTypeIcon}"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-2 fw-bold">${file.name}</h6>
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-3">
+                                <label class="form-label small">Category</label>
+                                <select class="form-select form-select-sm file-category" name="file_categories" data-index="${index}">
+                                    <option value="">Choose...</option>
+                                    <option value="requirement">Requirements</option>
+                                    <option value="specification">Specifications</option>
+                                    <option value="reference">Reference Material</option>
+                                    <option value="example">Examples</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small">Access Level</label>
+                                <select class="form-select form-select-sm file-access" name="file_access_levels" data-index="${index}" onchange="updateAccessBadge(${index}, this.value)">
+                                    <option value="private">After Hiring</option>
+                                    <option value="public">During Bidding</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small">Priority</label>
+                                <select class="form-select form-select-sm file-priority" name="file_priorities" data-index="${index}">
+                                    <option value="normal">Normal</option>
+                                    <option value="high">High</option>
+                                    <option value="critical">Critical</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small">Size</label>
+                                <div class="form-control form-control-sm border-0 bg-light">${fileSize}</div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small">Description</label>
+                            <input type="text" class="form-control form-control-sm file-description" 
+                                   name="descriptions" data-index="${index}" 
+                                   placeholder="Describe this file's purpose...">
+                        </div>
+                    </div>
+                    <div class="ms-3">
+                        <div class="remove-file" onclick="removeFile(${index})" title="Remove file">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            filesList.appendChild(fileItem);
+        });
+
+        // Add animation to new items
+        setTimeout(() => {
+            document.querySelectorAll('.file-item').forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    item.style.transition = 'all 0.3s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }, 50);
+    }
+
+    function removeFile(index) {
+        const removedFile = selectedFilesArray[index];
+        totalSize -= removedFile.size;
+        selectedFilesArray.splice(index, 1);
+        displaySelectedFiles();
+        updateSubmitButton();
+        
+        // Update file input
+        const dt = new DataTransfer();
+        selectedFilesArray.forEach(file => dt.items.add(file));
+        fileInput.files = dt.files;
+    }
+
+    function updateSubmitButton() {
+        submitBtn.disabled = selectedFilesArray.length === 0;
+        
+        if (selectedFilesArray.length > 0) {
+            submitBtn.innerHTML = `<i class="fas fa-cloud-upload-alt me-2"></i>Upload ${selectedFilesArray.length} File${selectedFilesArray.length > 1 ? 's' : ''} (${formatFileSize(totalSize)})`;
+        } else {
+            submitBtn.innerHTML = '<i class="fas fa-cloud-upload-alt me-2"></i>Upload Files';
+        }
+    }
+
+    function updateGlobalSettings() {
+        globalSettings.style.display = selectedFilesArray.length > 1 ? 'block' : 'none';
+        globalAccessControl.style.display = selectedFilesArray.length > 0 ? 'block' : 'none';
+    }
+
+    // NEW: Global access control functions
+    window.selectGlobalAccess = function(accessLevel) {
+        selectedGlobalAccess = accessLevel;
+        
+        // Update UI
+        document.querySelectorAll('.access-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        document.querySelector(`.access-option[data-access="${accessLevel}"]`).classList.add('selected');
+    };
+
+    window.applyGlobalAccess = function() {
+        // Apply to all file access selects
+        document.querySelectorAll('.file-access').forEach(select => {
+            select.value = selectedGlobalAccess;
+            updateAccessBadge(select.dataset.index, selectedGlobalAccess);
+        });
+        
+        // Show success feedback
+        const applyBtn = event.target;
+        const originalText = applyBtn.innerHTML;
+        applyBtn.innerHTML = '<i class="fas fa-check me-1"></i>Applied!';
+        applyBtn.classList.remove('btn-outline-warning');
+        applyBtn.classList.add('btn-success');
+        
+        setTimeout(() => {
+            applyBtn.innerHTML = originalText;
+            applyBtn.classList.remove('btn-success');
+            applyBtn.classList.add('btn-outline-warning');
+        }, 2000);
+    };
+
+    // NEW: Update access badge function
+    window.updateAccessBadge = function(index, accessLevel) {
+        const badge = document.getElementById(`accessBadge-${index}`);
+        if (accessLevel === 'public') {
+            badge.className = 'access-badge access-public';
+            badge.innerHTML = '<i class="fas fa-unlock-alt me-1"></i>During Bidding';
+        } else {
+            badge.className = 'access-badge access-private';
+            badge.innerHTML = '<i class="fas fa-lock me-1"></i>After Hiring';
+        }
+    };
+
+    // Global settings application
+    window.applyGlobalSettings = function() {
+        const globalCategory = document.getElementById('globalCategory').value;
+        const globalPriority = document.getElementById('globalPriority').value;
+        
+        if (globalCategory) {
+            document.querySelectorAll('.file-category').forEach(select => {
+                select.value = globalCategory;
+            });
+        }
+        
+        if (globalPriority) {
+            document.querySelectorAll('.file-priority').forEach(select => {
+                select.value = globalPriority;
+            });
+        }
+        
+        // Show success feedback
+        const applyBtn = event.target;
+        const originalText = applyBtn.innerHTML;
+        applyBtn.innerHTML = '<i class="fas fa-check me-1"></i>Applied!';
+        applyBtn.classList.remove('btn-outline-primary');
+        applyBtn.classList.add('btn-success');
+        
+        setTimeout(() => {
+            applyBtn.innerHTML = originalText;
+            applyBtn.classList.remove('btn-success');
+            applyBtn.classList.add('btn-outline-primary');
+        }, 2000);
+    };
+
+    function getFileTypeIcon(fileType) {
+        if (fileType.startsWith('image/')) return 'fas fa-image';
+        if (fileType.startsWith('video/')) return 'fas fa-video';
+        if (fileType.includes('pdf')) return 'fas fa-file-pdf';
+        if (fileType.includes('word') || fileType.includes('document')) return 'fas fa-file-word';
+        if (fileType.includes('zip') || fileType.includes('rar')) return 'fas fa-file-archive';
+        if (fileType.includes('powerpoint') || fileType.includes('presentation')) return 'fas fa-file-powerpoint';
+        if (fileType.includes('excel') || fileType.includes('spreadsheet')) return 'fas fa-file-excel';
+        return 'fas fa-file';
+    }
+
+    function getFileTypeClass(fileType) {
+        if (fileType.startsWith('image/')) return 'text-info';
+        if (fileType.startsWith('video/')) return 'text-danger';
+        if (fileType.includes('pdf')) return 'text-danger';
+        if (fileType.includes('word')) return 'text-primary';
+        if (fileType.includes('zip') || fileType.includes('rar')) return 'text-warning';
+        return 'text-secondary';
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Enhanced form submission with progress simulation
+    uploadForm.addEventListener('submit', function(e) {
+        if (selectedFilesArray.length === 0) {
+            e.preventDefault();
+            alert('Please select files to upload.');
+            return;
+        }
+
+        // Show loading overlay
+        loadingOverlay.classList.add('show');
+        
+        // Simulate upload progress
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+            progress += Math.random() * 15;
+            if (progress > 90) progress = 90;
+            uploadProgress.style.width = progress + '%';
+        }, 200);
+
+        // Show loading state
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Uploading...';
+        submitBtn.disabled = true;
+
+        // Clean up on form submission
+        setTimeout(() => {
+            clearInterval(progressInterval);
+            uploadProgress.style.width = '100%';
+        }, 3000);
+    });
+
+    // Make removeFile function global
+    window.removeFile = removeFile;
+
+    // Add some nice hover effects
+    document.addEventListener('mouseover', function(e) {
+        if (e.target.classList.contains('file-item')) {
+            e.target.style.transform = 'translateY(-2px)';
+        }
+    });
+
+    document.addEventListener('mouseout', function(e) {
+        if (e.target.classList.contains('file-item')) {
+            e.target.style.transform = 'translateY(0)';
+        }
+    });
+});
+</script>
+{% endblock %}

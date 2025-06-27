@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from . import file_views
 from .payment_views import (
     create_payment, payment_success, payment_cancelled, 
     stripe_webhook, release_payment, payment_dashboard, payment_options,
@@ -55,4 +56,23 @@ urlpatterns = [
     path('payment/paypal/return/<int:project_id>/', paypal_return, name='paypal_return'),
     path('payment/paypal/cancel/<int:project_id>/', paypal_cancel, name='paypal_cancel'),
     path('payment/paypal/success/<str:payment_id>/', paypal_success, name='paypal_success'),
+    
+    # ===== FILE MANAGEMENT & WORKSPACE URLS =====
+    
+    # Client file upload system
+    path('project/<int:project_id>/upload-files/', file_views.upload_project_files, name='upload_project_files'),
+    path('project/<int:project_id>/files/', file_views.project_file_manager, name='project_file_manager'),
+    path('download-file/<int:file_id>/', file_views.download_file, name='download_file'),
+    
+    # Freelancer workspace system
+    path('workspace/', file_views.freelancer_workspace, name='freelancer_workspace'),
+    path('workspace/project/<int:project_id>/', file_views.project_workspace, name='project_workspace'),
+    
+    # Work submission system
+    path('project/<int:project_id>/submit-work/', file_views.submit_work, name='submit_work'),
+    path('submission/<int:submission_id>/', file_views.view_submission, name='view_submission'),
+    path('download-submission/<int:file_id>/', file_views.download_submission_file, name='download_submission_file'),
+    
+    # Review system
+    path('review-submission/<int:submission_id>/', file_views.review_submission, name='review_submission'),
 ]

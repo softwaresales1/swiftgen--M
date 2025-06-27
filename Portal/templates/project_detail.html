@@ -158,6 +158,340 @@
             font-style: italic;
         }
 
+        /* Enhanced File Management Section Styles */
+        .file-management-section {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 2px solid #22c55e;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-management-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 50%;
+            transform: rotate(45deg);
+        }
+
+        .file-section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #166534;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .file-stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .file-stat-item {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .file-stat-item:hover {
+            border-color: #22c55e;
+            transform: translateY(-2px);
+        }
+
+        .file-stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #166534;
+            display: block;
+        }
+
+        .file-stat-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .file-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .file-action-btn {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            text-decoration: none;
+            color: #374151;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-action-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            transition: all 0.3s ease;
+        }
+
+        .file-action-btn:hover {
+            border-color: #22c55e;
+            color: #166534;
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.15);
+        }
+
+        .file-action-btn:hover::before {
+            width: 8px;
+        }
+
+        .file-action-icon {
+            font-size: 2rem;
+            color: #22c55e;
+            width: 50px;
+            text-align: center;
+        }
+
+        .file-action-content h4 {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #1f2937;
+        }
+
+        .file-action-content p {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .files-preview {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            position: relative;
+            z-index: 2;
+        }
+
+        .files-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .file-item {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .file-item:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+            transform: translateY(-1px);
+        }
+
+        .file-icon {
+            font-size: 1.5rem;
+            width: 30px;
+            text-align: center;
+        }
+
+        /* File type specific colors */
+        .file-type-document { color: #dc2626; }
+        .file-type-image { color: #7c3aed; }
+        .file-type-video { color: #ea580c; }
+        .file-type-archive { color: #059669; }
+        .file-type-spreadsheet { color: #0d9488; }
+        .file-type-presentation { color: #c2410c; }
+        .file-type-other { color: #6b7280; }
+
+        .file-info h6 {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #1f2937;
+            font-size: 0.9rem;
+        }
+
+        .file-meta {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        /* Access level badges */
+        .file-access-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .access-public {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .access-private {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .file-category-badge {
+            display: inline-block;
+            background: #e5e7eb;
+            color: #374151;
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-top: 3px;
+        }
+
+        /* Enhanced bidding notice */
+        .bidding-notice {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bidding-notice::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50px;
+            width: 100px;
+            height: 100px;
+            background: rgba(245, 158, 11, 0.2);
+            border-radius: 50%;
+        }
+
+        .bidding-notice-icon {
+            font-size: 2.5rem;
+            color: #d97706;
+            flex-shrink: 0;
+        }
+
+        .bidding-notice-text {
+            color: #92400e;
+            font-weight: 500;
+            flex-grow: 1;
+        }
+
+        .access-info-section {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .access-info-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0c4a6e;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .access-level-explanation {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .access-level-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid transparent;
+        }
+
+        .access-level-card.public {
+            border-left-color: #10b981;
+        }
+
+        .access-level-card.private {
+            border-left-color: #f59e0b;
+        }
+
+        .access-level-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .access-level-header h6 {
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .access-level-header.public {
+            color: #059669;
+        }
+
+        .access-level-header.private {
+            color: #d97706;
+        }
+
+        .access-level-description {
+            font-size: 0.85rem;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
         .proposals-header {
             display: flex;
             justify-content: space-between;
@@ -361,7 +695,6 @@
             gap: 8px;
         }
 
-        /* Accept Freelancer Button Styles */
         .accept-btn {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
@@ -394,7 +727,6 @@
             gap: 8px;
         }
 
-        /* Payment Section Styles */
         .payment-section {
             background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             border: 2px solid #3b82f6;
@@ -549,6 +881,22 @@
                 flex-direction: column;
                 align-items: center;
             }
+
+            .file-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .files-list {
+                grid-template-columns: 1fr;
+            }
+
+            .file-stats-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .access-level-explanation {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -625,6 +973,263 @@
                         <i class="fas fa-info-circle"></i>
                         No specific skills listed
                     </div>
+                {% endif %}
+
+                <!-- File Management Section for Project Owners -->
+                {% if user == project.leader.user %}
+                <div class="file-management-section">
+                    <h3 class="file-section-title">
+                        <i class="fas fa-folder-open"></i>
+                        Project Files Management
+                    </h3>
+                    
+                    <!-- File Statistics Overview -->
+                    {% if project.files.count > 0 %}
+                    <div class="file-stats-overview">
+                        <div class="file-stat-item">
+                            <span class="file-stat-number">{{ project.files.count }}</span>
+                            <div class="file-stat-label">Total Files</div>
+                        </div>
+                        <div class="file-stat-item">
+                            <span class="file-stat-number">
+                                {% with public_count=0 %}
+                                    {% for file in project.files.all %}
+                                        {% if file.access_level == 'public' %}
+                                            {% with public_count=public_count|add:1 %}{% endwith %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {{ public_count }}
+                                {% endwith %}
+                            </span>
+                            <div class="file-stat-label">Public Files</div>
+                        </div>
+                        <div class="file-stat-item">
+                            <span class="file-stat-number">
+                                {% with private_count=0 %}
+                                    {% for file in project.files.all %}
+                                        {% if file.access_level == 'private' %}
+                                            {% with private_count=private_count|add:1 %}{% endwith %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {{ private_count }}
+                                {% endwith %}
+                            </span>
+                            <div class="file-stat-label">Private Files</div>
+                        </div>
+                        <div class="file-stat-item">
+                            <span class="file-stat-number">
+                                {% with requirement_count=0 %}
+                                    {% for file in project.files.all %}
+                                        {% if file.category == 'requirement' %}
+                                            {% with requirement_count=requirement_count|add:1 %}{% endwith %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {{ requirement_count }}
+                                {% endwith %}
+                            </span>
+                            <div class="file-stat-label">Requirements</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="file-actions">
+                        <a href="{% url 'Portal:upload_project_files' project.id %}" class="file-action-btn">
+                            <div class="file-action-icon">
+                                <i class="fas fa-upload"></i>
+                            </div>
+                            <div class="file-action-content">
+                                <h4>Upload Project Files</h4>
+                                <p>Add requirement files, specifications, or resources with access control</p>
+                            </div>
+                        </a>
+                        
+                        <a href="{% url 'Portal:project_file_manager' project.id %}" class="file-action-btn">
+                            <div class="file-action-icon">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <div class="file-action-content">
+                                <h4>Manage Files</h4>
+                                <p>View, download, organize files and manage access settings</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    {% if project.files.count > 0 %}
+                    <div class="files-preview">
+                        <h5 style="margin-bottom: 15px; color: #374151;">
+                            <i class="fas fa-paperclip"></i>
+                            Recent Files ({{ project.files.count }})
+                        </h5>
+                        <div class="files-list">
+                            {% for file in project.files.all|slice:":6" %}
+                            <div class="file-item">
+                                <!-- Access Level Badge -->
+                                <div class="file-access-badge {% if file.access_level == 'public' %}access-public{% else %}access-private{% endif %}">
+                                    {% if file.access_level == 'public' %}
+                                        <i class="fas fa-unlock-alt"></i> Public
+                                    {% else %}
+                                        <i class="fas fa-lock"></i> Private
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="file-icon file-type-{{ file.file_type|default:'other' }}">
+                                    {% if file.file_type == 'document' %}
+                                        <i class="fas fa-file-alt"></i>
+                                    {% elif file.file_type == 'image' %}
+                                        <i class="fas fa-image"></i>
+                                    {% elif file.file_type == 'video' %}
+                                        <i class="fas fa-video"></i>
+                                    {% elif file.file_type == 'archive' %}
+                                        <i class="fas fa-file-archive"></i>
+                                    {% elif file.file_type == 'spreadsheet' %}
+                                        <i class="fas fa-file-excel"></i>
+                                    {% elif file.file_type == 'presentation' %}
+                                        <i class="fas fa-file-powerpoint"></i>
+                                    {% else %}
+                                        <i class="fas fa-file"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="file-info">
+                                    <h6>{{ file.original_filename|truncatechars:30 }}</h6>
+                                    <div class="file-meta">
+                                        {% if file.get_file_size_display %}{{ file.get_file_size_display }}{% else %}Unknown size{% endif %} • {{ file.uploaded_at|date:"M d, Y" }}
+                                        {% if file.priority == 'high' or file.priority == 'critical' %}
+                                        <br><strong style="color: #dc2626;">{{ file.priority|title }} Priority</strong>
+                                        {% endif %}
+                                        {% if file.description %}
+                                        <br><em>{{ file.description|truncatechars:40 }}</em>
+                                        {% endif %}
+                                    </div>
+                                    {% if file.category %}
+                                    <span class="file-category-badge">{{ file.category|title }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if project.files.count > 6 %}
+                        <div style="text-align: center; margin-top: 15px;">
+                            <a href="{% url 'Portal:project_file_manager' project.id %}" class="btn" style="font-size: 0.9rem; padding: 8px 16px;">
+                                <i class="fas fa-eye"></i>
+                                View All Files ({{ project.files.count }})
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        No files uploaded yet. Add project requirements and specifications to help freelancers understand your needs better.
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Project Files for Potential Bidders -->
+                {% if project.files.all and user != project.leader.user %}
+                <div class="file-management-section">
+                    <h3 class="file-section-title">
+                        <i class="fas fa-folder-open"></i>
+                        Project Files & Requirements
+                    </h3>
+                    <p style="color: #6b7280; margin-bottom: 20px;">
+                        Review available files to understand the project requirements better:
+                    </p>
+                    
+                    <!-- Access Information Section -->
+                    <div class="access-info-section">
+                        <div class="access-info-title">
+                            <i class="fas fa-info-circle"></i>
+                            File Access Information
+                        </div>
+                        <div class="access-level-explanation">
+                            <div class="access-level-card public">
+                                <div class="access-level-header public">
+                                    <i class="fas fa-unlock-alt"></i>
+                                    <h6>Public Files</h6>
+                                </div>
+                                <div class="access-level-description">
+                                    Available for download now. These usually include project requirements, specifications, and examples.
+                                </div>
+                            </div>
+                            <div class="access-level-card private">
+                                <div class="access-level-header private">
+                                    <i class="fas fa-lock"></i>
+                                    <h6>Private Files</h6>
+                                </div>
+                                <div class="access-level-description">
+                                    Available after hiring. These contain sensitive project materials and detailed documentation.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="files-preview">
+                        <div class="files-list">
+                            {% for file in project.files.all %}
+                            <div class="file-item">
+                                <!-- Enhanced Access Level Badge -->
+                                <div class="file-access-badge {% if file.access_level == 'public' %}access-public{% else %}access-private{% endif %}">
+                                    {% if file.access_level == 'public' %}
+                                        <i class="fas fa-unlock-alt"></i> Download Now
+                                    {% else %}
+                                        <i class="fas fa-lock"></i> After Hiring
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="file-icon file-type-{{ file.file_type|default:'other' }}">
+                                    {% if file.file_type == 'document' %}
+                                        <i class="fas fa-file-alt"></i>
+                                    {% elif file.file_type == 'image' %}
+                                        <i class="fas fa-image"></i>
+                                    {% elif file.file_type == 'video' %}
+                                        <i class="fas fa-video"></i>
+                                    {% elif file.file_type == 'archive' %}
+                                        <i class="fas fa-file-archive"></i>
+                                    {% elif file.file_type == 'spreadsheet' %}
+                                        <i class="fas fa-file-excel"></i>
+                                    {% elif file.file_type == 'presentation' %}
+                                        <i class="fas fa-file-powerpoint"></i>
+                                    {% else %}
+                                        <i class="fas fa-file"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="file-info">
+                                    <h6>{{ file.original_filename|truncatechars:25 }}</h6>
+                                    <div class="file-meta">
+                                        {% if file.get_file_size_display %}{{ file.get_file_size_display }}{% else %}Unknown size{% endif %} • {{ file.uploaded_at|date:"M d, Y" }}
+                                        {% if file.priority == 'high' or file.priority == 'critical' %}
+                                        <br><strong style="color: #dc2626;">{{ file.priority|title }} Priority</strong>
+                                        {% endif %}
+                                        {% if file.description %}
+                                        <br><em>{{ file.description|truncatechars:35 }}</em>
+                                        {% endif %}
+                                    </div>
+                                    {% if file.category %}
+                                    <span class="file-category-badge">{{ file.category|title }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="bidding-notice">
+                            <div class="bidding-notice-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div class="bidding-notice-text">
+                                <strong>Get Better Access to Project Materials</strong><br>
+                                Public files are available for download now to help you understand the project. 
+                                Private files with detailed specifications will be accessible once you're hired.
+                                <br><br>
+                                <a href="{% url 'Portal:project_file_manager' project.id %}" class="btn" style="margin-top: 10px; font-size: 0.9rem; padding: 8px 16px;">
+                                    <i class="fas fa-eye"></i>
+                                    View & Download Available Files
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {% endif %}
 
                 <!-- Payment Section for Accepted Bid -->
@@ -901,8 +1506,9 @@
     </div>
 
     <script>
-        // Add smooth animations
+        // Enhanced animations
         document.addEventListener('DOMContentLoaded', function() {
+            // Animate bid items
             const bidItems = document.querySelectorAll('.bid-item');
             bidItems.forEach((item, index) => {
                 item.style.opacity = '0';
@@ -912,6 +1518,30 @@
                     item.style.opacity = '1';
                     item.style.transform = 'translateY(0)';
                 }, index * 100);
+            });
+
+            // Animate file items
+            const fileItems = document.querySelectorAll('.file-item');
+            fileItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                setTimeout(() => {
+                    item.style.transition = 'all 0.3s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, index * 50 + 200);
+            });
+
+            // Animate file stats
+            const statItems = document.querySelectorAll('.file-stat-item');
+            statItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    item.style.transition = 'all 0.4s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'scale(1)';
+                }, index * 100 + 300);
             });
         });
     </script>

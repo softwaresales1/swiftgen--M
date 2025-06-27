@@ -1,0 +1,211 @@
+{% extends "Portal/base.html" %}
+{% load static %}
+
+{% block title %}My Workspace - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;">
+    <div class="container py-5">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-lg border-0" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-body p-5">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h1 class="display-5 fw-bold text-primary mb-2">
+                                    <i class="fas fa-briefcase me-3"></i>My Workspace
+                                </h1>
+                                <p class="lead text-muted mb-0">Manage your active projects and deliverables</p>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-success fs-6 px-3 py-2">
+                                    <i class="fas fa-project-diagram me-2"></i>{{ active_projects|length }} Active Project{{ active_projects|length|pluralize }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Projects Section -->
+        {% if active_projects %}
+        <div class="row">
+            {% for project_data in active_projects %}
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="card h-100 shadow-lg border-0" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95); transition: all 0.3s ease;">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #4CAF50, #45a049); border-radius: 15px 15px 0 0;">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="card-title mb-1 fw-bold">{{ project_data.project.project_name }}</h5>
+                                <small class="opacity-75">
+                                    <i class="fas fa-calendar-alt me-1"></i>Due: {{ project_data.project.deadline|date:"M d, Y" }}
+                                </small>
+                            </div>
+                            <span class="badge bg-light text-dark">
+                                ${{ project_data.bid.bid_amount }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        <p class="text-muted mb-3" style="font-size: 0.9rem;">
+                            {{ project_data.project.description|truncatechars:100 }}
+                        </p>
+                        
+                        <!-- Project Stats -->
+                        <div class="row text-center mb-3">
+                            <div class="col-4">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-file-alt text-primary"></i>
+                                    <div class="small fw-bold">{{ project_data.files_count }}</div>
+                                    <div class="small text-muted">Files</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 bg-light rounded">
+                                    <i class="fas fa-upload text-info"></i>
+                                    <div class="small fw-bold">{{ project_data.submissions_count }}</div>
+                                    <div class="small text-muted">Submissions</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 bg-light rounded">
+                                    {% if project_data.payment_completed %}
+                                    <i class="fas fa-check-circle text-success"></i>
+                                    <div class="small fw-bold text-success">Paid</div>
+                                    {% else %}
+                                    <i class="fas fa-clock text-warning"></i>
+                                    <div class="small fw-bold text-warning">Pending</div>
+                                    {% endif %}
+                                    <div class="small text-muted">Payment</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Access Status -->
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-2">Access Permissions:</small>
+                            <div class="d-flex gap-2">
+                                {% if project_data.access.can_download_files %}
+                                <span class="badge bg-success-subtle text-success border border-success">
+                                    <i class="fas fa-download me-1"></i>Files
+                                </span>
+                                {% endif %}
+                                {% if project_data.access.can_submit_work %}
+                                <span class="badge bg-primary-subtle text-primary border border-primary">
+                                    <i class="fas fa-upload me-1"></i>Submit
+                                </span>
+                                {% endif %}
+                                {% if project_data.access.can_communicate %}
+                                <span class="badge bg-info-subtle text-info border border-info">
+                                    <i class="fas fa-comments me-1"></i>Chat
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer bg-transparent border-0 p-4 pt-0">
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'Portal:project_workspace' project_data.project.id %}" 
+                               class="btn btn-primary flex-fill btn-sm rounded-pill">
+                                <i class="fas fa-external-link-alt me-2"></i>Open Workspace
+                            </a>
+                            {% if project_data.access.can_download_files %}
+                            <a href="{% url 'Portal:project_file_manager' project_data.project.id %}" 
+                               class="btn btn-outline-secondary btn-sm rounded-pill">
+                                <i class="fas fa-folder-open"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- No Projects State -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-lg border-0" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-body text-center p-5">
+                        <div class="mb-4">
+                            <i class="fas fa-briefcase" style="font-size: 4rem; color: #ddd;"></i>
+                        </div>
+                        <h3 class="text-muted mb-3">No Active Projects</h3>
+                        <p class="text-muted mb-4">You don't have any active projects yet. Start bidding on projects to build your workspace!</p>
+                        <a href="{% url 'Portal:browse_projects' %}" class="btn btn-primary btn-lg rounded-pill px-5">
+                            <i class="fas fa-search me-2"></i>Browse Projects
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Quick Actions -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow-lg border-0" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-body p-4">
+                        <h5 class="card-title mb-3">
+                            <i class="fas fa-bolt text-warning me-2"></i>Quick Actions
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-3 mb-2">
+                                <a href="{% url 'Portal:browse_projects' %}" class="btn btn-outline-primary w-100 rounded-pill">
+                                    <i class="fas fa-search me-2"></i>Find Work
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <a href="{% url 'Portal:payment_dashboard' %}" class="btn btn-outline-success w-100 rounded-pill">
+                                    <i class="fas fa-credit-card me-2"></i>Payments
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <a href="{% url 'Portal:profile' user.username %}" class="btn btn-outline-info w-100 rounded-pill">
+                                    <i class="fas fa-user me-2"></i>Profile
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <a href="{% url 'Portal:home' %}" class="btn btn-outline-secondary w-100 rounded-pill">
+                                    <i class="fas fa-home me-2"></i>Dashboard
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+
+.btn {
+    font-weight: 500;
+}
+
+.bg-success-subtle {
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
+.bg-primary-subtle {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.bg-info-subtle {
+    background-color: rgba(13, 202, 240, 0.1);
+}
+</style>
+{% endblock %}

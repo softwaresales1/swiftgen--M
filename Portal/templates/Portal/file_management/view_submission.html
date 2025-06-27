@@ -1,0 +1,388 @@
+{% extends "Portal/base.html" %}
+{% load static %}
+
+{% block title %}{{ submission.submission_title }} - Submission - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;">
+    <div class="container py-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb bg-transparent">
+                <li class="breadcrumb-item">
+                    {% if is_owner %}
+                    <a href="{% url 'Portal:myprojects' %}" class="text-white">
+                        <i class="fas fa-folder me-1"></i>My Projects
+                    </a>
+                    {% else %}
+                    <a href="{% url 'Portal:freelancer_workspace' %}" class="text-white">
+                        <i class="fas fa-briefcase me-1"></i>Workspace
+                    </a>
+                    {% endif %}
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'Portal:project_detail' project.id %}" class="text-white">{{ project.project_name }}</a>
+                </li>
+                <li class="breadcrumb-item active text-white-50" aria-current="page">Submission</li>
+            </ol>
+        </nav>
+
+        <!-- Submission Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-lg border-0" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h1 class="h3 fw-bold text-primary mb-2">
+                                    <i class="fas fa-file-upload me-2"></i>{{ submission.submission_title }}
+                                </h1>
+                                <p class="text-muted mb-3">{{ submission.description }}</p>
+                                <div class="d-flex gap-3 align-items-center flex-wrap">
+                                    <span class="badge 
+                                        {% if submission.status == 'approved' %}bg-success
+                                        {% elif submission.status == 'submitted' %}bg-primary
+                                        {% elif submission.status == 'revision_requested' %}bg-warning
+                                        {% elif submission.status == 'rejected' %}bg-danger
+                                        {% else %}bg-secondary{% endif %} fs-6 px-3 py-2">
+                                        {% if submission.status == 'approved' %}
+                                        <i class="fas fa-check-circle me-1"></i>Approved
+                                        {% elif submission.status == 'submitted' %}
+                                        <i class="fas fa-clock me-1"></i>Under Review
+                                        {% elif submission.status == 'revision_requested' %}
+                                        <i class="fas fa-edit me-1"></i>Revision Requested
+                                        {% elif submission.status == 'rejected' %}
+                                        <i class="fas fa-times-circle me-1"></i>Rejected
+                                        {% else %}
+                                        <i class="fas fa-file me-1"></i>{{ submission.status|title }}
+                                        {% endif %}
+                                    </span>
+                                    <span class="text-muted">
+                                        <i class="fas fa-user me-1"></i>{{ submission.freelancer.user.get_full_name|default:submission.freelancer.user.username }}
+                                    </span>
+                                    <span class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>{{ submission.submitted_at|date:"M d, Y H:i" }}
+                                    </span>
+                                    <span class="text-muted">
+                                        <i class="fas fa-hashtag me-1"></i>v{{ submission.version_number }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                {% if is_owner and submission.status == 'submitted' %}
+                                <a href="{% url 'Portal:review_submission' submission.id %}" class="btn btn-success rounded-pill">
+                                    <i class="fas fa-gavel me-2"></i>Review Submission
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Submission Files -->
+            <div class="col-lg-8 mb-4">
+                <div class="card shadow-lg border-0" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #4CAF50, #45a049); border-radius: 15px 15px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-folder-open me-2"></i>Submitted Files ({{ submission_files|length }})
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        {% if submission_files %}
+                        <div class="row">
+                            {% for file in submission_files %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card border h-100 file-card" style="transition: all 0.3s ease;">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-start">
+                                            <div class="me-3">
+                                                {% if file.file_type == 'image' or 'image' in file.file_type %}
+                                                <i class="fas fa-image text-info" style="font-size: 2rem;"></i>
+                                                {% elif file.file_type == 'video' or 'video' in file.file_type %}
+                                                <i class="fas fa-video text-danger" style="font-size: 2rem;"></i>
+                                                {% elif 'pdf' in file.file_type %}
+                                                <i class="fas fa-file-pdf text-danger" style="font-size: 2rem;"></i>
+                                                {% elif 'zip' in file.file_type or 'rar' in file.file_type %}
+                                                <i class="fas fa-file-archive text-warning" style="font-size: 2rem;"></i>
+                                                {% elif 'word' in file.file_type %}
+                                                <i class="fas fa-file-word text-primary" style="font-size: 2rem;"></i>
+                                                {% else %}
+                                                <i class="fas fa-file text-secondary" style="font-size: 2rem;"></i>
+                                                {% endif %}
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="card-title mb-1">{{ file.original_filename }}</h6>
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <small class="text-muted">{{ file.get_file_size_display }}</small>
+                                                    <span class="badge bg-light text-dark">{{ file.file_type|default:"File" }}</span>
+                                                </div>
+                                                <div class="d-flex gap-2">
+                                                    <a href="{% url 'Portal:download_submission_file' file.id %}" 
+                                                       class="btn btn-sm btn-primary rounded-pill flex-grow-1">
+                                                        <i class="fas fa-download me-1"></i>Download
+                                                    </a>
+                                                    <button class="btn btn-sm btn-outline-info rounded-pill" onclick="previewFile('{{ file.original_filename }}', '{{ file.file_type }}')">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Download All Button -->
+                        {% if submission_files|length > 1 %}
+                        <div class="text-center mt-4">
+                            <button class="btn btn-outline-primary btn-lg rounded-pill" onclick="downloadAllFiles()">
+                                <i class="fas fa-download me-2"></i>Download All Files
+                            </button>
+                        </div>
+                        {% endif %}
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-file-upload text-muted" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted mt-3">No Files Submitted</h5>
+                            <p class="text-muted">This submission doesn't contain any files.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Client Feedback Section -->
+                {% if submission.client_feedback or submission.revision_notes %}
+                <div class="card shadow-lg border-0 mt-4" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" 
+                         style="background: linear-gradient(45deg, 
+                         {% if submission.status == 'approved' %}#4CAF50, #45a049
+                         {% elif submission.status == 'revision_requested' %}#FF9800, #F57C00
+                         {% else %}#2196F3, #1976D2{% endif %}); 
+                         border-radius: 15px 15px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-comment-dots me-2"></i>Client Feedback
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        {% if submission.client_feedback %}
+                        <div class="mb-3">
+                            <h6 class="text-muted mb-2">General Feedback:</h6>
+                            <p class="mb-0">{{ submission.client_feedback }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if submission.revision_notes %}
+                        <div class="alert alert-warning">
+                            <h6><i class="fas fa-edit me-2"></i>Revision Notes:</h6>
+                            <p class="mb-0">{{ submission.revision_notes }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if submission.reviewed_at %}
+                        <div class="text-muted small mt-3">
+                            <i class="fas fa-clock me-1"></i>Reviewed on {{ submission.reviewed_at|date:"M d, Y H:i" }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="col-lg-4">
+                <!-- Submission Info -->
+                <div class="card shadow-lg border-0 mb-4" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #2196F3, #1976D2); border-radius: 15px 15px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-info-circle me-2"></i>Submission Details
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <label class="small text-muted">Project</label>
+                            <div class="fw-bold">{{ project.project_name }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Freelancer</label>
+                            <div class="fw-bold">{{ submission.freelancer.user.get_full_name|default:submission.freelancer.user.username }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Submitted</label>
+                            <div class="fw-bold">{{ submission.submitted_at|date:"M d, Y H:i" }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Version</label>
+                            <div class="fw-bold">{{ submission.version_number }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Files Count</label>
+                            <div class="fw-bold">{{ submission_files|length }} file{{ submission_files|length|pluralize }}</div>
+                        </div>
+                        {% if submission.is_final %}
+                        <div class="alert alert-success py-2">
+                            <i class="fas fa-star me-2"></i>Final Submission
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Project Timeline -->
+                <div class="card shadow-lg border-0 mb-4" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #9C27B0, #7B1FA2); border-radius: 15px 15px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-timeline me-2"></i>Timeline
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-marker bg-primary"></div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">Submission Created</h6>
+                                    <small class="text-muted">{{ submission.created_at|date:"M d, Y H:i" }}</small>
+                                </div>
+                            </div>
+                            {% if submission.submitted_at %}
+                            <div class="timeline-item">
+                                <div class="timeline-marker bg-success"></div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">Work Submitted</h6>
+                                    <small class="text-muted">{{ submission.submitted_at|date:"M d, Y H:i" }}</small>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% if submission.reviewed_at %}
+                            <div class="timeline-item">
+                                <div class="timeline-marker 
+                                    {% if submission.status == 'approved' %}bg-success
+                                    {% elif submission.status == 'revision_requested' %}bg-warning
+                                    {% else %}bg-danger{% endif %}"></div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">Client Review</h6>
+                                    <small class="text-muted">{{ submission.reviewed_at|date:"M d, Y H:i" }}</small>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card shadow-lg border-0" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-body p-4">
+                        <h6 class="card-title mb-3">
+                            <i class="fas fa-bolt text-warning me-2"></i>Quick Actions
+                        </h6>
+                        <div class="d-grid gap-2">
+                            {% if is_owner %}
+                            <a href="{% url 'Portal:project_file_manager' project.id %}" 
+                               class="btn btn-outline-primary rounded-pill">
+                                <i class="fas fa-folder-open me-2"></i>File Manager
+                            </a>
+                            {% if submission.status == 'submitted' %}
+                            <a href="{% url 'Portal:review_submission' submission.id %}" 
+                               class="btn btn-success rounded-pill">
+                                <i class="fas fa-gavel me-2"></i>Review Work
+                            </a>
+                            {% endif %}
+                            <a href="{% url 'Portal:myprojects' %}" 
+                               class="btn btn-outline-secondary rounded-pill">
+                                <i class="fas fa-arrow-left me-2"></i>My Projects
+                            </a>
+                            {% else %}
+                            <a href="{% url 'Portal:project_workspace' project.id %}" 
+                               class="btn btn-outline-primary rounded-pill">
+                                <i class="fas fa-eye me-2"></i>Project Workspace
+                            </a>
+                            {% if submission.status == 'revision_requested' %}
+                            <a href="{% url 'Portal:submit_work' project.id %}" 
+                               class="btn btn-warning rounded-pill">
+                                <i class="fas fa-edit me-2"></i>Submit Revision
+                            </a>
+                            {% endif %}
+                            <a href="{% url 'Portal:freelancer_workspace' %}" 
+                               class="btn btn-outline-secondary rounded-pill">
+                                <i class="fas fa-arrow-left me-2"></i>Workspace
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.file-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e9ecef;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -25px;
+    top: 5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px #e9ecef;
+}
+
+.timeline-content {
+    background: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border-left: 3px solid #007bff;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.alert {
+    border-radius: 10px;
+}
+</style>
+
+<script>
+function previewFile(filename, filetype) {
+    alert(`File Preview: ${filename}\nType: ${filetype}\n\nFull preview functionality would be implemented here.`);
+}
+
+function downloadAllFiles() {
+    // This would trigger downloading all files
+    const files = document.querySelectorAll('.file-card a[href*="download-submission"]');
+    files.forEach((link, index) => {
+        setTimeout(() => {
+            link.click();
+        }, index * 500); // Stagger downloads
+    });
+}
+</script>
+{% endblock %}

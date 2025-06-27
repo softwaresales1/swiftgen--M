@@ -1,0 +1,324 @@
+{% extends "Portal/base.html" %}
+{% load static %}
+
+{% block title %}{{ project.project_name }} - Workspace - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;">
+    <div class="container py-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb bg-transparent">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'Portal:freelancer_workspace' %}" class="text-white">
+                        <i class="fas fa-briefcase me-1"></i>Workspace
+                    </a>
+                </li>
+                <li class="breadcrumb-item active text-white-50" aria-current="page">{{ project.project_name }}</li>
+            </ol>
+        </nav>
+
+        <!-- Project Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-lg border-0" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h1 class="h3 fw-bold text-primary mb-2">
+                                    <i class="fas fa-project-diagram me-2"></i>{{ project.project_name }}
+                                </h1>
+                                <p class="text-muted mb-2">{{ project.description }}</p>
+                                <div class="d-flex gap-3 align-items-center">
+                                    <span class="badge bg-primary">{{ project.project_type }}</span>
+                                    <span class="text-muted">
+                                        <i class="fas fa-calendar-alt me-1"></i>Due: {{ project.deadline|date:"M d, Y" }}
+                                    </span>
+                                    <span class="text-muted">
+                                        <i class="fas fa-user me-1"></i>{{ project.leader.user.get_full_name|default:project.leader.user.username }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                {% if payment %}
+                                <div class="alert alert-success mb-2 py-2">
+                                    <i class="fas fa-check-circle me-2"></i>Payment Completed
+                                    <div class="small">Access Granted</div>
+                                </div>
+                                {% else %}
+                                <div class="alert alert-warning mb-2 py-2">
+                                    <i class="fas fa-clock me-2"></i>Payment Pending
+                                    <div class="small">Limited Access</div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Left Column - Project Files & Requirements -->
+            <div class="col-lg-8 mb-4">
+                <!-- Project Files Section -->
+                <div class="card shadow-lg border-0 mb-4" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #2196F3, #1976D2); border-radius: 15px 15px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-folder-open me-2"></i>Project Files & Requirements
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        {% if project_files %}
+                        <div class="row">
+                            {% for file in project_files %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card border h-100">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-start">
+                                            <div class="me-3">
+                                                {% if file.file_type == 'image' %}
+                                                <i class="fas fa-image text-info" style="font-size: 1.5rem;"></i>
+                                                {% elif file.file_type == 'document' %}
+                                                <i class="fas fa-file-alt text-primary" style="font-size: 1.5rem;"></i>
+                                                {% elif file.file_type == 'video' %}
+                                                <i class="fas fa-video text-danger" style="font-size: 1.5rem;"></i>
+                                                {% else %}
+                                                <i class="fas fa-file text-secondary" style="font-size: 1.5rem;"></i>
+                                                {% endif %}
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="card-title mb-1">{{ file.original_filename }}</h6>
+                                                <p class="small text-muted mb-2">{{ file.description|default:"No description" }}</p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <small class="text-muted">{{ file.get_file_size_display }}</small>
+                                                    {% if freelancer_access.can_download_files %}
+                                                    <a href="{% url 'Portal:download_file' file.id %}" 
+                                                       class="btn btn-sm btn-outline-primary rounded-pill">
+                                                        <i class="fas fa-download me-1"></i>Download
+                                                    </a>
+                                                    {% else %}
+                                                    <span class="badge bg-warning">
+                                                        <i class="fas fa-lock me-1"></i>Locked
+                                                    </span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-folder-open text-muted" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted mt-3">No Files Available</h5>
+                            <p class="text-muted">The client hasn't uploaded any project files yet.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- My Submissions Section -->
+                <div class="card shadow-lg border-0" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #4CAF50, #45a049); border-radius: 15px 15px 0 0;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0 fw-bold">
+                                <i class="fas fa-upload me-2"></i>My Submissions
+                            </h5>
+                            {% if freelancer_access.can_submit_work and can_work %}
+                            <a href="{% url 'Portal:submit_work' project.id %}" class="btn btn-light btn-sm rounded-pill">
+                                <i class="fas fa-plus me-1"></i>New Submission
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        {% if my_submissions %}
+                        {% for submission in my_submissions %}
+                        <div class="card border mb-3">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="card-title mb-1">{{ submission.submission_title }}</h6>
+                                        <p class="text-muted small mb-2">{{ submission.description|truncatechars:100 }}</p>
+                                        <div class="d-flex gap-2 align-items-center">
+                                            {% if submission.status == 'draft' %}
+                                            <span class="badge bg-secondary">Draft</span>
+                                            {% elif submission.status == 'submitted' %}
+                                            <span class="badge bg-primary">Submitted</span>
+                                            {% elif submission.status == 'approved' %}
+                                            <span class="badge bg-success">Approved</span>
+                                            {% elif submission.status == 'revision_requested' %}
+                                            <span class="badge bg-warning">Revision Requested</span>
+                                            {% elif submission.status == 'rejected' %}
+                                            <span class="badge bg-danger">Rejected</span>
+                                            {% endif %}
+                                            <small class="text-muted">v{{ submission.version_number }}</small>
+                                            <small class="text-muted">{{ submission.created_at|date:"M d, Y H:i" }}</small>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="{% url 'Portal:view_submission' submission.id %}" 
+                                           class="btn btn-sm btn-outline-primary rounded-pill">
+                                            <i class="fas fa-eye me-1"></i>View
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-upload text-muted" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted mt-3">No Submissions Yet</h5>
+                            <p class="text-muted mb-3">Ready to submit your work?</p>
+                            {% if freelancer_access.can_submit_work and can_work %}
+                            <a href="{% url 'Portal:submit_work' project.id %}" class="btn btn-primary rounded-pill">
+                                <i class="fas fa-plus me-2"></i>Create First Submission
+                            </a>
+                            {% else %}
+                            <p class="text-warning">
+                                <i class="fas fa-lock me-1"></i>
+                                {% if not payment %}
+                                Payment required to submit work
+                                {% else %}
+                                Submission access not granted
+                                {% endif %}
+                            </p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Project Info & Actions -->
+            <div class="col-lg-4">
+                <!-- Project Status -->
+                <div class="card shadow-lg border-0 mb-4" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #FF9800, #F57C00); border-radius: 15px 15px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-info-circle me-2"></i>Project Status
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <label class="small text-muted">Current Status</label>
+                            <div class="fw-bold text-capitalize">{{ project.project_status|default:"Posted" }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Budget</label>
+                            <div class="fw-bold">${{ project.budget_min }} - ${{ project.budget_max }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Experience Level</label>
+                            <div class="fw-bold">{{ project.experience_level }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Duration</label>
+                            <div class="fw-bold">{{ project.project_duration }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Access Permissions -->
+                <div class="card shadow-lg border-0 mb-4" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #9C27B0, #7B1FA2); border-radius: 15px 15px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-key me-2"></i>My Access
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-2">
+                            {% if freelancer_access.can_download_files %}
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <span class="text-success">Download Files</span>
+                            {% else %}
+                            <i class="fas fa-times-circle text-danger me-2"></i>
+                            <span class="text-muted">Download Files</span>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            {% if freelancer_access.can_submit_work %}
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <span class="text-success">Submit Work</span>
+                            {% else %}
+                            <i class="fas fa-times-circle text-danger me-2"></i>
+                            <span class="text-muted">Submit Work</span>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex align-items-center">
+                            {% if freelancer_access.can_communicate %}
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <span class="text-success">Communication</span>
+                            {% else %}
+                            <i class="fas fa-times-circle text-danger me-2"></i>
+                            <span class="text-muted">Communication</span>
+                            {% endif %}
+                        </div>
+                        {% if freelancer_access.access_granted_at %}
+                        <div class="mt-3 pt-3 border-top">
+                            <small class="text-muted">
+                                Access granted: {{ freelancer_access.access_granted_at|date:"M d, Y H:i" }}
+                            </small>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card shadow-lg border-0" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-body p-4">
+                        <h6 class="card-title mb-3">
+                            <i class="fas fa-bolt text-warning me-2"></i>Quick Actions
+                        </h6>
+                        <div class="d-grid gap-2">
+                            {% if freelancer_access.can_download_files %}
+                            <a href="{% url 'Portal:project_file_manager' project.id %}" 
+                               class="btn btn-outline-primary rounded-pill">
+                                <i class="fas fa-folder-open me-2"></i>File Manager
+                            </a>
+                            {% endif %}
+                            {% if freelancer_access.can_submit_work and can_work %}
+                            <a href="{% url 'Portal:submit_work' project.id %}" 
+                               class="btn btn-outline-success rounded-pill">
+                                <i class="fas fa-upload me-2"></i>Submit Work
+                            </a>
+                            {% endif %}
+                            <a href="{% url 'Portal:project_detail' project.id %}" 
+                               class="btn btn-outline-info rounded-pill">
+                                <i class="fas fa-eye me-2"></i>View Project
+                            </a>
+                            <a href="{% url 'Portal:freelancer_workspace' %}" 
+                               class="btn btn-outline-secondary rounded-pill">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Workspace
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card:hover {
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.alert {
+    border-radius: 10px;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,407 @@
+{% extends "Portal/base.html" %}
+{% load static %}
+
+{% block title %}Review Submission - {{ submission.submission_title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh;">
+    <div class="container py-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb bg-transparent">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'Portal:myprojects' %}" class="text-white">
+                        <i class="fas fa-folder me-1"></i>My Projects
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'Portal:project_detail' project.id %}" class="text-white">{{ project.project_name }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'Portal:view_submission' submission.id %}" class="text-white">Submission</a>
+                </li>
+                <li class="breadcrumb-item active text-white-50" aria-current="page">Review</li>
+            </ol>
+        </nav>
+
+        <!-- Review Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-lg border-0" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-body p-4">
+                        <h1 class="h3 fw-bold text-primary mb-2">
+                            <i class="fas fa-gavel me-2"></i>Review Submission
+                        </h1>
+                        <p class="text-muted mb-3">Review and provide feedback for <strong>{{ submission.submission_title }}</strong></p>
+                        <div class="d-flex gap-3 align-items-center flex-wrap">
+                            <span class="badge bg-primary fs-6 px-3 py-2">
+                                <i class="fas fa-clock me-1"></i>Awaiting Review
+                            </span>
+                            <span class="text-muted">
+                                <i class="fas fa-user me-1"></i>{{ submission.freelancer.user.get_full_name|default:submission.freelancer.user.username }}
+                            </span>
+                            <span class="text-muted">
+                                <i class="fas fa-calendar me-1"></i>Submitted {{ submission.submitted_at|date:"M d, Y H:i" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Left Column - Submission Content -->
+            <div class="col-lg-8 mb-4">
+                <!-- Submission Details -->
+                <div class="card shadow-lg border-0 mb-4" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #2196F3, #1976D2); border-radius: 15px 15px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-file-alt me-2"></i>Submission Details
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold mb-2">{{ submission.submission_title }}</h6>
+                        <p class="text-muted mb-4">{{ submission.description }}</p>
+                        
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <div class="p-3 bg-light rounded">
+                                    <i class="fas fa-hashtag text-primary" style="font-size: 1.5rem;"></i>
+                                    <div class="fw-bold mt-2">v{{ submission.version_number }}</div>
+                                    <div class="small text-muted">Version</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="p-3 bg-light rounded">
+                                    <i class="fas fa-file text-info" style="font-size: 1.5rem;"></i>
+                                    <div class="fw-bold mt-2">{{ submission_files|length }}</div>
+                                    <div class="small text-muted">Files</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="p-3 bg-light rounded">
+                                    <i class="fas fa-calendar text-success" style="font-size: 1.5rem;"></i>
+                                    <div class="fw-bold mt-2">{{ submission.submitted_at|date:"M d" }}</div>
+                                    <div class="small text-muted">Submitted</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="p-3 bg-light rounded">
+                                    {% if submission.is_final %}
+                                    <i class="fas fa-star text-warning" style="font-size: 1.5rem;"></i>
+                                    <div class="fw-bold mt-2">Final</div>
+                                    {% else %}
+                                    <i class="fas fa-edit text-secondary" style="font-size: 1.5rem;"></i>
+                                    <div class="fw-bold mt-2">Draft</div>
+                                    {% endif %}
+                                    <div class="small text-muted">Status</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submitted Files -->
+                <div class="card shadow-lg border-0 mb-4" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #4CAF50, #45a049); border-radius: 15px 15px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-folder-open me-2"></i>Submitted Files ({{ submission_files|length }})
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        {% if submission_files %}
+                        <div class="row">
+                            {% for file in submission_files %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card border h-100 file-card" style="transition: all 0.3s ease;">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                {% if file.file_type == 'image' or 'image' in file.file_type %}
+                                                <i class="fas fa-image text-info" style="font-size: 2rem;"></i>
+                                                {% elif file.file_type == 'video' or 'video' in file.file_type %}
+                                                <i class="fas fa-video text-danger" style="font-size: 2rem;"></i>
+                                                {% elif 'pdf' in file.file_type %}
+                                                <i class="fas fa-file-pdf text-danger" style="font-size: 2rem;"></i>
+                                                {% elif 'zip' in file.file_type or 'rar' in file.file_type %}
+                                                <i class="fas fa-file-archive text-warning" style="font-size: 2rem;"></i>
+                                                {% else %}
+                                                <i class="fas fa-file text-secondary" style="font-size: 2rem;"></i>
+                                                {% endif %}
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">{{ file.original_filename }}</h6>
+                                                <small class="text-muted d-block mb-2">{{ file.get_file_size_display }}</small>
+                                                <a href="{% url 'Portal:download_submission_file' file.id %}" 
+                                                   class="btn btn-sm btn-outline-primary rounded-pill">
+                                                    <i class="fas fa-download me-1"></i>Download
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-file-upload text-muted" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted mt-3">No Files Submitted</h5>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Review Form -->
+                <div class="card shadow-lg border-0" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #FF9800, #F57C00); border-radius: 15px 15px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-comment-dots me-2"></i>Provide Your Review
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post" id="reviewForm">
+                            {% csrf_token %}
+                            
+                            <!-- Feedback Textarea -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Your Feedback *</label>
+                                <textarea name="feedback" class="form-control" rows="5" 
+                                          placeholder="Provide detailed feedback about the submitted work. Be specific about what you liked and any changes needed." required></textarea>
+                                <div class="form-text">Your feedback will be shared with the freelancer.</div>
+                            </div>
+
+                            <!-- Revision Notes (shown when requesting revision) -->
+                            <div class="mb-4" id="revisionNotesSection" style="display: none;">
+                                <label class="form-label fw-bold">Revision Notes</label>
+                                <textarea name="revision_notes" class="form-control" rows="3" 
+                                          placeholder="Specific changes or improvements needed..."></textarea>
+                                <div class="form-text">Detailed notes about what needs to be changed or improved.</div>
+                            </div>
+
+                            <!-- Quick Feedback Options -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Quick Feedback (Optional)</label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="quality" name="quick_feedback" value="quality">
+                                            <label class="form-check-label" for="quality">High Quality Work</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="communication" name="quick_feedback" value="communication">
+                                            <label class="form-check-label" for="communication">Good Communication</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="timeline" name="quick_feedback" value="timeline">
+                                            <label class="form-check-label" for="timeline">Met Timeline</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="requirements" name="quick_feedback" value="requirements">
+                                            <label class="form-check-label" for="requirements">Followed Requirements</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="creative" name="quick_feedback" value="creative">
+                                            <label class="form-check-label" for="creative">Creative Solution</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="professional" name="quick_feedback" value="professional">
+                                            <label class="form-check-label" for="professional">Professional Delivery</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex gap-3 justify-content-end">
+                                <button type="button" class="btn btn-outline-secondary rounded-pill" onclick="history.back()">
+                                    <i class="fas fa-arrow-left me-2"></i>Cancel
+                                </button>
+                                <button type="submit" name="action" value="request_revision" class="btn btn-warning btn-lg rounded-pill px-4" id="revisionBtn">
+                                    <i class="fas fa-edit me-2"></i>Request Revision
+                                </button>
+                                <button type="submit" name="action" value="approve" class="btn btn-success btn-lg rounded-pill px-4" id="approveBtn">
+                                    <i class="fas fa-check-circle me-2"></i>Approve Work
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="col-lg-4">
+                <!-- Project Info -->
+                <div class="card shadow-lg border-0 mb-4" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #9C27B0, #7B1FA2); border-radius: 15px 15px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-info-circle me-2"></i>Project Details
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <label class="small text-muted">Project Name</label>
+                            <div class="fw-bold">{{ project.project_name }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Freelancer</label>
+                            <div class="fw-bold">{{ submission.freelancer.user.get_full_name|default:submission.freelancer.user.username }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Deadline</label>
+                            <div class="fw-bold">{{ project.deadline|date:"M d, Y" }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Budget</label>
+                            <div class="fw-bold">${{ project.budget_min }} - ${{ project.budget_max }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review Guidelines -->
+                <div class="card shadow-lg border-0 mb-4" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-header border-0 bg-gradient text-white p-4" style="background: linear-gradient(45deg, #607D8B, #455A64); border-radius: 15px 15px 0 0;">
+                        <h5 class="card-title mb-0 fw-bold">
+                            <i class="fas fa-clipboard-check me-2"></i>Review Guidelines
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <h6><i class="fas fa-check-circle text-success me-2"></i>Before Approving</h6>
+                            <ul class="small text-muted mb-0">
+                                <li>Test all deliverables thoroughly</li>
+                                <li>Verify requirements are met</li>
+                                <li>Check file quality and completeness</li>
+                                <li>Ensure work meets your standards</li>
+                            </ul>
+                        </div>
+                        <div class="mb-3">
+                            <h6><i class="fas fa-edit text-warning me-2"></i>Requesting Revisions</h6>
+                            <ul class="small text-muted mb-0">
+                                <li>Be specific about changes needed</li>
+                                <li>Provide clear, actionable feedback</li>
+                                <li>Reference original requirements</li>
+                                <li>Be constructive and professional</li>
+                            </ul>
+                        </div>
+                        <div class="alert alert-info py-2">
+                            <small><i class="fas fa-info-circle me-1"></i>Approved work cannot be undone. Review carefully!</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card shadow-lg border-0" style="border-radius: 15px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="card-body p-4">
+                        <h6 class="card-title mb-3">
+                            <i class="fas fa-bolt text-warning me-2"></i>Quick Actions
+                        </h6>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'Portal:view_submission' submission.id %}" 
+                               class="btn btn-outline-primary rounded-pill">
+                                <i class="fas fa-eye me-2"></i>View Full Submission
+                            </a>
+                            <a href="{% url 'Portal:project_file_manager' project.id %}" 
+                               class="btn btn-outline-info rounded-pill">
+                                <i class="fas fa-folder-open me-2"></i>Project Files
+                            </a>
+                            <a href="{% url 'Portal:project_detail' project.id %}" 
+                               class="btn btn-outline-secondary rounded-pill">
+                                <i class="fas fa-project-diagram me-2"></i>Project Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.file-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.form-check-input:checked {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.alert {
+    border-radius: 10px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const revisionBtn = document.getElementById('revisionBtn');
+    const approveBtn = document.getElementById('approveBtn');
+    const revisionNotesSection = document.getElementById('revisionNotesSection');
+    const reviewForm = document.getElementById('reviewForm');
+
+    // Show/hide revision notes when revision button is clicked
+    revisionBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        revisionNotesSection.style.display = 'block';
+        
+        // Confirm revision request
+        if (confirm('Are you sure you want to request revisions? The freelancer will be notified and can resubmit their work.')) {
+            // Change form action and submit
+            const actionInput = document.createElement('input');
+            actionInput.type = 'hidden';
+            actionInput.name = 'action';
+            actionInput.value = 'request_revision';
+            reviewForm.appendChild(actionInput);
+            reviewForm.submit();
+        } else {
+            revisionNotesSection.style.display = 'none';
+        }
+    });
+
+    // Approve work confirmation
+    approveBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        if (confirm('Are you sure you want to approve this work? This action cannot be undone and will mark the project as completed.')) {
+            // Change form action and submit
+            const actionInput = document.createElement('input');
+            actionInput.type = 'hidden';
+            actionInput.name = 'action';
+            actionInput.value = 'approve';
+            reviewForm.appendChild(actionInput);
+            reviewForm.submit();
+        }
+    });
+
+    // Validate feedback before submission
+    reviewForm.addEventListener('submit', function(e) {
+        const feedback = document.querySelector('textarea[name="feedback"]').value.trim();
+        
+        if (!feedback) {
+            e.preventDefault();
+            alert('Please provide feedback before submitting your review.');
+            return;
+        }
+
+        // Show loading state
+        const submitBtn = e.submitter;
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+            submitBtn.disabled = true;
+        }
+    });
+});
+</script>
+{% endblock %}

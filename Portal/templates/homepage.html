@@ -2,220 +2,890 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-8Y0CW3RQDR"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-8Y0CW3RQDR');
-</script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8Y0CW3RQDR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-8Y0CW3RQDR');
+    </script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
     
-    <!-- Internal Stylesheet -->
+    <!-- Enhanced Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Internal Stylesheets -->
     <link rel="stylesheet" href="{% static 'assets/css/utilities.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/style1.css' %}">
-
+    <link rel="stylesheet" href="{% static 'assets/css/spinner.css' %}">
+    
     <link rel="icon" href="{% static 'assets/img/favicon.png' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/spinner.css' %}"> <!-- Include spinner CSS -->
+    
+    <title>Swift Talent Forge | Find Top Freelancers</title>
+    
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --white: #ffffff;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --shadow-heavy: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
 
-    
-    
-    <title>Swift | Talent Forge</title>
-</head>
-<body>
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="container flex">
-            <img src="{% static '/assets/img/paean_media/sound_wave.png' %}" alt="Swift | Talent Forge" style="padding-top:10px; width: 20% !important;">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-light);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .navbar .logo img {
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar .logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .navbar nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar nav a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .navbar nav a:hover {
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .navbar nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background: var(--gradient-1);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .navbar nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section - ENHANCED BACKGROUND VISIBILITY */
+        .hero-section {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            margin-top: 80px;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('/media/home.png') center/cover no-repeat;
+            opacity: 0.8; /* INCREASED from 0.3 to 0.8 */
+            z-index: 1;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.4) 0%, rgba(118, 75, 162, 0.5) 100%); /* REDUCED opacity from 0.9/0.8 to 0.4/0.5 */
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            color: white;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            color: white; /* CHANGED: Solid white for better visibility */
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8); /* ENHANCED text shadow */
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            color: white; /* CHANGED: Solid white */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8); /* ENHANCED text shadow */
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--gradient-2);
+            color: white;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.15); /* ENHANCED visibility */
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.6); /* ENHANCED border */
+            backdrop-filter: blur(15px);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.25); /* ENHANCED hover */
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Floating Form - ENHANCED */
+        .floating-form {
+            background: rgba(255, 255, 255, 0.98); /* INCREASED opacity */
+            backdrop-filter: blur(25px); /* ENHANCED blur */
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3); /* ENHANCED shadow */
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .floating-form h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--gradient-1);
+            color: white;
+            padding: 1.2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .stats-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stats-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stats-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 4rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 6rem 2rem;
+            background: white;
+        }
+
+        .features-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .features-image {
+            position: relative;
+        }
+
+        .features-image img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .feature-cards {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .feature-card:hover {
+            transform: translateX(10px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        /* Why Choose Us Section */
+        .why-choose-section {
+            padding: 6rem 2rem;
+            background: var(--gradient-3);
+            color: white;
+            text-align: center;
+        }
+
+        .why-choose-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .why-choose-section h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .why-choose-section p {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        /* Platforms Section */
+        .platforms-section {
+            padding: 6rem 2rem;
+            background: white;
+        }
+
+        .platforms-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .platforms-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 4rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .platforms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .platform-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 2.5rem 1.5rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .platform-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+            background: white;
+        }
+
+        .platform-card h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .platform-card img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .platform-card:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-brand h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #f0f8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                text-align: center;
+            }
             
-            <!-- <h1 class="logo">Paean</h1> -->
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar .container {
+                padding: 1rem;
+            }
+            
+            .navbar nav ul {
+                display: none;
+            }
+            
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* Loading Spinner Enhancement */
+        #loader {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Enhanced Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="logo">
+                <img src="{% static 'assets/img/paean_media/sound_wave.png' %}" alt="Swift Talent Forge">
+            </div>
             <nav>
                 <ul>
-                    <li><a href="{% url 'Portal:home' %}"><strong>Home</strong></a></li>
-                    <li><a href="{% url 'Portal:signup' %}"><strong>Signup</strong></a></li>
-                    <li><a href="{% url 'Portal:login' %}" ><strong>Login</strong></a></li>
-                    <li><a href="{% url 'Portal:post_project' %}" ><strong>Post project</strong></a></li>
-                    
-                    <li><a href="{% url 'Portal:services' %}"><strong>Key Features</strong></a></li>
-                    <li><a href="{% url 'Portal:contactus' %}" ><strong>Contact Us</strong></a></li>
-                    <li><a href="{% url 'Portal:get_started' %}"><strong>tutorial</strong></a></li>
-                    
-                    
+                    <li><a href="{% url 'Portal:home' %}">Home</a></li>
+                    <li><a href="{% url 'Portal:services' %}">Features</a></li>
+                    <li><a href="{% url 'Portal:post_project' %}">Post Project</a></li>
+                    <li><a href="{% url 'Portal:contactus' %}">Contact</a></li>
+                    <li><a href="{% url 'Portal:get_started' %}">Tutorial</a></li>
+                    <li><a href="{% url 'Portal:login' %}" class="btn btn-outline" style="padding: 0.5rem 1.5rem;">Login</a></li>
+                    <li><a href="{% url 'Portal:signup' %}" class="btn btn-primary" style="padding: 0.5rem 1.5rem;">Sign Up</a></li>
                 </ul>
             </nav>
         </div>
-    </div>
-    
-    <!-- Showcase -->
-    <section class="showcase">
-        <div class="container grid">
-            <div class="showcase-text">
-                <h1><strong>Find the Perfect Freelancer for Your Project</strong></h1>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="hero-text fade-in-up">
+                <h1>Find the Perfect Freelancer for Your Project</h1>
                 <p>
-                    Welcome to SwiftTalentForge Your one-stop destination for all your content writing needs. 
-					Our goal is to connect individuals and organizations with a team of expert writers who can 
-					craft engaging and professional content for a variety of purposes.
-                    
-
+                    Welcome to SwiftTalentForge - Your one-stop destination for all your content writing needs. 
+                    Our goal is to connect individuals and organizations with a team of expert writers who can 
+                    craft engaging and professional content for a variety of purposes.
                 </p>
-                <a href="{% url 'Portal:post_project' %}" class="btn btn-outline"><strong>I want to hire</strong></a>
-                <a href="{% url 'Portal:browse_jobs' %}" class="btn btn-outline"><strong>I want to work</strong></a>
+                <div class="hero-buttons">
+                    <a href="{% url 'Portal:post_project' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        I Want to Hire
+                    </a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'Portal:browse_projects' %}" class="btn btn-outline">
+                            <i class="fas fa-search"></i>
+                            I Want to Work
+                        </a>
+                    {% else %}
+                        <a href="{% url 'Portal:signup' %}" class="btn btn-outline" onclick="alert('Please create an account to start working on projects!');">
+                            <i class="fas fa-user-plus"></i>
+                            I Want to Work
+                        </a>
+                    {% endif %}
+                </div>
             </div>
-            <div id="loader"></div> <!-- Spinner element -->
-
-            <!-- your_template.html -->
-            <div class="showcase-form card">
-                <h2>Coming soon!! Join our wait list</h2>
+            
+            <div class="floating-form fade-in-up">
+                <h2>🚀 Join Our Wait List</h2>
                 {% if message %}
-                    <p>{{ message }}</p>
+                    <div class="alert alert-success">{{ message }}</div>
                 {% endif %}
                 <form method="post" action="{% url 'Portal:join_wait_list' %}">
                     {% csrf_token %}
-                    <div class="form-control">
-                        <input type="text" name="name" placeholder="Name" required>
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Your Full Name" class="form-control" required>
                     </div>
-                    <div class="form-control">
-                        <input type="text" name="phone_number" placeholder="Phone Number" required>
+                    <div class="form-group">
+                        <input type="tel" name="phone_number" placeholder="Phone Number" class="form-control" required>
                     </div>
-                    <div class="form-control">
-                        <input type="email" name="email" placeholder="Email" required>
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Email Address" class="form-control" required>
                     </div>
-                    <input type="submit" value="Send" class="btn btn-dark">
+                    <button type="submit" class="btn btn-submit">
+                        <i class="fas fa-rocket"></i>
+                        Join Wait List
+                    </button>
                 </form>
             </div>
-            
-        </div>  
+        </div>
+        <div id="loader"></div>
     </section>
 
-    <!-- Stats -->
-    <section class="stats">
-        <div class="container">
-            <h3 class="stats-heading text-center my-1">
-
-                Swift Talent Forge- The Future of Freelancing!
-
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <h2 class="stats-title">Swift Talent Forge - The Future of Freelancing!</h2>
+            <p class="stats-subtitle">
                 Just give us the details about the work you need completed, and our 
-				freelancers will get it done faster, better, and cheaper than you could possibly imagine.
-            </h3>
-
-            <div class="grid grid-3 text-center my-4">
-                <div>
-                    <i class="fas fa-server fa-3x"></i>
-                    <h3>100% satisfaction</h3>
-                    <p class="text-secondary">customer reviews calculated</p>
-                </div>
-                <div>
-                    <i class="fas fa-download fa-3x"></i>
-                    <h3>98.5%</h3>
-                    <p class="text-secondary">Application efficiency</p>
-                </div>
-                <div>
-                    <i class="fas fa-project-diagram fa-3x"></i>
-                    <h3>1,34,405</h3>
-                    <p class="text-secondary">Active Users</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Cli -->
-    <section class="cli">
-        <div class="container grid">
-            <img src="{% static 'assets/img/AAC.jpg' %}" alt="">
-       
-            <div class="card">
-                <h3>Easy to use, cross platform application</h3>
-            </div>
-            <div class="card">
-                <h3>Zero-latency Computational Capability</h3>
-            </div>
-            <div class="card">
-                <h3>Massive Edge Data Computing Capacity</h3>
-            </div>
-            <div class="card">
-                <h3>Active User Adaptibility Feature Set</h3>
-            </div>
-        </div>
-    </section>
-
-    <!-- Cloud -->
-    <section class="cloud bg-primary my-5 py-4">
-        <div class="container grid">
-            <div class="text-center">
-                <h2 class="lg">Why Choose Swift Talent Forge ?</h2>
-               
-                <p class="lead my-1">Wide Talent Pool: Access a diverse range of freelancers with various skills and expertise.</p>
-                <a href="{% url 'Portal:signup' %}" class="btn btn-dark">Create an account today</a>
-
-      
-            </div>
-            <img src="{% static 'assets/img/cloud.png' %}" alt="">
-        </div>
-    </section>
-
-    <!-- Languages -->
-    <section class="languages">
-        <h2 class="md text-center my-5">
-            <strong>Supported Platforms</strong>
-        </h2>
-        <div class="container flex">
-            <div class="card">
-                <h4>Windows OS</h4>
-                <img src="{% static 'assets/img/logos/windows.png' %}" alt="" style="height: 82px !important; width: 80px !important;">
-            </div>
-            <div class="card">
-                <h4>iOS</h4>
-                <img src="{% static 'assets/img/logos/iOS.png' %}" alt="" style="height: 82px !important; width: 80px !important;">
-            </div>
-            <div class="card">
-                <h4>Linux OS</h4>
-                <img src="{% static 'assets/img/logos/linux.png' %}" alt="" style="height: 82px !important; width: 80px !important;">
-            </div>
-            <div class="card">
-                <h4>Android OS</h4>
-                <img src="{% static 'assets/img/logos/android.png' %}" alt="" style="height: 82px !important; width: 80px !important;">
-            </div>
-            <div class="card">
-                <h4>Oxygen OS</h4>
-                <img src="{% static 'assets/img/logos/oxygen.png' %}" alt=""style="height: 82px !important; width: 80px !important;" >
-            </div>
-            <div class="card">
-                <h4>MIUI 12</h4>
-                <img src="{% static 'assets/img/logos/miui.png' %}" alt=""style="height: 82px !important; width: 110px !important;" >
+                freelancers will get it done faster, better, and cheaper than you could possibly imagine.
+            </p>
             
+            <div class="stats-grid">
+                <div class="stat-card fade-in-up">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Customer Satisfaction</div>
+                </div>
+                <div class="stat-card fade-in-up">
+                    <div class="stat-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <div class="stat-number">98.5%</div>
+                    <div class="stat-label">Application Efficiency</div>
+                </div>
+                <div class="stat-card fade-in-up">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-number">134,405</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="features-container">
+            <div class="features-grid">
+                <div class="features-image">
+                    <img src="{% static 'assets/img/AAC.jpg' %}" alt="Features" class="fade-in-up">
+                </div>
+                <div class="feature-cards">
+                    <div class="feature-card fade-in-up">
+                        <h3>🚀 Easy to use, cross platform application</h3>
+                        <p>Seamlessly work across all devices and platforms with our intuitive interface.</p>
+                    </div>
+                    <div class="feature-card fade-in-up">
+                        <h3>⚡ Zero-latency Computational Capability</h3>
+                        <p>Experience lightning-fast performance with our advanced computing infrastructure.</p>
+                    </div>
+                    <div class="feature-card fade-in-up">
+                        <h3>🌐 Massive Edge Data Computing Capacity</h3>
+                        <p>Leverage powerful edge computing for enhanced data processing and analytics.</p>
+                    </div>
+                    <div class="feature-card fade-in-up">
+                        <h3>🎯 Active User Adaptability Feature Set</h3>
+                        <p>Personalized features that adapt to your unique workflow and preferences.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="why-choose-section">
+        <div class="why-choose-container">
+            <h2 class="fade-in-up">Why Choose Swift Talent Forge?</h2>
+            <p class="fade-in-up">Wide Talent Pool: Access a diverse range of freelancers with various skills and expertise.</p>
+            <a href="{% url 'Portal:signup' %}" class="btn btn-outline" style="background: rgba(255,255,255,0.2); color: white; border-color: rgba(255,255,255,0.5);">
+                <i class="fas fa-user-plus"></i>
+                Create an Account Today
+            </a>
+        </div>
+    </section>
+
+    <!-- Supported Platforms -->
+    <section class="platforms-section">
+        <div class="platforms-container">
+            <h2 class="platforms-title">Supported Platforms</h2>
+            <div class="platforms-grid">
+                <div class="platform-card fade-in-up">
+                    <img src="{% static 'assets/img/logos/windows.png' %}" alt="Windows OS">
+                    <h4>Windows OS</h4>
+                </div>
+                <div class="platform-card fade-in-up">
+                    <img src="{% static 'assets/img/logos/iOS.png' %}" alt="iOS">
+                    <h4>iOS</h4>
+                </div>
+                <div class="platform-card fade-in-up">
+                    <img src="{% static 'assets/img/logos/linux.png' %}" alt="Linux OS">
+                    <h4>Linux OS</h4>
+                </div>
+                <div class="platform-card fade-in-up">
+                    <img src="{% static 'assets/img/logos/android.png' %}" alt="Android OS">
+                    <h4>Android OS</h4>
+                </div>
+                <div class="platform-card fade-in-up">
+                    <img src="{% static 'assets/img/logos/oxygen.png' %}" alt="Oxygen OS">
+                    <h4>Oxygen OS</h4>
+                </div>
+                <div class="platform-card fade-in-up">
+                    <img src="{% static 'assets/img/logos/miui.png' %}" alt="MIUI 12">
+                    <h4>MIUI 12</h4>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer bg-dark py-5">
-        <div class="container grid grid-3">
-            <div>
-                <h1>SwiftTalentForge
-                </h1>
-                <p>Copyright &copy Swift Talent Forge 2024 - Vurudi  || Omolo</p>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h1>SwiftTalentForge</h1>
+                <p>Copyright &copy; Swift Talent Forge 2024 - Vurudi || Omolo</p>
             </div>
-            <nav>
+            <div class="footer-links">
+                <h3 style="margin-bottom: 1rem;">Quick Links</h3>
                 <ul>
-                    <li><a href="{% url 'Portal:home' %}"><strong>Home</strong></a></li>
-                    <li><a href="{% url 'Portal:services' %}"><strong>Key Features</strong></a></li>
-                    <li><a href="{% url 'Portal:contactus' %}" ><strong>Contact Us</strong></a></li>
+                    <li style="margin-bottom: 0.5rem;"><a href="{% url 'Portal:home' %}">Home</a></li>
+                    <li style="margin-bottom: 0.5rem;"><a href="{% url 'Portal:services' %}">Key Features</a></li>
+                    <li style="margin-bottom: 0.5rem;"><a href="{% url 'Portal:contactus' %}">Contact Us</a></li>
                 </ul>
-                </ul>
-            </nav>
-            <div class="social">
-                <a href="#"><i class="fab fa-github fa-2x"></i></a>
-                <a href="#"><i class="fab fa-linkedin fa-2x"></i></a>
-                <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
-                <a href="#"><i class="fab fa-twitter fa-2x"></i></a>
+            </div>
+            <div class="footer-social">
+                <h3 style="margin-bottom: 1rem;">Follow Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
             </div>
         </div>
     </footer>
-    <script src="{% static 'assets/js/spinner.js' %}"></script> <!-- Include spinner JS -->
 
+    <!-- Scripts -->
+    <script src="{% static 'assets/js/spinner.js' %}"></script>
+    
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-up').forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(30px)';
+            element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(element);
+        });
+    </script>
 </body>
 </html>
