@@ -108,10 +108,9 @@ def check_username(request):
     username = data['username']
     try:
         user = User.objects.get(username=username)
-        if user:
-            return HttpResponse('<b>Username must be unique.</b>')
+        return HttpResponse(json.dumps(True), content_type='application/json')  # Username exists (taken)
     except User.DoesNotExist:
-        return HttpResponse('user not in database')
+        return HttpResponse(json.dumps(False), content_type='application/json')  # Username doesn't exist (available)
     
 @login_required
 def accept_bid(request, bid_id):
@@ -163,12 +162,12 @@ def check_email(request):
     data = json.loads(request.body.decode('utf-8'))
     email = data['email']
     if email.endswith('@iiits.in'):
-        return HttpResponse('<b>Login with iiits link.</b>')
+        return HttpResponse(json.dumps(True), content_type='application/json')  # IIITS emails should login with iiits link
     try:
-        if User.objects.get(email=email):
-            return HttpResponse('<b>Email must be unique.</b>')
+        User.objects.get(email=email)
+        return HttpResponse(json.dumps(True), content_type='application/json')  # Email exists (taken)
     except User.DoesNotExist:
-        return HttpResponse('email not in db')
+        return HttpResponse(json.dumps(False), content_type='application/json')  # Email doesn't exist (available)
 
 @csrf_exempt
 def open_close_project(request):
