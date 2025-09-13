@@ -524,7 +524,7 @@
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
             gap: 3rem;
         }
 
@@ -575,6 +575,32 @@
             transform: translateY(-3px);
         }
 
+        .footer-contact .contact-info a {
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s ease;
+        }
+
+        .footer-contact .contact-info a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-contact .contact-info i {
+            margin-right: 0.5rem;
+        }
+
+        .footer-links h3,
+        .footer-social h3,
+        .footer-contact h3 {
+            margin-bottom: 1rem;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 0.5rem;
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .hero-content {
@@ -590,6 +616,10 @@
             .footer-container {
                 grid-template-columns: 1fr;
                 text-align: center;
+                gap: 2rem;
+            }
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
                 gap: 2rem;
             }
         }
@@ -609,6 +639,12 @@
             
             .hero-buttons {
                 justify-content: center;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
             }
         }
 
@@ -809,20 +845,29 @@
                 <p>Copyright &copy; Swift Talent Forge 2024 - Vurudi || Omolo</p>
             </div>
             <div class="footer-links">
-                <h3 style="margin-bottom: 1rem;">Quick Links</h3>
+                <h3>Quick Links</h3>
                 <ul>
-                    <li style="margin-bottom: 0.5rem;"><a href="{% url 'Portal:home' %}">Home</a></li>
-                    <li style="margin-bottom: 0.5rem;"><a href="{% url 'Portal:services' %}">Key Features</a></li>
-                    <li style="margin-bottom: 0.5rem;"><a href="{% url 'Portal:contactus' %}">Contact Us</a></li>
+                    <li><a href="{% url 'Portal:home' %}">Home</a></li>
+                    <li><a href="{% url 'Portal:services' %}">Key Features</a></li>
+                    <li><a href="{% url 'Portal:contactus' %}">Contact Us</a></li>
                 </ul>
             </div>
             <div class="footer-social">
-                <h3 style="margin-bottom: 1rem;">Follow Us</h3>
+                <h3>Follow Us</h3>
                 <div class="social-links">
                     <a href="#"><i class="fab fa-github"></i></a>
                     <a href="#"><i class="fab fa-linkedin"></i></a>
                     <a href="#"><i class="fab fa-instagram"></i></a>
                     <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-contact">
+                <h3>Reach Us</h3>
+                <div class="contact-info">
+                    <a href="mailto:info@swifttalentforge.com">
+                        <i class="fas fa-envelope"></i>
+                        info@swifttalentforge.com
+                    </a>
                 </div>
             </div>
         </div>
