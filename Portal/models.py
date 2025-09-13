@@ -5,6 +5,8 @@ import stripe
 from django.conf import settings
 from decimal import Decimal
 from django.utils import timezone
+from django.core.files.storage import default_storage
+import uuid
 import os
 
 class PortalConfig(AppConfig):
@@ -518,3 +520,217 @@ class FreelancerAccess(models.Model):
     
     def __str__(self):
         return f"{self.freelancer.user.username} - {self.project.project_name}"
+
+# ===== MESSAGING SYSTEM MODELS =====
+
+class Conversation(models.Model):
+    """Model for message conversations between users"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    participants = models.ManyToManyField(User, related_name='conversations')
+    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True, related_name='conversations')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_archived = models.BooleanField(default=False)
+    
+    class Meta:
+        ordering = ['-updated_at']
+    
+    def __str__(self):
+        participants = list(self.participants.all())
+        if len(participants) == 2:
+            return f"Conversation between {participants[0].username} and {participants[1].username}"
+        return f"Conversation ({self.id})"
+    
+    def get_other_participant(self, user):
+        """Get the other participant in a 2-person conversation"""
+        participants = self.participants.exclude(id=user.id)
+        return participants.first() if participants.exists() else None
+    
+    def get_last_message(self):
+        """Get the last message in this conversation"""
+        return self.messages.order_by('-timestamp').first()
+    
+    def get_unread_count(self, user):
+        """Get count of unread messages for a specific user"""
+        return self.messages.filter(is_read=False).exclude(sender=user).count()
+
+class Message(models.Model):
+    """Model for individual messages"""
+    MESSAGE_TYPES = [
+        ('text', 'Text'),
+        ('file', 'File'),
+        ('image', 'Image'),
+        ('system', 'System'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    content = models.TextField()
+    message_type = models.CharField(max_length=20, choices=MESSAGE_TYPES, default='text')
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+    read_at = models.DateTimeField(null=True, blank=True)
+    is_edited = models.BooleanField(default=False)
+    edited_at = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        ordering = ['timestamp']
+    
+    def __str__(self):
+        return f"Message from {self.sender.username} at {self.timestamp}"
+    
+    def mark_as_read(self):
+        """Mark this message as read"""
+        if not self.is_read:
+            self.is_read = True
+            self.read_at = timezone.now()
+            self.save()
+
+class MessageFile(models.Model):
+    """Model for file attachments in messages"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='files')
+    file = models.FileField(upload_to='message_files/%Y/%m/%d/')
+    filename = models.CharField(max_length=255)
+    file_size = models.PositiveIntegerField()
+    file_type = models.CharField(max_length=100)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"File: {self.filename}"
+    
+    def get_file_size_display(self):
+        """Get human readable file size"""
+        size = self.file_size
+        for unit in ['B', 'KB', 'MB', 'GB']:
+            if size < 1024.0:
+                return f"{size:.1f} {unit}"
+            size /= 1024.0
+        return f"{size:.1f} TB"
+    
+    def delete(self, *args, **kwargs):
+        """Delete file from storage when model is deleted"""
+        if self.file:
+            if default_storage.exists(self.file.name):
+                default_storage.delete(self.file.name)
+        super().delete(*args, **kwargs)
+
+class UserPresence(models.Model):
+    """Model to track user online presence"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='presence')
+    is_online = models.BooleanField(default=False)
+    last_activity = models.DateTimeField(auto_now=True)
+    last_seen = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.user.username} - {'Online' if self.is_online else 'Offline'}"
+    
+    def get_status_display(self):
+        """Get human readable status"""
+        if self.is_online:
+            return "Online"
+        
+        if not self.last_seen:
+            return "Never seen"
+        
+        now = timezone.now()
+        diff = now - self.last_seen
+        
+        if diff.days > 0:
+            return f"Last seen {diff.days} day{'s' if diff.days > 1 else ''} ago"
+        elif diff.seconds > 3600:
+            hours = diff.seconds // 3600
+            return f"Last seen {hours} hour{'s' if hours > 1 else ''} ago"
+        elif diff.seconds > 60:
+            minutes = diff.seconds // 60
+            return f"Last seen {minutes} minute{'s' if minutes > 1 else ''} ago"
+        else:
+            return "Last seen moments ago"
+
+class MessageNotification(models.Model):
+    """Model for message notifications"""
+    NOTIFICATION_TYPES = [
+        ('new_message', 'New Message'),
+        ('file_shared', 'File Shared'),
+        ('conversation_started', 'Conversation Started'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='message_notifications')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, null=True, blank=True)
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)
+    notification_type = models.CharField(max_length=30, choices=NOTIFICATION_TYPES)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"Notification for {self.recipient.username}: {self.get_notification_type_display()}"
+
+class UserMessageSettings(models.Model):
+    """Model for user message preferences"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='message_settings')
+    email_notifications = models.BooleanField(default=True)
+    browser_notifications = models.BooleanField(default=True)
+    sound_notifications = models.BooleanField(default=False)
+    notification_frequency = models.CharField(
+        max_length=20,
+        choices=[
+            ('realtime', 'Real-time'),
+            ('5min', 'Every 5 minutes'),
+            ('15min', 'Every 15 minutes'),
+            ('30min', 'Every 30 minutes'),
+            ('1hour', 'Every hour'),
+        ],
+        default='realtime'
+    )
+    read_receipts = models.BooleanField(default=True)
+    online_status = models.BooleanField(default=True)
+    typing_indicators = models.BooleanField(default=True)
+    message_permissions = models.CharField(
+        max_length=20,
+        choices=[
+            ('everyone', 'Everyone'),
+            ('clients', 'Clients Only'),
+            ('freelancers', 'Freelancers Only'),
+            ('project_members', 'Project Members Only'),
+            ('none', 'No One'),
+        ],
+        default='everyone'
+    )
+    preview_length = models.IntegerField(default=50)
+    auto_scroll = models.BooleanField(default=True)
+    show_timestamps = models.BooleanField(default=True)
+    theme = models.CharField(
+        max_length=20,
+        choices=[
+            ('default', 'Default'),
+            ('dark', 'Dark Mode'),
+            ('minimal', 'Minimal'),
+            ('compact', 'Compact'),
+        ],
+        default='default'
+    )
+    auto_download_images = models.BooleanField(default=True)
+    file_size_warning = models.IntegerField(default=10)  # MB
+    compress_images = models.BooleanField(default=False)
+    dnd_start = models.TimeField(default='22:00')
+    dnd_end = models.TimeField(default='08:00')
+    message_retention = models.CharField(
+        max_length=20,
+        choices=[
+            ('forever', 'Forever'),
+            ('1year', '1 Year'),
+            ('6months', '6 Months'),
+            ('3months', '3 Months'),
+            ('1month', '1 Month'),
+        ],
+        default='forever'
+    )
+    
+    def __str__(self):
+        return f"Message settings for {self.user.username}"

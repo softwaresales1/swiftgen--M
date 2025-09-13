@@ -1,0 +1,1236 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Settings - SwiftTalentForge</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            text-decoration: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #374151;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* Header */
+        .page-header {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .header-text h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .header-text p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .back-button {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(107, 114, 128, 0.3);
+        }
+
+        /* Settings Grid */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .settings-section {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 25px 30px;
+            border-bottom: 2px solid #f3f4f6;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-description {
+            color: #6b7280;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .section-content {
+            padding: 30px;
+        }
+
+        /* Settings Items */
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px solid #f3f4f6;
+            transition: all 0.3s ease;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .setting-item:hover {
+            background: rgba(59, 130, 246, 0.02);
+            margin: 0 -30px;
+            padding: 20px 30px;
+            border-radius: 10px;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .setting-description {
+            font-size: 0.9rem;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 32px;
+            background: #d1d5db;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(28px);
+        }
+
+        /* Dropdown Select */
+        .select-wrapper {
+            position: relative;
+            min-width: 180px;
+        }
+
+        .custom-select {
+            appearance: none;
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 12px 40px 12px 15px;
+            font-size: 0.9rem;
+            color: #1f2937;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .custom-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .select-arrow {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            pointer-events: none;
+        }
+
+        /* Range Slider */
+        .range-wrapper {
+            min-width: 200px;
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e5e7eb;
+            outline: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(59, 130, 246, 0.3);
+        }
+
+        .range-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 5px rgba(59, 130, 246, 0.3);
+        }
+
+        .range-value {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid #f3f4f6;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+            color: #4b5563;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Status Messages */
+        .status-message {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .status-message.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status-message.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        /* Advanced Settings */
+        .advanced-settings {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .advanced-toggle {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .advanced-toggle:hover {
+            color: #1d4ed8;
+        }
+
+        .advanced-content {
+            display: none;
+        }
+
+        .advanced-content.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Time Selector */
+        .time-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .time-input {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            color: #1f2937;
+            width: 80px;
+            text-align: center;
+        }
+
+        .time-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .setting-item:hover {
+                margin: 0;
+                padding: 20px 0;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .nav-link {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+
+            .range-wrapper,
+            .select-wrapper {
+                width: 100%;
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-header {
+                padding: 20px;
+            }
+
+            .section-content {
+                padding: 20px;
+            }
+
+            .header-text h1 {
+                font-size: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Loading State */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f4f6;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'Portal:home' %}" class="logo">
+                <i class="fas fa-bolt"></i>
+                SwiftTalentForge
+            </a>
+            <div class="nav-links">
+                <a href="{% url 'Portal:home' %}" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+                <a href="{% url 'Portal:browse_jobs' %}" class="nav-link">
+                    <i class="fas fa-briefcase"></i>
+                    Browse Jobs
+                </a>
+                <a href="{% url 'Portal:post_project' %}" class="nav-link">
+                    <i class="fas fa-plus"></i>
+                    Post Project
+                </a>
+                <a href="{% url 'Portal:myprojects' %}" class="nav-link">
+                    <i class="fas fa-folder"></i>
+                    My Projects
+                </a>
+                <a href="{% url 'Portal:messages' %}" class="nav-link active">
+                    <i class="fas fa-comments"></i>
+                    Messages
+                </a>
+                <a href="{% url 'Portal:profile' request.user.username %}" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    Profile
+                </a>
+                <a href="{% url 'Portal:logout' %}" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="header-info">
+                    <div class="header-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="header-text">
+                        <h1>Message Settings</h1>
+                        <p>Customize your messaging experience and notification preferences</p>
+                    </div>
+                </div>
+                <a href="{% url 'Portal:messages' %}" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Messages
+                </a>
+            </div>
+        </div>
+
+        <!-- Status Message -->
+        <div id="status-message" class="status-message"></div>
+
+        <div class="settings-grid">
+            <!-- Notification Settings -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-bell"></i>
+                        Notifications
+                    </h2>
+                    <p class="section-description">
+                        Control how and when you receive message notifications
+                    </p>
+                </div>
+                <div class="section-content">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Email Notifications</div>
+                            <div class="setting-description">Receive email alerts for new messages</div>
+                        </div>
+                        <div class="toggle-switch active" id="email-notifications" onclick="toggleSetting(this, 'email_notifications')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Browser Notifications</div>
+                            <div class="setting-description">Show desktop notifications for new messages</div>
+                        </div>
+                        <div class="toggle-switch active" id="browser-notifications" onclick="toggleSetting(this, 'browser_notifications')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Sound Notifications</div>
+                            <div class="setting-description">Play sound when receiving new messages</div>
+                        </div>
+                        <div class="toggle-switch" id="sound-notifications" onclick="toggleSetting(this, 'sound_notifications')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Notification Frequency</div>
+                            <div class="setting-description">How often to check for new messages</div>
+                        </div>
+                        <div class="select-wrapper">
+                            <select class="custom-select" id="notification-frequency" onchange="updateSetting('notification_frequency', this.value)">
+                                <option value="realtime">Real-time</option>
+                                <option value="5min">Every 5 minutes</option>
+                                <option value="15min">Every 15 minutes</option>
+                                <option value="30min">Every 30 minutes</option>
+                                <option value="1hour">Every hour</option>
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy Settings -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Privacy & Security
+                    </h2>
+                    <p class="section-description">
+                        Manage your privacy settings and who can message you
+                    </p>
+                </div>
+                <div class="section-content">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Read Receipts</div>
+                            <div class="setting-description">Let others know when you've read their messages</div>
+                        </div>
+                        <div class="toggle-switch active" id="read-receipts" onclick="toggleSetting(this, 'read_receipts')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Online Status</div>
+                            <div class="setting-description">Show when you're online to other users</div>
+                        </div>
+                        <div class="toggle-switch active" id="online-status" onclick="toggleSetting(this, 'online_status')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Typing Indicators</div>
+                            <div class="setting-description">Show when you're typing to other users</div>
+                        </div>
+                        <div class="toggle-switch active" id="typing-indicators" onclick="toggleSetting(this, 'typing_indicators')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Who Can Message Me</div>
+                            <div class="setting-description">Control who can start new conversations with you</div>
+                        </div>
+                        <div class="select-wrapper">
+                            <select class="custom-select" id="message-permissions" onchange="updateSetting('message_permissions', this.value)">
+                                <option value="everyone">Everyone</option>
+                                <option value="clients">Clients Only</option>
+                                <option value="freelancers">Freelancers Only</option>
+                                <option value="project_members">Project Members Only</option>
+                                <option value="none">No One</option>
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Display Settings -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-paint-brush"></i>
+                        Display & Interface
+                    </h2>
+                    <p class="section-description">
+                        Customize how messages are displayed and organized
+                    </p>
+                </div>
+                <div class="section-content">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Message Preview Length</div>
+                            <div class="setting-description">Number of characters to show in conversation previews</div>
+                        </div>
+                        <div class="range-wrapper">
+                            <input type="range" class="range-slider" id="preview-length" min="20" max="100" value="50" oninput="updateRangeValue(this, 'preview-length-value')">
+                            <div class="range-value" id="preview-length-value">50 characters</div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Auto-Scroll to New Messages</div>
+                            <div class="setting-description">Automatically scroll to new messages in conversations</div>
+                        </div>
+                        <div class="toggle-switch active" id="auto-scroll" onclick="toggleSetting(this, 'auto_scroll')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Show Timestamps</div>
+                            <div class="setting-description">Display timestamps on all messages</div>
+                        </div>
+                        <div class="toggle-switch active" id="show-timestamps" onclick="toggleSetting(this, 'show_timestamps')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Theme</div>
+                            <div class="setting-description">Choose your preferred message theme</div>
+                        </div>
+                        <div class="select-wrapper">
+                            <select class="custom-select" id="theme" onchange="updateSetting('theme', this.value)">
+                                <option value="default">Default</option>
+                                <option value="dark">Dark Mode</option>
+                                <option value="minimal">Minimal</option>
+                                <option value="compact">Compact</option>
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File & Media Settings -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-file-alt"></i>
+                        Files & Media
+                    </h2>
+                    <p class="section-description">
+                        Configure file sharing and media handling preferences
+                    </p>
+                </div>
+                <div class="section-content">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Auto-Download Images</div>
+                            <div class="setting-description">Automatically download and display images in conversations</div>
+                        </div>
+                        <div class="toggle-switch active" id="auto-download-images" onclick="toggleSetting(this, 'auto_download_images')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">File Size Warnings</div>
+                            <div class="setting-description">Warn before sending files larger than specified size</div>
+                        </div>
+                        <div class="select-wrapper">
+                            <select class="custom-select" id="file-size-warning" onchange="updateSetting('file_size_warning', this.value)">
+                                <option value="1">1 MB</option>
+                                <option value="5">5 MB</option>
+                                <option value="10">10 MB</option>
+                                <option value="25">25 MB</option>
+                                <option value="50">50 MB</option>
+                                <option value="0">No Warning</option>
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Compress Images</div>
+                            <div class="setting-description">Automatically compress images before sending</div>
+                        </div>
+                        <div class="toggle-switch" id="compress-images" onclick="toggleSetting(this, 'compress_images')">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Settings -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-cogs"></i>
+                        Advanced Settings
+                    </h2>
+                    <p class="section-description">
+                        Advanced configuration options for power users
+                    </p>
+                </div>
+                <div class="section-content">
+                    <a href="#" class="advanced-toggle" onclick="toggleAdvanced(event)">
+                        <i class="fas fa-chevron-right" id="advanced-icon"></i>
+                        Show Advanced Options
+                    </a>
+
+                    <div class="advanced-content" id="advanced-content">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title">Do Not Disturb Hours</div>
+                                <div class="setting-description">Set hours when you don't want to receive notifications</div>
+                            </div>
+                            <div class="time-selector">
+                                <input type="time" class="time-input" id="dnd-start" value="22:00" onchange="updateSetting('dnd_start', this.value)">
+                                <span>to</span>
+                                <input type="time" class="time-input" id="dnd-end" value="08:00" onchange="updateSetting('dnd_end', this.value)">
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title">Message Retention</div>
+                                <div class="setting-description">How long to keep messages before auto-deletion</div>
+                            </div>
+                            <div class="select-wrapper">
+                                <select class="custom-select" id="message-retention" onchange="updateSetting('message_retention', this.value)">
+                                    <option value="forever">Forever</option>
+                                    <option value="1year">1 Year</option>
+                                    <option value="6months">6 Months</option>
+                                    <option value="3months">3 Months</option>
+                                    <option value="1month">1 Month</option>
+                                </select>
+                                <i class="fas fa-chevron-down select-arrow"></i>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title">Export Messages</div>
+                                <div class="setting-description">Download all your messages as a backup</div>
+                            </div>
+                            <button class="btn btn-secondary" onclick="exportMessages()">
+                                <i class="fas fa-download"></i>
+                                Export
+                            </button>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title">Clear All Messages</div>
+                                <div class="setting-description">Permanently delete all your messages and conversations</div>
+                            </div>
+                            <button class="btn btn-danger" onclick="confirmClearMessages()">
+                                <i class="fas fa-trash"></i>
+                                Clear All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-secondary" onclick="resetToDefaults()">
+                <i class="fas fa-undo"></i>
+                Reset to Defaults
+            </button>
+            <button class="btn btn-primary" onclick="saveSettings()" id="save-btn">
+                <i class="fas fa-save"></i>
+                Save Changes
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Settings data object
+        let settings = {
+            email_notifications: true,
+            browser_notifications: true,
+            sound_notifications: false,
+            notification_frequency: 'realtime',
+            read_receipts: true,
+            online_status: true,
+            typing_indicators: true,
+            message_permissions: 'everyone',
+            preview_length: 50,
+            auto_scroll: true,
+            show_timestamps: true,
+            theme: 'default',
+            auto_download_images: true,
+            file_size_warning: '10',
+            compress_images: false,
+            dnd_start: '22:00',
+            dnd_end: '08:00',
+            message_retention: 'forever'
+        };
+
+        let hasUnsavedChanges = false;
+
+        // Initialize settings on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCurrentSettings();
+            requestNotificationPermission();
+            
+            // Warn before leaving with unsaved changes
+            window.addEventListener('beforeunload', function(e) {
+                if (hasUnsavedChanges) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            });
+        });
+
+        // Toggle setting function
+        function toggleSetting(element, settingKey) {
+            element.classList.toggle('active');
+            settings[settingKey] = element.classList.contains('active');
+            hasUnsavedChanges = true;
+            updateSaveButton();
+        }
+
+        // Update setting function
+        function updateSetting(settingKey, value) {
+            settings[settingKey] = value;
+            hasUnsavedChanges = true;
+            updateSaveButton();
+        }
+
+        // Update range value display
+        function updateRangeValue(slider, valueElementId) {
+            const value = slider.value;
+            document.getElementById(valueElementId).textContent = `${value} characters`;
+            updateSetting('preview_length', parseInt(value));
+        }
+
+        // Toggle advanced settings
+        function toggleAdvanced(event) {
+            event.preventDefault();
+            const content = document.getElementById('advanced-content');
+            const icon = document.getElementById('advanced-icon');
+            const toggle = event.target.closest('.advanced-toggle');
+            
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                icon.style.transform = 'rotate(0deg)';
+                toggle.textContent = 'Show Advanced Options';
+                toggle.prepend(icon);
+            } else {
+                content.classList.add('show');
+                icon.style.transform = 'rotate(90deg)';
+                toggle.textContent = 'Hide Advanced Options';
+                toggle.prepend(icon);
+            }
+        }
+
+        // Save settings
+        function saveSettings() {
+            const saveBtn = document.getElementById('save-btn');
+            const originalContent = saveBtn.innerHTML;
+            
+            saveBtn.innerHTML = '<div class="spinner"></div> Saving...';
+            saveBtn.disabled = true;
+
+            fetch('/api/messages/settings/update/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
+                body: JSON.stringify(settings)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showStatusMessage('Settings saved successfully!', 'success');
+                    hasUnsavedChanges = false;
+                    updateSaveButton();
+                } else {
+                    showStatusMessage('Failed to save settings: ' + data.error, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Save error:', error);
+                showStatusMessage('Failed to save settings. Please try again.', 'error');
+            })
+            .finally(() => {
+                saveBtn.innerHTML = originalContent;
+                saveBtn.disabled = false;
+            });
+        }
+
+        // Load current settings
+        function loadCurrentSettings() {
+            // In a real implementation, this would fetch from the server
+            // For now, we'll use the default settings
+            applySettingsToUI();
+        }
+
+        // Apply settings to UI elements
+        function applySettingsToUI() {
+            // Apply toggle states
+            Object.keys(settings).forEach(key => {
+                const element = document.getElementById(key.replace('_', '-'));
+                if (element) {
+                    if (element.classList.contains('toggle-switch')) {
+                        if (settings[key]) {
+                            element.classList.add('active');
+                        } else {
+                            element.classList.remove('active');
+                        }
+                    } else if (element.tagName === 'SELECT') {
+                        element.value = settings[key];
+                    } else if (element.type === 'range') {
+                        element.value = settings[key];
+                        updateRangeValue(element, element.id + '-value');
+                    } else if (element.type === 'time') {
+                        element.value = settings[key];
+                    }
+                }
+            });
+        }
+
+        // Reset to defaults
+        function resetToDefaults() {
+            if (confirm('Are you sure you want to reset all settings to their default values?')) {
+                settings = {
+                    email_notifications: true,
+                    browser_notifications: true,
+                    sound_notifications: false,
+                    notification_frequency: 'realtime',
+                    read_receipts: true,
+                    online_status: true,
+                    typing_indicators: true,
+                    message_permissions: 'everyone',
+                    preview_length: 50,
+                    auto_scroll: true,
+                    show_timestamps: true,
+                    theme: 'default',
+                    auto_download_images: true,
+                    file_size_warning: '10',
+                    compress_images: false,
+                    dnd_start: '22:00',
+                    dnd_end: '08:00',
+                    message_retention: 'forever'
+                };
+                
+                applySettingsToUI();
+                hasUnsavedChanges = true;
+                updateSaveButton();
+                showStatusMessage('Settings reset to defaults. Click "Save Changes" to apply.', 'success');
+            }
+        }
+
+        // Export messages
+        function exportMessages() {
+            if (confirm('This will download all your messages as a JSON file. Continue?')) {
+                window.open('/api/messages/export/', '_blank');
+            }
+        }
+
+        // Clear all messages
+        function confirmClearMessages() {
+            if (confirm('Are you sure you want to delete ALL your messages? This action cannot be undone!')) {
+                if (confirm('This will permanently delete all conversations and messages. Type "DELETE" to confirm:') && 
+                    prompt('Type "DELETE" to confirm:') === 'DELETE') {
+                    
+                    fetch('/api/messages/clear-all/', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCsrfToken()
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showStatusMessage('All messages deleted successfully.', 'success');
+                            setTimeout(() => {
+                                window.location.href = '/messages/';
+                            }, 2000);
+                        } else {
+                            showStatusMessage('Failed to delete messages: ' + data.error, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Delete error:', error);
+                        showStatusMessage('Failed to delete messages. Please try again.', 'error');
+                    });
+                }
+            }
+        }
+
+        // Request notification permission
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        showStatusMessage('Browser notifications enabled!', 'success');
+                    }
+                });
+            }
+        }
+
+        // Show status message
+        function showStatusMessage(message, type) {
+            const statusMessage = document.getElementById('status-message');
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message ${type}`;
+            statusMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        // Update save button state
+        function updateSaveButton() {
+            const saveBtn = document.getElementById('save-btn');
+            if (hasUnsavedChanges) {
+                saveBtn.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+                saveBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Save Changes';
+            } else {
+                saveBtn.style.background = 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)';
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved';
+            }
+        }
+
+        // Utility function to get CSRF token
+        function getCsrfToken() {
+            return document.querySelector('[name=csrfmiddlewaretoken]').value || '';
+        }
+
+        // Auto-save functionality (optional)
+        function enableAutoSave() {
+            setInterval(() => {
+                if (hasUnsavedChanges) {
+                    saveSettings();
+                }
+            }, 30000); // Auto-save every 30 seconds
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+S to save
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveSettings();
+            }
+            
+            // Escape to cancel changes
+            if (e.key === 'Escape' && hasUnsavedChanges) {
+                if (confirm('Discard unsaved changes?')) {
+                    location.reload();
+                }
+            }
+        });
+    </script>
+
+    <!-- CSRF Token for AJAX requests -->
+    {% csrf_token %}
+</body>
+</html>

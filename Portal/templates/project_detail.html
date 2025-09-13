@@ -716,6 +716,37 @@
             box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
         }
 
+        .message-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .message-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .bid-actions-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
         .bid-status-accepted {
             background: #d1fae5;
             color: #065f46;
@@ -1416,10 +1447,34 @@
                         </form>
                     </div>
                 {% elif user.is_authenticated and has_bid %}
-                    <div class="alert alert-info">
-                        <i class="fas fa-check-circle"></i>
-                        You have already submitted a proposal for this project.
-                    </div>
+                    {% for bid in bids %}
+                        {% if bid.freelancer.user == request.user %}
+                            {% if bid.status == 'accepted' %}
+                                <div class="alert alert-success">
+                                    <i class="fas fa-check-circle"></i>
+                                    <strong>Congratulations!</strong> Your proposal has been accepted!
+                                    <div class="bid-actions-container" style="margin-top: 15px;">
+                                        {% if conversation %}
+                                            <a href="{% url 'Portal:chat_interface' conversation.id %}" class="message-btn">
+                                                <i class="fas fa-comments"></i>
+                                                Message Client
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'Portal:start_conversation' project.leader.user.id %}" class="message-btn">
+                                                <i class="fas fa-comments"></i>
+                                                Start Conversation
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    <i class="fas fa-clock"></i>
+                                    You have submitted a proposal for this project. Status: <strong>{{ bid.status|title }}</strong>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
                 {% elif user.is_authenticated and is_owner %}
                     <div class="alert alert-success">
                         <i class="fas fa-crown"></i>
@@ -1472,10 +1527,23 @@
                                                 Accept & Proceed to Payment
                                             </a>
                                         {% else %}
-                                            <span class="bid-status-accepted">
-                                                <i class="fas fa-check"></i>
-                                                BID ACCEPTED
-                                            </span>
+                                            <div class="bid-actions-container">
+                                                <span class="bid-status-accepted">
+                                                    <i class="fas fa-check"></i>
+                                                    BID ACCEPTED
+                                                </span>
+                                                {% if conversation %}
+                                                    <a href="{% url 'Portal:chat_interface' conversation.id %}" class="message-btn">
+                                                        <i class="fas fa-comments"></i>
+                                                        Message Freelancer
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{% url 'Portal:start_conversation' bid.freelancer.user.id %}" class="message-btn">
+                                                        <i class="fas fa-comments"></i>
+                                                        Start Conversation
+                                                    </a>
+                                                {% endif %}
+                                            </div>
                                         {% endif %}
                                     </div>
                                 {% endif %}

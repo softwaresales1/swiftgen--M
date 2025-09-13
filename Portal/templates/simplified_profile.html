@@ -1,0 +1,328 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile_data.full_name }} - Profile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .profile-modal {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            max-width: 500px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 600;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .profile-username {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .profile-meta {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .profile-body {
+            padding: 25px;
+        }
+
+        .profile-section {
+            margin-bottom: 25px;
+        }
+
+        .profile-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .profile-bio {
+            color: #6b7280;
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .skills-grid, .languages-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag, .language-tag {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .skill-level, .language-level {
+            background: #3b82f6;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+        }
+
+        .rating-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .rating-card {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .rating-stars {
+            color: #fbbf24;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .rating-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .contact-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .no-data {
+            color: #9ca3af;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-modal">
+        <div class="profile-header">
+            {% if not is_own_profile %}
+                <button class="close-btn" onclick="closeProfile()">
+                    <i class="fas fa-times"></i>
+                </button>
+            {% endif %}
+            
+            <div class="profile-avatar">
+                {% if profile_data.has_image %}
+                    <img src="{{ profile_data.image_url }}" alt="{{ profile_data.full_name }}">
+                {% else %}
+                    {{ profile_data.first_name|first|default:profile_data.username|first|upper }}
+                {% endif %}
+            </div>
+            
+            <div class="profile-name">{{ profile_data.full_name }}</div>
+            <div class="profile-username">@{{ profile_data.username }}</div>
+            
+            <div class="profile-meta">
+                <span><i class="fas fa-graduation-cap"></i> {{ profile_data.batch_year }}</span>
+                <span><i class="fas fa-calendar"></i> Joined {{ profile_data.join_date }}</span>
+            </div>
+        </div>
+
+        <div class="profile-body">
+            {% if profile_data.bio %}
+                <div class="profile-section">
+                    <h3><i class="fas fa-user"></i> About</h3>
+                    <div class="profile-bio">{{ profile_data.bio }}</div>
+                </div>
+            {% endif %}
+
+            {% if profile_data.skills %}
+                <div class="profile-section">
+                    <h3><i class="fas fa-code"></i> Skills</h3>
+                    <div class="skills-grid">
+                        {% for skill in profile_data.skills %}
+                            <div class="skill-tag">
+                                {{ skill.name }}
+                                <span class="skill-level">{{ skill.level }}/5</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if profile_data.languages %}
+                <div class="profile-section">
+                    <h3><i class="fas fa-globe"></i> Languages</h3>
+                    <div class="languages-grid">
+                        {% for language in profile_data.languages %}
+                            <div class="language-tag">
+                                {{ language.name }}
+                                <span class="language-level">{{ language.level }}/5</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if profile_data.employer_rating or profile_data.freelancer_rating %}
+                <div class="profile-section">
+                    <h3><i class="fas fa-star"></i> Ratings</h3>
+                    <div class="rating-section">
+                        {% if profile_data.employer_rating %}
+                            <div class="rating-card">
+                                <div class="rating-stars">
+                                    {% for star in profile_data.employer_rating.0 %}★{% endfor %}
+                                    {% for star in profile_data.employer_rating.1 %}☆{% endfor %}
+                                </div>
+                                <div class="rating-label">As Employer</div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if profile_data.freelancer_rating %}
+                            <div class="rating-card">
+                                <div class="rating-stars">
+                                    {% for star in profile_data.freelancer_rating.0 %}★{% endfor %}
+                                    {% for star in profile_data.freelancer_rating.1 %}☆{% endfor %}
+                                </div>
+                                <div class="rating-label">As Freelancer</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if not is_own_profile %}
+                <div class="contact-actions">
+                    <a href="{% url 'Portal:start_conversation' profile_data.id %}" class="btn btn-primary">
+                        <i class="fas fa-comments"></i>
+                        Message
+                    </a>
+                    <a href="{% url 'Portal:profile' profile_data.username %}" class="btn btn-secondary">
+                        <i class="fas fa-user"></i>
+                        Full Profile
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function closeProfile() {
+            // If this is in a modal, close it
+            if (window.parent && window.parent.closeProfileModal) {
+                window.parent.closeProfileModal();
+            } else {
+                // Otherwise redirect back
+                window.history.back();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from . import file_views
+from . import message_views  # NEW: Import message views
 from .payment_views import (
     create_payment, payment_success, payment_cancelled, 
     stripe_webhook, release_payment, payment_dashboard, payment_options,
@@ -75,4 +76,49 @@ urlpatterns = [
     
     # Review system
     path('review-submission/<int:submission_id>/', file_views.review_submission, name='review_submission'),
+    
+    # ===== MESSAGING SYSTEM URLS =====
+    
+    # Main messaging pages
+    path('messages/', message_views.messages_dashboard, name='messages'),
+    path('messages/chat/<uuid:conversation_id>/', message_views.chat_interface, name='chat_interface'),
+    path('messages/start/<int:user_id>/', message_views.start_conversation, name='start_conversation'),
+    path('messages/start/project/<int:project_id>/', message_views.start_project_conversation, name='start_project_conversation'),
+    
+    # AJAX API endpoints for real-time messaging
+    path('api/messages/send/', message_views.send_message, name='send_message'),
+    path('api/messages/load/<uuid:conversation_id>/', message_views.load_messages, name='load_messages'),
+    path('api/messages/mark-read/<uuid:conversation_id>/', message_views.mark_messages_read, name='mark_messages_read'),
+    path('api/messages/stats/', message_views.message_stats, name='message_stats'),
+    path('api/messages/check-new/', message_views.check_new_messages, name='check_new_messages'),
+    path('api/messages/typing/', message_views.update_typing_status, name='update_typing_status'),
+    
+    # File sharing in messages
+    path('api/messages/upload-file/', message_views.upload_message_file, name='upload_message_file'),
+    path('api/messages/download-file/<uuid:file_id>/', message_views.download_message_file, name='download_message_file'),
+    
+    # User presence and status
+    path('api/presence/update/', message_views.update_presence, name='update_presence'),
+    path('api/presence/status/<int:user_id>/', message_views.get_user_status, name='get_user_status'),
+    
+    # Conversation management
+    path('api/conversations/list/', message_views.list_conversations, name='list_conversations'),
+    path('api/conversations/search/', message_views.search_conversations, name='search_conversations'),
+    path('api/conversations/archive/<uuid:conversation_id>/', message_views.archive_conversation, name='archive_conversation'),
+    path('api/conversations/delete/<uuid:conversation_id>/', message_views.delete_conversation, name='delete_conversation'),
+    
+    # Message settings and preferences
+    path('messages/settings/', message_views.message_settings, name='message_settings'),
+    path('api/messages/settings/update/', message_views.update_message_settings, name='update_message_settings'),
+    
+    # WebSocket endpoint (will be configured separately)
+    # WebSocket connections will be handled by Django Channels if implemented
+    
+    # Email notification management
+    path('api/notifications/email/toggle/', message_views.toggle_email_notifications, name='toggle_email_notifications'),
+    path('api/notifications/mark-read/<uuid:notification_id>/', message_views.mark_notification_read, name='mark_notification_read'),
+    
+    # Mobile API endpoints (for future mobile app)
+    path('api/mobile/messages/sync/', message_views.mobile_message_sync, name='mobile_message_sync'),
+    path('api/mobile/conversations/list/', message_views.mobile_conversations_list, name='mobile_conversations_list'),
 ]

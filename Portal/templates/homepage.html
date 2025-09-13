@@ -688,29 +688,6 @@
                     {% endif %}
                 </div>
             </div>
-            
-            <div class="floating-form fade-in-up">
-                <h2>🚀 Join Our Wait List</h2>
-                {% if message %}
-                    <div class="alert alert-success">{{ message }}</div>
-                {% endif %}
-                <form method="post" action="{% url 'Portal:join_wait_list' %}">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <input type="text" name="name" placeholder="Your Full Name" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="tel" name="phone_number" placeholder="Phone Number" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="email" name="email" placeholder="Email Address" class="form-control" required>
-                    </div>
-                    <button type="submit" class="btn btn-submit">
-                        <i class="fas fa-rocket"></i>
-                        Join Wait List
-                    </button>
-                </form>
-            </div>
         </div>
         <div id="loader"></div>
     </section>

@@ -135,6 +135,25 @@ def accept_bid(request, bid_id):
     bid.status = 'accepted'
     bid.save()
     
+    # Create or get conversation between client and freelancer
+    from .models import Conversation, Message
+    conversation, created = Conversation.objects.get_or_create(
+        project=project,
+        defaults={'is_archived': False}
+    )
+    
+    # Add participants if conversation was created
+    if created:
+        conversation.participants.add(request.user, bid.freelancer.user)
+        
+        # Send a welcome message
+        welcome_message = Message.objects.create(
+            conversation=conversation,
+            sender=request.user,
+            content=f"Hello! I've accepted your bid for the project '{project.project_name}'. Let's discuss the project details and get started!",
+            message_type='system'
+        )
+    
     # FIXED: Changed bid.applicant to bid.freelancer
     messages.success(request, f"Bid accepted! You can now proceed with payment to {bid.freelancer.user.get_full_name()}.")
     return redirect('Portal:project_detail', project_id=project.id)
@@ -793,6 +812,19 @@ def project_detail(request, project_id):
     context['bids'] = ProjectBid.objects.filter(project=project).order_by('-submitted_on')
     context['bids_count'] = context['bids'].count()
     
+    # Get conversation for this project if it exists
+    context['conversation'] = None
+    if request.user.is_authenticated:
+        try:
+            from .models import Conversation
+            conversation = Conversation.objects.filter(
+                project=project, 
+                participants=request.user
+            ).first()
+            context['conversation'] = conversation
+        except:
+            pass
+    
     if request.user.is_authenticated:
         cuser = CustomUser.objects.get(user=request.user)
         context['is_owner'] = (project.leader == cuser)
@@ -1043,6 +1075,19 @@ def task_description(request, project_id, task_id):
         'task_rating': task.rating,
         'has_applied': task.applicant_set.filter(user__user=request.user).exists()
     }
+
+    # Get conversation for this project if it exists
+    context['conversation'] = None
+    if request.user.is_authenticated:
+        try:
+            from .models import Conversation
+            conversation = Conversation.objects.filter(
+                project=task.project, 
+                participants=request.user
+            ).first()
+            context['conversation'] = conversation
+        except:
+            pass
 
     try:
         contributor = task.contributor_set.get()

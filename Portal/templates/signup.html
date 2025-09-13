@@ -1,4 +1,5 @@
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -6,335 +7,866 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="/static/ase.css" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
-          integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
-          crossorigin="anonymous">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-          integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
-          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-
-
-    <title>Register</title>
+    <title>Join SwiftTalentForge - Register</title>
     <style>
-        .navbar {
-		background-color: #333;
-		overflow: hidden;
-		}
-		.navlink {
-            float: left;
-            display: block;
-            color: white;
-            text-align: center;
-            padding: 14px 20px;
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation */
+        .top-navbar {
+            background: white;
+            padding: 12px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #7c3aed;
             text-decoration: none;
         }
 
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #7c3aed;
+            background: #f3f4f6;
+            text-decoration: none;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header Section */
+        .page-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .page-header p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-bottom: 40px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #6366f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+        }
+
+        .step.active .step-number {
+            background: white;
+            color: #7c3aed;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+        }
+
+        /* Two Column Layout */
+        .form-container {
+            display: flex;
+            gap: 60px;
+        }
+
+        .left-column {
+            flex: 1;
+        }
+
+        .right-column {
+            flex: 1;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Form Fields */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        /* Skills Table */
+        .skills-section {
+            margin-bottom: 30px;
+        }
+
+        .skills-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .skills-table {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .skills-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        .skills-table th {
+            background: #f9fafb;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .skills-table td {
+            padding: 12px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: middle;
+        }
+
+        .skill-checkbox {
+            margin-right: 8px;
+        }
+
+        .skill-level {
+            background: #f9fafb;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* Profile Picture Section */
+        .profile-upload {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #fafafa;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .profile-upload:hover {
+            border-color: #7c3aed;
+            background: #f8f6ff;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #9ca3af;
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        .upload-subtext {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* Submit Button */
+        .submit-button {
+            width: 100%;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: transform 0.2s;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Login Link */
+        .login-link {
+            text-align: center;
+            margin-top: 24px;
+            color: #6b7280;
+        }
+
+        .login-link a {
+            color: #7c3aed;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-container {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .progress-steps {
+                flex-direction: column;
+                gap: 20px;
+                align-items: center;
+            }
+            
+            .page-header h1 {
+                font-size: 36px;
+            }
+        }
     </style>
 </head>
-<header>
-	<div class="navbar">
-		<a href="{% url 'Portal:index' %}" class="navlink">Home</a>
-		<a href="{% url 'Portal:services' %}" class="navlink">Services</a>
-		<a href="{% url 'Portal:contactus' %}" class="navlink">Contact Us</a>
-	</div>
-</header>
 
 <body>
-{% if error_message %}
-<b>{{error_message}}</b>
-<br> {% endif %}
-
-<div data-collapse="medium" data-animation="default" data-duration="400" class="navbar w-nav">
-     
-    <div class="content-wrapper w-container" style="display: flex;">
-
-      
-        <div style="min-width: 650px;"></div>
-
-        <div class="menu-button w-nav-button">
-            <div class="burger-menu w-icon-nav-menu"></div>
+    <!-- Navigation -->
+    <div class="top-navbar">
+        <div class="navbar-container">
+            <a href="{% url 'Portal:index' %}" class="logo">
+                <i class="fas fa-bolt"></i> SwiftTalentForge
+            </a>
+            <div class="nav-links">
+                <a href="{% url 'Portal:index' %}" class="nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="{% url 'Portal:services' %}" class="nav-link">
+                    <i class="fas fa-cogs"></i> Services
+                </a>
+                <a href="{% url 'Portal:contactus' %}" class="nav-link">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </a>
+                <a href="{% url 'Portal:login' %}" class="nav-link">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+            </div>
         </div>
     </div>
-</div>
 
-<br>
-
-<div style="width: 100%; display: flex; font-weight:normal; border: 0px;">
-    <div style="width: 225px;"></div>
-    <div class="card" style="width: 900px; border: 0px;">
-        <div class="card-header" style="font-weight:normal; ">
-            {% if student %}
-            <h4>Fill the remaining details</h4>
-            {% else %}
-            <h4>Sign Up</h4>
-            {% endif %}
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Join SwiftTalentForge</h1>
+            <p>Create your account and start connecting with talented professionals</p>
         </div>
-        <div class="card-body" style="padding-left: 0px;">
-            <form method="post" action="{% url 'Portal:signup' %}" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div style="width: 900px; display: flex;">
-                    <div style="width: 44%">
-                        <div class="form-group">
-                            <label style="font-weight:normal;" for="username">Username</label>
-                            <input autofocus id="username" class="form-control " name="name" required
-                                   onchange="check_username() ">
-                            <div id="username_exist"></div>
 
+        <!-- Progress Steps -->
+        <div class="progress-steps">
+            <div class="step active">
+                <div class="step-number">1</div>
+                <span>Basic Info</span>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <span>Skills & Languages</span>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <span>Profile Picture</span>
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        {% if error_message %}
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Error:</strong> {{ error_message }}
+        </div>
+        {% endif %}
+
+        <!-- Form Card -->
+        <div class="form-card">
+            <form method="post" action="{% url 'Portal:signup' %}" enctype="multipart/form-data" id="signupForm">
+                {% csrf_token %}
+                
+                <div class="form-container">
+                    <!-- Left Column - Basic Information -->
+                    <div class="left-column">
+                        <div class="section-title">
+                            <i class="fas fa-user"></i> Basic Information
                         </div>
+
                         <div class="form-group">
-                            <label style="font-weight:normal;" for="fname">First Name</label>
-                            <input class="form-control" id="fname" name="fname" value="{{student.Student_First_Name}}" required>
+                            <label class="form-label" for="username">
+                                <i class="fas fa-at"></i> Username
+                            </label>
+                            <input 
+                                id="username" 
+                                class="form-input" 
+                                name="name" 
+                                required
+                                placeholder="Choose a unique username" 
+                                onchange="check_username()"
+                                autofocus
+                            >
+                            <div id="username_exist"></div>
                         </div>
+
                         <div class="form-group">
-                            <label style="font-weight:normal;" for="lname">Last Name</label>
-                            <input class="form-control" name="lname" id="lname" value="{{student.Student_Last_name}}" required>
+                            <label class="form-label" for="fname">
+                                <i class="fas fa-user-circle"></i> First Name
+                            </label>
+                            <input 
+                                class="form-input" 
+                                id="fname" 
+                                name="fname" 
+                                value="{{student.Student_First_Name}}" 
+                                placeholder="Enter your first name" 
+                                required
+                            >
                         </div>
+
                         <div class="form-group">
-                            <label style="font-weight:normal;" for="email">Email</label>
+                            <label class="form-label" for="lname">
+                                <i class="fas fa-user-circle"></i> Last Name
+                            </label>
+                            <input 
+                                class="form-input" 
+                                name="lname" 
+                                id="lname" 
+                                value="{{student.Student_Last_name}}" 
+                                placeholder="Enter your last name" 
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="email">
+                                <i class="fas fa-envelope"></i> Email Address
+                            </label>
                             {% if student %}
-                            <input class="form-control" id="email" value="{{student.Student_Email}}" name="email" required>
+                            <input 
+                                class="form-input" 
+                                id="email" 
+                                value="{{student.Student_Email}}" 
+                                name="email" 
+                                placeholder="Enter your email address" 
+                                required
+                            >
                             {% else %}
-                            <input class="form-control" id="email" name="email" required onchange="check_email()">
+                            <input 
+                                class="form-input" 
+                                id="email" 
+                                name="email" 
+                                placeholder="Enter your email address" 
+                                required 
+                                onchange="check_email()"
+                            >
                             {% endif %}
                             <div id="email_exist"></div>
                         </div>
+
                         {% if not student %}
                         <div class="form-group">
-                            <label for="passwd1" style="font-weight:normal;">Password</label>
-                            <input type="password" class="form-control" name="passwd1" id="passwd1" minlength="8"
-                                   required>
+                            <label class="form-label" for="passwd1">
+                                <i class="fas fa-lock"></i> Password
+                            </label>
+                            <input 
+                                type="password" 
+                                class="form-input" 
+                                name="passwd1" 
+                                id="passwd1" 
+                                minlength="8"
+                                placeholder="Create a strong password" 
+                                required
+                            >
                         </div>
+
                         <div class="form-group">
-                            <label for="passwd2" style="font-weight:normal;">Re-enter Password</label>
-                            <input type="password" style="font-weight:normal;" class="form-control" id="passwd2"
-                                   name="passwd2" minlength="8" required
-                                   onchange="check_password()">
+                            <label class="form-label" for="passwd2">
+                                <i class="fas fa-lock"></i> Confirm Password
+                            </label>
+                            <input 
+                                type="password" 
+                                class="form-input" 
+                                id="passwd2" 
+                                name="passwd2" 
+                                minlength="8" 
+                                placeholder="Re-enter your password" 
+                                required 
+                                onchange="check_password()"
+                            >
                             <div id="password_match"></div>
                         </div>
                         {% endif %}
 
                         <div class="form-group">
-                            <label style="font-weight:normal;">Phone No.</label>
-                            <input type="tel" min="0" name="phno" value="{{student.Student_Mobile}}" minlength="10" maxlength="11" required>
+                            <label class="form-label">
+                                <i class="fas fa-phone"></i> Phone Number
+                            </label>
+                            <input 
+                                type="tel" 
+                                class="form-input" 
+                                name="phno" 
+                                value="{{student.Student_Mobile}}" 
+                                minlength="10" 
+                                maxlength="15" 
+                                placeholder="Enter your phone number" 
+                                required
+                            >
                         </div>
+
                         <div class="form-group">
-                            <label style="font-weight:normal;" for="bio">Bio</label>
-                            <input class="form-control" id="bio" placeholder="write something about yourself" name="bio"
-                                   required>
+                            <label class="form-label" for="bio">
+                                <i class="fas fa-pen"></i> Bio
+                            </label>
+                            <textarea 
+                                class="form-textarea" 
+                                id="bio" 
+                                name="bio"
+                                placeholder="Tell us about yourself, your experience, and what makes you unique..." 
+                                required
+                            ></textarea>
                         </div>
 
-                        <select name="batch" class="btn btn-secondary" data-toggle="dropdown">
-                            <option value="UG-1" style="padding-left: 10px;">UnderGraduate 1st year</option>
-                            <option value="UG-2" style="padding-left: 10px; ">UnderGraduate 2nd year</option>
-                            <option value="UG-3" style="padding-left: 10px; ">UnderGraduate 3rd year</option>
-                            <option value="UG-4" style="padding-left: 10px; ">UnderGraduate 4th year</option>
-                            <option value="MS" style="padding-left: 10px; ">MS</option>
-                            <option value="Ph.D" style="padding-left: 10px; ">Ph.D</option>
-                        </select>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-graduation-cap"></i> Academic Level
+                            </label>
+                            <select name="batch" class="form-select">
+                                <option value="UG-1">Undergraduate 1st Year</option>
+                                <option value="UG-2">Undergraduate 2nd Year</option>
+                                <option value="UG-3">Undergraduate 3rd Year</option>
+                                <option value="UG-4">Undergraduate 4th Year</option>
+                                <option value="MS">Master's Degree</option>
+                                <option value="Ph.D">Ph.D</option>
+                            </select>
+                        </div>
 
-                        <select name="gender" class="btn btn-secondary " data-toggle="dropdown">
-                            {% if student %}
-                            {% if student.Student_Gender == 'M' %}
-                            <option value="Male" style="padding-left: 10px; " selected>Male</option>
-                            {% else %}
-                            <option value="Female" style="padding-left: 10px; " selected>Female</option>
-                            {% endif %}
-                            {% else %}
-                            <option value="Male" style="padding-left: 10px; " selected>Male</option>
-                            <option value="Female" style="padding-left: 10px; ">Female</option>
-                            {% endif %}
-                        </select>
-                        <br>
-                        <br>
-
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-user-friends"></i> Gender
+                            </label>
+                            <select name="gender" class="form-select">
+                                {% if student %}
+                                    {% if student.Student_Gender == 'M' %}
+                                        <option value="Male" selected>Male</option>
+                                        <option value="Female">Female</option>
+                                    {% else %}
+                                        <option value="Male">Male</option>
+                                        <option value="Female" selected>Female</option>
+                                    {% endif %}
+                                {% else %}
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                {% endif %}
+                            </select>
+                        </div>
                     </div>
 
-
-                    <div style="width: 10%"></div>
-                    <div style="width: 45%">
-                        <div class="card" style=" border: 0px;">
-                            <table class="table table-striped" style="width: 100%; padding: 0px; border: 0px;">
-                                <tr style="width: 100%; padding: 0px; border: 0px;">
-                                    <td style="width: 100%; padding: 0px;">
-                                        <table style="width: 100%; padding: 0px; border: 0px;">
-                                            <thead class="thead-dark" style="width: 100%; padding: 0px;">
-                                            <tr style="width: 100%; padding: 0px;">
-                                                <th style="width: 55px; font-weight:normal;">#</th>
-                                                <th style="width: 132px; font-weight:normal; ">Skill</th>
-                                                <th style="font-weight:normal; ">Level</th>
-                                            </tr>
-                                            </thead>
-
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr style="width: 100%; padding: 0px;">
-                                    <td style="width: 100%; padding: 0px;">
-                                        <div style="overflow-y: scroll; width: 100%; height: 200px;">
-                                            <table style="width: 100%; padding: 0px;">
-                                                {% for skill in skill_list %}
-                                                <tr style="width: 100%; padding: 0px;">
-
-                                                    <td>{{ forloop.counter }}</td>
-                                                    <td>
-                                                        <input type="checkbox" name="skills[]"
-                                                               value="{{skill.skill_name}}">
-                                                        <span style="padding-left: 10px; "></span>{{skill.skill_name}}
-                                                    </td>
-                                                    <td>
-                                                        <select name="{{skill.skill_name}}" class="btn btn-secondary"
-                                                                data-toggle="dropdown ">
-                                                            <option value="1" style="padding-left: 10px; " selected>
-                                                                Beginner
-                                                            </option>
-                                                            <option value="2" style="padding-left: 10px; ">Intermediate
-                                                            </option>
-                                                            <option value="3" style="padding-left: 10px; ">Advance
-                                                            </option>
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                                {% endfor %}
-
-                                            </table>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-
-                            <table class="table table-striped" style="width: 100%; padding: 0px; ">
-                                <tr style="width: 100%; padding: 0px; ">
-                                    <td style="width: 100%; padding: 0px; ">
-                                        <table style="width: 100%; padding: 0px; ">
-                                            <thead class="thead-dark" style="width: 100%; padding: 0px; ">
-                                            <tr style="width: 100%; padding: 0px; ">
-                                                <th style="width: 55px; font-weight:normal; ">#</th>
-                                                <th style="width: 145px; font-weight:normal; ">Languages</th>
-                                                <th style="font-weight:normal; ">Fluency</th>
-                                            </tr>
-                                            </thead>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr style="width: 100%; padding: 0px; ">
-                                    <td style="width: 100%; padding: 0px; ">
-                                        <div style="overflow-y: scroll; width: 100%; height: 200px; ">
-                                            <table style="width: 100%; padding: 0px; ">
-                                                {% for language in language_list %}
-                                                <tr style="width: 100%; padding: 0px; ">
-                                                    <td>{{ forloop.counter }}</td>
-                                                    <td>
-                                                        <input type="checkbox" name="languages[]"
-                                                               value="{{language.language_name}}">
-                                                        <span style="padding-left: 10px; "></span>{{language.language_name}}
-                                                    </td>
-                                                    <td>
-                                                        <select name="{{language.language_name}}"
-                                                                class="btn btn-secondary" data-toggle="dropdown ">
-                                                            <option value="1" style="padding-left: 10px; " selected>
-                                                                Good
-                                                            </option>
-                                                            <option value="2" style="padding-left: 10px; ">Very Good
-                                                            </option>
-                                                            <option value="3" style="padding-left: 10px; ">Excellent
-                                                            </option>
-                                                        </select>
-                                                </tr>
-                                                {% endfor %}
-                                            </table>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
+                    <!-- Right Column - Skills, Languages & Profile Picture -->
+                    <div class="right-column">
+                        <!-- Technical Skills Section -->
+                        <div class="skills-section">
+                            <div class="skills-header">
+                                <i class="fas fa-cog"></i> Technical Skills
+                            </div>
+                            <div class="skills-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 60%;">Skill</th>
+                                            <th style="width: 40%;">Level</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for skill in skill_list %}
+                                        <tr>
+                                            <td>
+                                                <input 
+                                                    type="checkbox" 
+                                                    class="skill-checkbox" 
+                                                    name="skills[]"
+                                                    value="{{skill.skill_name}}" 
+                                                    id="skill_{{forloop.counter}}"
+                                                >
+                                                <label for="skill_{{forloop.counter}}">
+                                                    {{skill.skill_name}}
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <select name="{{skill.skill_name}}" class="skill-level">
+                                                    <option value="1">Beginner</option>
+                                                    <option value="2">Intermediate</option>
+                                                    <option value="3">Advanced</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <br>
-                        <div class="form-group">
-                            <label style="font-weight:normal; " for="myFile">Upload Image</label>
-                            <br>
-                            <input type="file" id="myFile" name="image" required>
+
+                        <!-- Languages Section -->
+                        <div class="skills-section">
+                            <div class="skills-header">
+                                <i class="fas fa-language"></i> Languages
+                            </div>
+                            <div class="skills-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 60%;">Language</th>
+                                            <th style="width: 40%;">Fluency</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for language in language_list %}
+                                        <tr>
+                                            <td>
+                                                <input 
+                                                    type="checkbox" 
+                                                    class="skill-checkbox" 
+                                                    name="languages[]"
+                                                    value="{{language.language_name}}" 
+                                                    id="lang_{{forloop.counter}}"
+                                                >
+                                                <label for="lang_{{forloop.counter}}">
+                                                    {{language.language_name}}
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <select name="{{language.language_name}}" class="skill-level">
+                                                    <option value="1">Good</option>
+                                                    <option value="2">Very Good</option>
+                                                    <option value="3">Excellent</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Profile Picture Section -->
+                        <div class="skills-section">
+                            <div class="skills-header">
+                                <i class="fas fa-camera"></i> Profile Picture
+                            </div>
+                            <div class="profile-upload" onclick="document.getElementById('myFile').click();">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div class="upload-text">Click to upload your profile picture</div>
+                                <div class="upload-subtext">JPG, PNG or GIF (Max 5MB)</div>
+                                <input type="file" id="myFile" name="image" style="display: none;" accept="image/*" required>
+                            </div>
+                            <div id="file-name" style="margin-top: 12px; color: #059669; font-weight: 500;"></div>
                         </div>
                     </div>
                 </div>
-                <input style="width: 900px; " type="submit" value="Register" class="btn btn-primary btn-block ">
-                <p>You already have an account <a href="{% url 'Portal:login' %}">Login here</a>  <ahref</p>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-button">
+                    <i class="fas fa-user-plus"></i> Create My Account
+                </button>
+
+                <!-- Login Link -->
+                <div class="login-link">
+                    Already have an account? <a href="{% url 'Portal:login' %}">Sign in here</a>
+                </div>
             </form>
         </div>
     </div>
-</div>
-<br>
-
-
 </body>
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js " type="text/javascript"
-        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+
 <script>
+    // Enhanced form validation and user feedback
+    function check_username() {
+        var username = $("input[name='name']").val();
+        var usernameDiv = $('#username_exist');
+        var submitBtn = $("button[type=submit]");
 
-	  $("input[name=username]").change(check_username());
+        if (username.length < 3) {
+            showValidationMessage(usernameDiv, 'error', '<i class="fas fa-exclamation-circle"></i> Username must be at least 3 characters');
+            submitBtn.prop("disabled", true);
+            return;
+        }
 
-	  function check_username() {
-	    var username = $("input[name='name' ]").val();
+        showValidationMessage(usernameDiv, 'loading', '<i class="fas fa-spinner fa-spin"></i> Checking availability...');
 
-	    $.ajax({
-	      type: "POST",
-	      url: "{% url 'Portal:check_username' %}",
-	      contentType: "application/json",
-	      data: JSON.stringify({ 'username': username }),
-	      success: function (data) {
-	        $('#username_exist').html(data);
-	        if (data) {
-	          $("input[type=submit]").attr("disabled", "disabled");
-	        }
-	        else {
-	          $("input[type=submit]").removeAttr("disabled");
-	        }
-	      }
-	    });
-	  }
+        $.ajax({
+            type: "POST",
+            url: "{% url 'Portal:check_username' %}",
+            contentType: "application/json",
+            data: JSON.stringify({'username': username}),
+            success: function (data) {
+                if (data) {
+                    showValidationMessage(usernameDiv, 'error', '<i class="fas fa-times-circle"></i> Username already taken');
+                    submitBtn.prop("disabled", true);
+                } else {
+                    showValidationMessage(usernameDiv, 'success', '<i class="fas fa-check-circle"></i> Username available');
+                    submitBtn.prop("disabled", false);
+                }
+            },
+            error: function() {
+                showValidationMessage(usernameDiv, 'error', '<i class="fas fa-exclamation-triangle"></i> Error checking username');
+            }
+        });
+    }
 
-	  function check_password() {
-	    var passwd1 = $("input[name='passwd1' ]").val();
-	    var passwd2 = $("input[name='passwd2' ]").val();
+    function check_password() {
+        var passwd1 = $("input[name='passwd1']").val();
+        var passwd2 = $("input[name='passwd2']").val();
+        var passwordDiv = $('#password_match');
+        var submitBtn = $("button[type=submit]");
 
+        if (passwd1 === passwd2 && passwd1.length >= 8) {
+            showValidationMessage(passwordDiv, 'success', '<i class="fas fa-check-circle"></i> Passwords match');
+            submitBtn.prop("disabled", false);
+        } else if (passwd1 !== passwd2) {
+            showValidationMessage(passwordDiv, 'error', '<i class="fas fa-times-circle"></i> Passwords don\'t match');
+            submitBtn.prop("disabled", true);
+        } else {
+            showValidationMessage(passwordDiv, 'error', '<i class="fas fa-exclamation-circle"></i> Password must be at least 8 characters');
+            submitBtn.prop("disabled", true);
+        }
+    }
 
-	    if (passwd1 === passwd2) {
-	      $("input[type=submit]").removeAttr("disabled");
-	      $("#password_match").html('');
-	    }
-	    else {
-	      $("input[type=submit]").attr("disabled", "disabled");
-	      $("#password_match").html('Passwords don\'t match');
+    function check_email() {
+        var email = $("input[name='email']").val();
+        var emailDiv = $('#email_exist');
+        var submitBtn = $("button[type=submit]");
 
-	    }
-	  }
+        if (!email.includes('@') || !email.includes('.')) {
+            showValidationMessage(emailDiv, 'error', '<i class="fas fa-exclamation-circle"></i> Please enter a valid email');
+            submitBtn.prop("disabled", true);
+            return;
+        }
 
-	  function check_email() {
-	    var email = $("input[name='email' ]").val();
+        showValidationMessage(emailDiv, 'loading', '<i class="fas fa-spinner fa-spin"></i> Checking email...');
 
-	    $.ajax({
-	      type: "POST",
-	      url: "{% url 'Portal:check_email' %}",
-	      contentType: "application/json",
-	      data: JSON.stringify({ 'email': email }),
-	      success: function (data) {
-	        $('#email_exist').html(data);
-	        if (data) {
-	          $("input[type=submit]").attr("disabled", "disabled");
-	        }
-	        else {
-	          $("input[type=submit]").removeAttr("disabled");
-	        }
-	      }
-	    });
-	  }
+        $.ajax({
+            type: "POST",
+            url: "{% url 'Portal:check_email' %}",
+            contentType: "application/json",
+            data: JSON.stringify({'email': email}),
+            success: function (data) {
+                if (data) {
+                    showValidationMessage(emailDiv, 'error', '<i class="fas fa-times-circle"></i> Email already registered');
+                    submitBtn.prop("disabled", true);
+                } else {
+                    showValidationMessage(emailDiv, 'success', '<i class="fas fa-check-circle"></i> Email available');
+                    submitBtn.prop("disabled", false);
+                }
+            },
+            error: function() {
+                showValidationMessage(emailDiv, 'error', '<i class="fas fa-exclamation-triangle"></i> Error checking email');
+            }
+        });
+    }
 
+    function showValidationMessage(element, type, message) {
+        var className = 'validation-message';
+        if (type === 'success') {
+            className += ' validation-success';
+        } else if (type === 'error') {
+            className += ' validation-error';
+        }
+        
+        element.html(message);
+        element.attr('class', className);
+        element.show();
+    }
 
+    // File upload enhancement
+    document.getElementById('myFile').addEventListener('change', function(e) {
+        var fileNameDiv = document.getElementById('file-name');
+        if (e.target.files && e.target.files[0]) {
+            var fileName = e.target.files[0].name;
+            var fileSize = (e.target.files[0].size / 1024 / 1024).toFixed(2);
+            fileNameDiv.innerHTML = '<i class="fas fa-check-circle"></i> Selected: ' + fileName + ' (' + fileSize + ' MB)';
+        }
+    });
 
+    // Form submission enhancement
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+        var submitBtn = document.querySelector('.submit-btn');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+        submitBtn.disabled = true;
+    });
+
+    // Auto-resize textarea
+    document.getElementById('bio').addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+    });
+
+    // Phone number formatting
+    $("input[name='phno']").on('input', function() {
+        this.value = this.value.replace(/[^0-9+]/g, '');
+    });
+
+    // Enhanced form animations
+    $(document).ready(function() {
+        // Animate form sections
+        $('.left-section, .right-section').hide().fadeIn(800);
+        
+        // Add focus effects to form controls
+        $('.form-control').on('focus', function() {
+            $(this).addClass('focused');
+        }).on('blur', function() {
+            $(this).removeClass('focused');
+        });
+
+        // Skills and languages checkbox interaction
+        $('input[type="checkbox"]').on('change', function() {
+            var row = $(this).closest('tr');
+            var select = row.find('select');
+            
+            if (this.checked) {
+                row.addClass('table-active');
+                select.prop('disabled', false);
+            } else {
+                row.removeClass('table-active');
+                select.prop('disabled', true);
+                select.val('1');
+            }
+        });
+
+        // Initialize disabled selects
+        $('input[type="checkbox"]').each(function() {
+            var row = $(this).closest('tr');
+            var select = row.find('select');
+            select.prop('disabled', !this.checked);
+        });
+    });
 </script>
 
 </html>
