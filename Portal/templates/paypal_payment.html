@@ -320,20 +320,32 @@
                 document.getElementById('loading-overlay').style.display = 'flex';
                 
                 return actions.order.capture().then(function(details) {
+                    console.log('PayPal payment captured:', details);
+                    
                     // Send payment data to server
+                    const requestData = {
+                        orderID: data.orderID,
+                        payer: details.payer
+                    };
+                    console.log('Sending to server:', requestData);
+                    
                     fetch('{% url "Portal:paypal_success" payment.payment_id %}', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-CSRFToken': '{{ csrf_token }}'
                         },
-                        body: JSON.stringify({
-                            orderID: data.orderID,
-                            payer: details.payer
-                        })
+                        body: JSON.stringify(requestData)
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        console.log('Server response:', response);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
+                        console.log('Server data:', data);
                         if (data.success) {
                             window.location.href = data.redirect_url;
                         } else {
@@ -344,7 +356,7 @@
                     .catch(error => {
                         document.getElementById('loading-overlay').style.display = 'none';
                         console.error('Error:', error);
-                        alert('Payment processing failed. Please try again.');
+                        alert('Payment processing failed. Please try again. Error: ' + error.message);
                     });
                 });
             },

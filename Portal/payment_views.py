@@ -613,14 +613,20 @@ def paypal_cancel(request, project_id):
 def paypal_success(request, payment_id):
     """Handle successful PayPal payment (webhook/AJAX)"""
     try:
+        print(f"DEBUG: PayPal success webhook called for payment {payment_id}")
+        print(f"DEBUG: Request method: {request.method}")
+        print(f"DEBUG: Request body: {request.body}")
+        
         payment = get_object_or_404(Payment, payment_id=payment_id)
+        print(f"DEBUG: Found payment: {payment}")
         
         # Get PayPal order details from request
         data = json.loads(request.body)
         order_id = data.get('orderID')
         payer_info = data.get('payer', {})
         
-        print(f"DEBUG: PayPal success webhook for payment {payment_id}")
+        print(f"DEBUG: PayPal order_id: {order_id}")
+        print(f"DEBUG: PayPal payer_info: {payer_info}")
         
         # Update payment with PayPal details
         payment.paypal_order_id = order_id
@@ -633,7 +639,11 @@ def paypal_success(request, payment_id):
         payment.project.save()
         
         # Send confirmation emails
-        send_payment_confirmation_emails(payment)
+        try:
+            send_payment_confirmation_emails(payment)
+        except Exception as email_error:
+            print(f"DEBUG: Email sending failed: {email_error}")
+            # Don't fail the payment for email issues
         
         logger.info(f"PayPal payment {payment_id} completed successfully")
         
@@ -644,8 +654,11 @@ def paypal_success(request, payment_id):
         
     except Exception as e:
         print(f"DEBUG: PayPal success error: {str(e)}")
+        print(f"DEBUG: Error type: {type(e)}")
+        import traceback
+        print(f"DEBUG: Traceback: {traceback.format_exc()}")
         logger.error(f"PayPal payment error: {str(e)}")
-        return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 @csrf_exempt
 @require_POST
