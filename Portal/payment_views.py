@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
@@ -16,6 +17,17 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 
 logger = logging.getLogger(__name__)
+
+def disable_csp(view_func):
+    """Decorator to disable Content Security Policy for PayPal integration"""
+    def wrapper(request, *args, **kwargs):
+        response = view_func(request, *args, **kwargs)
+        # Remove CSP headers that might interfere with PayPal
+        if hasattr(response, 'headers'):
+            response.headers.pop('Content-Security-Policy', None)
+            response.headers.pop('X-Content-Type-Options', None)
+        return response
+    return wrapper
 
 # Configure Stripe with safe fallback
 stripe.api_key = getattr(settings, 'STRIPE_SECRET_KEY', '')
@@ -448,6 +460,8 @@ def payment_cancelled(request, payment_id):
 # PayPal Integration Views
 
 @login_required
+@xframe_options_exempt
+@disable_csp
 def paypal_payment(request, project_id):
     """Initiate PayPal payment for a project"""
     try:
@@ -610,6 +624,7 @@ def paypal_cancel(request, project_id):
 
 @csrf_exempt
 @require_POST
+@disable_csp
 def paypal_success(request, payment_id):
     """Handle successful PayPal payment (webhook/AJAX)"""
     try:
