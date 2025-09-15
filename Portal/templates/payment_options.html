@@ -476,8 +476,8 @@
                 </p>
             </div>
 
-            <!-- NEW PayPal Payment Link/Button Generator Section -->
-            <div id="paypal-generator-form" class="payment-form" style="margin-top: 30px; border-top: 2px solid #e5e7eb; padding-top: 30px;">
+            <!-- Alternative PayPal Payment Option - HIDDEN FOR NOW -->
+            <div id="paypal-generator-form" class="payment-form" style="display: none; margin-top: 30px; border-top: 2px solid #e5e7eb; padding-top: 30px;">
                 <h4 style="margin-bottom: 20px; color: #1f2937;">
                     <i class="fab fa-paypal"></i>
                     Alternative PayPal Payment Option
@@ -618,9 +618,11 @@
         });
         {% endif %}
 
-        // Payment method selection
+        // Payment method selection with debugging
         document.querySelectorAll('.payment-method').forEach(method => {
             method.addEventListener('click', function() {
+                console.log('Payment method clicked:', this.dataset.method);
+                
                 // Remove active class from all methods and forms
                 document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
                 document.querySelectorAll('.payment-form').forEach(f => f.classList.remove('active'));
@@ -631,20 +633,28 @@
                 // Show corresponding form
                 const methodType = this.dataset.method;
                 const form = document.getElementById(methodType + '-form');
+                
+                console.log('Looking for form:', methodType + '-form', 'Found:', !!form);
+                
                 if (form) {
                     form.classList.add('active');
+                    console.log('Activated form for:', methodType);
                     
                     // Mount Stripe elements for card payments
-                    if (methodType === 'card' && cardElement && !cardElement._mounted) {
+                    if (methodType === 'card' && typeof cardElement !== 'undefined' && cardElement && !cardElement._mounted) {
                         cardElement.mount('#card-element');
                         cardElement._mounted = true;
+                        console.log('Stripe card element mounted');
                     }
                     
                     // Initialize PayPal buttons when PayPal form is shown
                     if (methodType === 'paypal' && !window.paypalInitialized) {
+                        console.log('Initializing PayPal...');
                         initializePayPal();
                         window.paypalInitialized = true;
                     }
+                } else {
+                    console.error('Form not found for method:', methodType);
                 }
             });
         });
@@ -680,8 +690,8 @@
                         .then(response => response.json())
                         .then(result => {
                             if (result.success) {
-                                // Automatically initiate project after successful payment
-                                initiateProjectAfterPayment(result.payment_id);
+                                // Redirect to success page
+                                window.location.href = result.redirect_url || '{% url "Portal:project_detail" project.id %}';
                             } else {
                                 alert('Payment processing failed. Please try again.');
                             }
@@ -765,8 +775,8 @@
                             .then(response => response.json())
                             .then(result => {
                                 if (result.success) {
-                                    // Automatically initiate project after successful payment
-                                    initiateProjectAfterPayment(result.payment_id);
+                                    // Redirect to success page
+                                    window.location.href = result.redirect_url || '{% url "Portal:project_detail" project.id %}';
                                 } else {
                                     alert('Payment processing failed: ' + (result.error || 'Unknown error'));
                                 }
@@ -822,37 +832,6 @@
             setTimeout(() => {
                 errorDiv.style.display = 'none';
             }, 10000);
-        }
-
-        // NEW: Automatic Project Initiation after Payment
-        function initiateProjectAfterPayment(paymentId) {
-            fetch('{% url "Portal:initiate_project_after_payment" project.id %}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                },
-                body: JSON.stringify({
-                    payment_id: paymentId
-                }),
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    // Show success message and redirect
-                    alert('Payment successful! Project has been initiated and is now in progress.');
-                    window.location.href = result.redirect_url || '{% url "Portal:project_detail" project.id %}';
-                } else {
-                    // Payment succeeded but project initiation failed
-                    alert('Payment successful, but there was an issue initiating the project. Please contact support.');
-                    window.location.href = '{% url "Portal:project_detail" project.id %}';
-                }
-            })
-            .catch(error => {
-                console.error('Project initiation error:', error);
-                alert('Payment successful! Redirecting to project page...');
-                window.location.href = '{% url "Portal:project_detail" project.id %}';
-            });
         }
 
         // Card payment form submission
@@ -929,9 +908,16 @@
             window.location.href = '{% url "Portal:create_payment" project.id %}?method=alipay';
         });
 
-        // Initialize PayPal Generator
+        // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            initializePayPalGenerator();
+            // Don't initialize PayPal generator automatically - only when needed
+            // initializePayPalGenerator();
+            
+            // Auto-select first payment method to test functionality
+            const firstPaymentMethod = document.querySelector('.payment-method[data-method="card"]');
+            if (firstPaymentMethod) {
+                firstPaymentMethod.click();
+            }
         });
     </script>
 </body>

@@ -478,15 +478,15 @@
                 <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
                     <i class="fas fa-project-diagram"></i>
                 </div>
-                <div class="stat-number">{{ current_projects|length }}</div>
-                <div class="stat-label">Projects with No Tasks</div>
+                <div class="stat-number">{{ stats.total_projects }}</div>
+                <div class="stat-label">Total Projects</div>
             </div>
             
             <div class="stat-card">
                 <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
                     <i class="fas fa-tasks"></i>
                 </div>
-                <div class="stat-number">{{ active|length }}</div>
+                <div class="stat-number">{{ stats.total_active }}</div>
                 <div class="stat-label">Active Tasks</div>
             </div>
             
@@ -494,52 +494,55 @@
                 <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
                     <i class="fas fa-check-circle"></i>
                 </div>
-                <div class="stat-number">{{ completed|length }}</div>
+                <div class="stat-number">{{ stats.total_completed }}</div>
                 <div class="stat-label">Completed Tasks</div>
             </div>
             
-            <!-- NEW: Messages Statistics Card -->
-            <div class="stat-card" onclick="window.location.href='{% url 'Portal:messages' %}'" style="cursor: pointer;">
+            <!-- Earnings Statistics Card -->
+            <div class="stat-card">
                 <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-                    <i class="fas fa-comments"></i>
+                    <i class="fas fa-dollar-sign"></i>
                 </div>
-                <div class="stat-number" id="total-conversations">0</div>
-                <div class="stat-label">Active Conversations</div>
+                <div class="stat-number">${{ stats.total_earnings|floatformat:0 }}</div>
+                <div class="stat-label">Total Earnings</div>
             </div>
         </div>
 
         <!-- Projects Grid -->
         <div class="projects-grid">
-            <!-- Projects with No Tasks -->
+            <!-- Posted Projects (for clients) -->
             <div class="section-card">
                 <div class="section-header">
                     <div class="section-icon projects">
                         <i class="fas fa-project-diagram"></i>
                     </div>
-                    <div class="section-title">Projects with No Tasks</div>
+                    <div class="section-title">Posted Projects</div>
                 </div>
                 
                 <div class="projects-container">
-                    {% if current_projects %}
-                        {% for job in current_projects %}
+                    {% if posted_projects %}
+                        {% for project in posted_projects %}
                             <div class="project-card">
                                 <div class="project-header">
                                     <div class="project-info">
                                         <div class="project-title">
-                                            <a href="{% url 'Portal:project_description' job.id %}">
-                                                {{ job.project_name }}
+                                            <a href="{% url 'Portal:project_detail' project.id %}">
+                                                {{ project.project_name }}
                                             </a>
                                         </div>
+                                        <div class="project-meta">
+                                            Posted on {{ project.posted_on|date:"M d, Y" }}
+                                        </div>
                                         <div class="project-date">
-                                            Added on {{ job.postedOn }}
+                                            {% if project.bids_count > 0 %}
+                                                {{ project.bids_count }} bid{{ project.bids_count|pluralize }}
+                                            {% else %}
+                                                No bids yet
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="project-amount">
-                                        {% if job.credits == 'Paid' %}
-                                            ${{ job.amount }}
-                                        {% else %}
-                                            {{ job.mention }}
-                                        {% endif %}
+                                        ${{ project.budget }}
                                     </div>
                                 </div>
                             </div>
@@ -547,8 +550,8 @@
                     {% else %}
                         <div class="no-projects">
                             <i class="fas fa-project-diagram"></i>
-                            <h3>No Projects Yet</h3>
-                            <p>You haven't created any projects without tasks.</p>
+                            <h3>No Posted Projects</h3>
+                            <p>You haven't posted any projects yet.</p>
                         </div>
                     {% endif %}
                 </div>
@@ -564,41 +567,68 @@
                 </div>
                 
                 <div class="projects-container">
-                    {% if active %}
-                        {% for job in active %}
+                    {% if active_tasks_as_client or active_tasks_as_freelancer %}
+                        <!-- Active Tasks as Client -->
+                        {% for task_data in active_tasks_as_client %}
                             <div class="project-card">
-                                <div class="role-badge {% if request.user.username == job.project.leader.user.username %}leader{% else %}working{% endif %}">
-                                    {% if request.user.username == job.project.leader.user.username %}
-                                        Leader
-                                    {% else %}
-                                        Working
-                                    {% endif %}
-                                </div>
                                 
                                 <div class="project-header">
                                     <div class="project-info">
                                         <div class="project-title">
-                                            <a href="{% url 'Portal:task_description' job.project.id job.id %}">
-                                                {{ job.task_name }}
+                                            <a href="{% url 'Portal:project_detail' task_data.project.id %}">
+                                                {{ task_data.project.project_name }}
                                             </a>
                                         </div>
                                         <div class="project-meta">
-                                            A task from 
-                                            <a href="{% url 'Portal:project_description' job.project.id %}" class="project-link">
-                                                {{ job.project.project_name }}
-                                            </a> 
-                                            Project
+                                            Freelancer: {{ task_data.freelancer.user.first_name }} {{ task_data.freelancer.user.last_name }}
                                         </div>
                                         <div class="project-date">
-                                            Added on {{ job.addedOn }}
+                                            Deadline: {{ task_data.project.deadline }}
+                                            {% if task_data.is_overdue %}
+                                                <span style="color: #dc3545; font-weight: bold;">({{ task_data.days_overdue }} days overdue)</span>
+                                            {% else %}
+                                                <span style="color: #28a745; font-weight: bold;">({{ task_data.days_remaining }} days left)</span>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="project-amount">
-                                        {% if job.credits == 'Paid' %}
-                                            ${{ job.amount }}
+                                        ${{ task_data.payment.gross_amount }}
+                                        {% if task_data.payment.escrow_held %}
+                                            <div style="font-size: 0.8rem; color: #856404;">In Escrow</div>
                                         {% else %}
-                                            {{ job.mention }}
+                                            <div style="font-size: 0.8rem; color: #28a745;">Released</div>
                                         {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        
+                        <!-- Active Tasks as Freelancer -->
+                        {% for task_data in active_tasks_as_freelancer %}
+                            <div class="project-card">
+                                
+                                <div class="project-header">
+                                    <div class="project-info">
+                                        <div class="project-title">
+                                            <a href="{% url 'Portal:project_detail' task_data.project.id %}">
+                                                {{ task_data.project.project_name }}
+                                            </a>
+                                        </div>
+                                        <div class="project-meta">
+                                            Client: {{ task_data.client.user.first_name }} {{ task_data.client.user.last_name }}
+                                        </div>
+                                        <div class="project-date">
+                                            Deadline: {{ task_data.project.deadline }}
+                                            {% if task_data.is_overdue %}
+                                                <span style="color: #dc3545; font-weight: bold;">({{ task_data.days_overdue }} days overdue)</span>
+                                            {% else %}
+                                                <span style="color: #28a745; font-weight: bold;">({{ task_data.days_remaining }} days left)</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="project-amount">
+                                        ${{ task_data.payment.net_amount }}
+                                        <div style="font-size: 0.8rem; color: #6c757d;">Your earnings</div>
                                     </div>
                                 </div>
                             </div>
@@ -623,41 +653,54 @@
                 </div>
                 
                 <div class="projects-container">
-                    {% if completed %}
-                        {% for job in completed %}
+                    {% if completed_tasks_as_client or completed_tasks_as_freelancer %}
+                        <!-- Completed Tasks as Client -->
+                        {% for task_data in completed_tasks_as_client %}
                             <div class="project-card">
-                                <div class="role-badge {% if request.user.username == job.project.leader.user.username %}leader{% else %}working{% endif %}">
-                                    {% if request.user.username == job.project.leader.user.username %}
-                                        Leader
-                                    {% else %}
-                                        Working
-                                    {% endif %}
-                                </div>
                                 
                                 <div class="project-header">
                                     <div class="project-info">
                                         <div class="project-title">
-                                            <a href="{% url 'Portal:task_description' job.project.id job.id %}">
-                                                {{ job.task_name }}
+                                            <a href="{% url 'Portal:project_detail' task_data.project.id %}">
+                                                {{ task_data.project.project_name }}
                                             </a>
                                         </div>
                                         <div class="project-meta">
-                                            A task from 
-                                            <a href="{% url 'Portal:project_description' job.project.id %}" class="project-link">
-                                                {{ job.project.project_name }}
-                                            </a> 
-                                            Project
+                                            Freelancer: {{ task_data.freelancer.user.first_name }} {{ task_data.freelancer.user.last_name }}
                                         </div>
                                         <div class="project-date">
-                                            Added on {{ job.addedOn }}
+                                            Completed on {{ task_data.project.deadline }}
                                         </div>
                                     </div>
                                     <div class="project-amount">
-                                        {% if job.credits == 'Paid' %}
-                                            ${{ job.amount }}
-                                        {% else %}
-                                            {{ job.mention }}
-                                        {% endif %}
+                                        ${{ task_data.payment.gross_amount }}
+                                        <div style="font-size: 0.8rem; color: #28a745;">Payment Released</div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        
+                        <!-- Completed Tasks as Freelancer -->
+                        {% for task_data in completed_tasks_as_freelancer %}
+                            <div class="project-card">
+                                
+                                <div class="project-header">
+                                    <div class="project-info">
+                                        <div class="project-title">
+                                            <a href="{% url 'Portal:project_detail' task_data.project.id %}">
+                                                {{ task_data.project.project_name }}
+                                            </a>
+                                        </div>
+                                        <div class="project-meta">
+                                            Client: {{ task_data.client.user.first_name }} {{ task_data.client.user.last_name }}
+                                        </div>
+                                        <div class="project-date">
+                                            Completed on {{ task_data.project.deadline }}
+                                        </div>
+                                    </div>
+                                    <div class="project-amount">
+                                        ${{ task_data.payment.net_amount }}
+                                        <div style="font-size: 0.8rem; color: #28a745;">Payment Received</div>
                                     </div>
                                 </div>
                             </div>

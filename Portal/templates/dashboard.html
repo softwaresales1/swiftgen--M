@@ -420,6 +420,10 @@
                         <i class="fas fa-folder"></i>
                         My Projects
                     </a>
+                    <a href="{% url 'Portal:payment_dashboard' %}" class="nav-link">
+                        <i class="fas fa-credit-card"></i>
+                        Payments
+                    </a>
                     <a href="{% url 'Portal:profile' request.user.username %}" class="nav-link">
                         <i class="fas fa-user"></i>
                         Profile
@@ -474,6 +478,14 @@
                 </div>
                 <div class="action-title">Post Project</div>
                 <div class="action-desc">Create new project</div>
+            </a>
+            
+            <a href="{% url 'Portal:payment_dashboard' %}" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div class="action-title">Payment Dashboard</div>
+                <div class="action-desc">Manage payments & earnings</div>
             </a>
             
             <a href="{% url 'Portal:myprojects' %}" class="action-card">

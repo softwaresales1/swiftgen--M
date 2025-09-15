@@ -689,7 +689,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="submit-button" onclick="console.log('Button clicked!'); return true;">
+                <button type="submit" class="submit-button">
                     <i class="fas fa-user-plus"></i> Create My Account
                 </button>
 
@@ -817,7 +817,7 @@
 
     // Form submission enhancement
     document.getElementById('signupForm').addEventListener('submit', function(e) {
-        var submitBtn = document.querySelector('.submit-button');
+        var submitBtn = document.querySelector('.submit-btn');
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
         submitBtn.disabled = true;
     });

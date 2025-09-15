@@ -1196,14 +1196,115 @@ def give_rating(cuser):
 
 def myprojects(request):
     if request.user.is_authenticated:
-        context={}
-        cuser=CustomUser.objects.get(user=request.user)
-        posted_tasks = [j for i in cuser.project_set.all() for j in i.task_set.all()]
-        contributor_tasks=[i.task for i in cuser.contributor_set.all()]
-        context['current_projects']=[i for i in cuser.project_set.all() if i.task_set.count()==0]
-        context['completed']=[i for i in posted_tasks if i.isCompleted==True]+[i for i in contributor_tasks if i.isCompleted==True]
-        context['active']=[i for i in posted_tasks if i.isCompleted==False]+[i for i in contributor_tasks if i.isCompleted==False]
-        return render(request, 'myprojects.html',context)
+        context = {}
+        cuser = CustomUser.objects.get(user=request.user)
+        
+        # Get projects as CLIENT (projects posted by user)
+        client_projects = Project.objects.filter(leader=cuser).order_by('-postedOn')
+        
+        # Get projects as FREELANCER (projects where user has accepted bids)
+        freelancer_projects = Project.objects.filter(
+            bids__freelancer=cuser,
+            bids__status='accepted'
+        ).order_by('-postedOn')
+        
+        # ACTIVE TASKS (Projects in progress)
+        active_tasks_as_client = []
+        active_tasks_as_freelancer = []
+        
+        # Client active tasks (projects with payments made)
+        for project in client_projects:
+            if project.project_status in ['hired', 'in_progress', 'submitted']:
+                # Get payment info
+                payment = project.payments.filter(status='completed').first()
+                if payment:
+                    # Calculate time remaining
+                    from django.utils import timezone
+                    time_remaining = project.deadline - timezone.now().date()
+                    days_remaining = time_remaining.days
+                    
+                    active_tasks_as_client.append({
+                        'project': project,
+                        'payment': payment,
+                        'days_remaining': days_remaining,
+                        'days_overdue': abs(days_remaining) if days_remaining < 0 else 0,
+                        'is_overdue': days_remaining < 0,
+                        'freelancer': payment.freelancer,
+                    })
+        
+        # Freelancer active tasks (projects where they're hired)
+        for project in freelancer_projects:
+            if project.project_status in ['hired', 'in_progress', 'submitted']:
+                # Get payment info
+                payment = project.payments.filter(
+                    freelancer=cuser,
+                    status='completed'
+                ).first()
+                if payment:
+                    # Calculate time remaining
+                    from django.utils import timezone
+                    time_remaining = project.deadline - timezone.now().date()
+                    days_remaining = time_remaining.days
+                    
+                    active_tasks_as_freelancer.append({
+                        'project': project,
+                        'payment': payment,
+                        'days_remaining': days_remaining,
+                        'days_overdue': abs(days_remaining) if days_remaining < 0 else 0,
+                        'is_overdue': days_remaining < 0,
+                        'client': project.leader,
+                    })
+        
+        # COMPLETED TASKS
+        completed_tasks_as_client = []
+        completed_tasks_as_freelancer = []
+        
+        # Client completed tasks
+        for project in client_projects:
+            if project.project_status == 'completed':
+                payment = project.payments.filter(status='completed').first()
+                if payment:
+                    completed_tasks_as_client.append({
+                        'project': project,
+                        'payment': payment,
+                        'freelancer': payment.freelancer,
+                    })
+        
+        # Freelancer completed tasks
+        for project in freelancer_projects:
+            if project.project_status == 'completed':
+                payment = project.payments.filter(
+                    freelancer=cuser,
+                    status='completed'
+                ).first()
+                if payment:
+                    completed_tasks_as_freelancer.append({
+                        'project': project,
+                        'payment': payment,
+                        'client': project.leader,
+                    })
+        
+        # CURRENT PROJECTS (Projects without bids/payments yet)
+        current_projects = client_projects.filter(
+            project_status__in=['posted', 'bidding']
+        )
+        
+        # Update context
+        context['active_tasks_as_client'] = active_tasks_as_client
+        context['active_tasks_as_freelancer'] = active_tasks_as_freelancer
+        context['completed_tasks_as_client'] = completed_tasks_as_client
+        context['completed_tasks_as_freelancer'] = completed_tasks_as_freelancer
+        context['current_projects'] = current_projects
+        
+        # Stats for the dashboard
+        context['stats'] = {
+            'active_count': len(active_tasks_as_client) + len(active_tasks_as_freelancer),
+            'completed_count': len(completed_tasks_as_client) + len(completed_tasks_as_freelancer),
+            'projects_with_no_tasks': current_projects.count(),
+            'active_conversations': 4,  # This can be calculated from conversations later
+        }
+        
+        return render(request, 'myprojects.html', context)
     return render(request, 'login.html')
 
 def task_editfunction(request, project_id, task_id):
