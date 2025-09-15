@@ -300,19 +300,38 @@
         </div>
     </div>
 
-    <!-- PayPal SDK -->
-    <script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&currency=USD"></script>
+    <!-- PayPal SDK with enhanced debugging -->
+    <script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&currency=USD&disable-funding=credit,card&debug=true"></script>
     
     <script>
+        console.log('PayPal Client ID:', '{{ paypal_client_id }}');
+        console.log('Payment Amount:', '{{ gross_amount }}');
+        console.log('Environment:', 'sandbox');
+        
+        // Check if PayPal is loaded
+        if (typeof paypal === 'undefined') {
+            console.error('PayPal SDK failed to load');
+            alert('PayPal SDK failed to load. Please refresh the page and try again.');
+        } else {
+            console.log('PayPal SDK loaded successfully');
+        }
+        
         paypal.Buttons({
+            env: 'sandbox', // explicitly set sandbox
             createOrder: function(data, actions) {
+                console.log('Creating PayPal order...');
                 return actions.order.create({
                     purchase_units: [{
                         amount: {
-                            value: '{{ gross_amount }}'
+                            value: '{{ gross_amount }}',
+                            currency_code: 'USD'
                         },
-                        description: 'Payment for project: {{ project.project_name }}'
+                        description: 'Payment for project: {{ project.project_name }}',
+                        soft_descriptor: 'SwiftTalentForge'
                     }]
+                }).catch(function(err) {
+                    console.error('Error creating PayPal order:', err);
+                    alert('Failed to create PayPal order: ' + (err.message || 'Unknown error'));
                 });
             },
             onApprove: function(data, actions) {
@@ -320,32 +339,20 @@
                 document.getElementById('loading-overlay').style.display = 'flex';
                 
                 return actions.order.capture().then(function(details) {
-                    console.log('PayPal payment captured:', details);
-                    
                     // Send payment data to server
-                    const requestData = {
-                        orderID: data.orderID,
-                        payer: details.payer
-                    };
-                    console.log('Sending to server:', requestData);
-                    
                     fetch('{% url "Portal:paypal_success" payment.payment_id %}', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-CSRFToken': '{{ csrf_token }}'
                         },
-                        body: JSON.stringify(requestData)
+                        body: JSON.stringify({
+                            orderID: data.orderID,
+                            payer: details.payer
+                        })
                     })
-                    .then(response => {
-                        console.log('Server response:', response);
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
+                    .then(response => response.json())
                     .then(data => {
-                        console.log('Server data:', data);
                         if (data.success) {
                             window.location.href = data.redirect_url;
                         } else {
@@ -356,13 +363,13 @@
                     .catch(error => {
                         document.getElementById('loading-overlay').style.display = 'none';
                         console.error('Error:', error);
-                        alert('Payment processing failed. Please try again. Error: ' + error.message);
+                        alert('Payment processing failed. Please try again.');
                     });
                 });
             },
             onCancel: function(data) {
                 // Handle payment cancellation
-                fetch('{% url "Portal:paypal_cancel" payment.payment_id %}', {
+                fetch('{% url "Portal:paypal_cancel" project.id %}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

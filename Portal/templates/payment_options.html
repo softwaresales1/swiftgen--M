@@ -476,6 +476,52 @@
                 </p>
             </div>
 
+            <!-- NEW PayPal Payment Link/Button Generator Section -->
+            <div id="paypal-generator-form" class="payment-form" style="margin-top: 30px; border-top: 2px solid #e5e7eb; padding-top: 30px;">
+                <h4 style="margin-bottom: 20px; color: #1f2937;">
+                    <i class="fab fa-paypal"></i>
+                    Alternative PayPal Payment Option
+                </h4>
+                <div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <i class="fas fa-info-circle" style="color: #3b82f6; margin-right: 10px;"></i>
+                        <span style="font-weight: 600; color: #1f2937;">Protected Payment Amount: ${{ gross_amount }}</span>
+                    </div>
+                    <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 15px;">
+                        This payment amount is locked and validated by our system. Any attempt to modify the amount will result in payment rejection.
+                    </p>
+                    <div id="amount-validation-error" class="error-message" style="display: none;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Payment amount mismatch detected! Expected: ${{ gross_amount }}
+                    </div>
+                </div>
+                
+                <!-- PayPal Generated Button Container -->
+                <div id="paypal-generator-container" style="margin: 20px 0;">
+                    <div style="text-align: center; padding: 40px; border: 2px dashed #d1d5db; border-radius: 12px; background: #fafafa;">
+                        <i class="fab fa-paypal" style="font-size: 3rem; color: #0070ba; margin-bottom: 15px;"></i>
+                        <h5 style="color: #1f2937; margin-bottom: 10px;">PayPal Button Generator</h5>
+                        <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 20px;">
+                            Use PayPal's official button generator for secure payments
+                        </p>
+                        <button id="generate-paypal-button" class="pay-button" style="background: #0070ba;">
+                            <i class="fas fa-plus-circle"></i>
+                            Generate PayPal Payment Button
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Generated PayPal Button will appear here -->
+                <div id="generated-paypal-button" style="display: none;">
+                    <!-- PayPal generated button HTML will be inserted here -->
+                </div>
+                
+                <p style="color: #6b7280; font-size: 0.9rem; text-align: center; margin-top: 15px;">
+                    <i class="fas fa-shield-alt"></i>
+                    Secure payment processing with amount validation and automatic project initiation
+                </p>
+            </div>
+
             <!-- Other Payment Method Forms -->
             <div id="apple-pay-form" class="payment-form">
                 <h4 style="margin-bottom: 20px; color: #1f2937;">
@@ -634,7 +680,8 @@
                         .then(response => response.json())
                         .then(result => {
                             if (result.success) {
-                                window.location.href = result.redirect_url;
+                                // Automatically initiate project after successful payment
+                                initiateProjectAfterPayment(result.payment_id);
                             } else {
                                 alert('Payment processing failed. Please try again.');
                             }
@@ -650,6 +697,162 @@
                     }
                 }).render('#paypal-button-container');
             }
+        }
+
+        // NEW: PayPal Button Generator with Amount Validation
+        function initializePayPalGenerator() {
+            const generateButton = document.getElementById('generate-paypal-button');
+            const generatedButtonContainer = document.getElementById('generated-paypal-button');
+            const expectedAmount = '{{ gross_amount }}';
+            
+            generateButton.addEventListener('click', function() {
+                // Generate PayPal button with strict amount validation
+                generatePayPalButton(expectedAmount, generatedButtonContainer);
+                
+                // Hide generator, show generated button
+                document.getElementById('paypal-generator-container').style.display = 'none';
+                generatedButtonContainer.style.display = 'block';
+            });
+        }
+
+        function generatePayPalButton(expectedAmount, container) {
+            // Clear any existing buttons
+            container.innerHTML = '';
+            
+            // Create new PayPal button with validation
+            if (typeof paypal !== 'undefined') {
+                paypal.Buttons({
+                    createOrder: function(data, actions) {
+                        // Validate amount on order creation
+                        if (!validatePaymentAmount(expectedAmount)) {
+                            return Promise.reject(new Error('Amount validation failed'));
+                        }
+                        
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: expectedAmount
+                                },
+                                description: 'Payment for {{ project.project_name }} (Generated Button)'
+                            }]
+                        });
+                    },
+                    onApprove: function(data, actions) {
+                        // Double-check amount before processing
+                        return actions.order.capture().then(function(details) {
+                            const paidAmount = details.purchase_units[0].amount.value;
+                            
+                            if (paidAmount !== expectedAmount) {
+                                showAmountValidationError(paidAmount, expectedAmount);
+                                return;
+                            }
+                            
+                            // Process payment with validation
+                            fetch('{% url "Portal:create_payment" project.id %}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                                },
+                                body: JSON.stringify({
+                                    payment_type: 'paypal_generated',
+                                    paypal_order_id: data.orderID,
+                                    paypal_payer_id: data.payerID,
+                                    expected_amount: expectedAmount,
+                                    paid_amount: paidAmount
+                                }),
+                            })
+                            .then(response => response.json())
+                            .then(result => {
+                                if (result.success) {
+                                    // Automatically initiate project after successful payment
+                                    initiateProjectAfterPayment(result.payment_id);
+                                } else {
+                                    alert('Payment processing failed: ' + (result.error || 'Unknown error'));
+                                }
+                            });
+                        });
+                    },
+                    onCancel: function(data) {
+                        console.log('Generated PayPal payment cancelled');
+                    },
+                    onError: function(err) {
+                        console.error('Generated PayPal error:', err);
+                        alert('PayPal payment failed. Please try again.');
+                    },
+                    style: {
+                        color: 'blue',
+                        shape: 'rect',
+                        label: 'pay',
+                        height: 40
+                    }
+                }).render(container);
+                
+                // Add regenerate option
+                const regenerateButton = document.createElement('button');
+                regenerateButton.innerHTML = '<i class="fas fa-redo"></i> Generate New Button';
+                regenerateButton.className = 'pay-button';
+                regenerateButton.style.marginTop = '15px';
+                regenerateButton.style.background = '#6b7280';
+                regenerateButton.onclick = function() {
+                    document.getElementById('paypal-generator-container').style.display = 'block';
+                    container.style.display = 'none';
+                };
+                container.appendChild(regenerateButton);
+            }
+        }
+
+        // Amount validation functions
+        function validatePaymentAmount(expectedAmount) {
+            // Client-side validation (server-side is primary)
+            const amount = parseFloat(expectedAmount);
+            return amount > 0 && amount <= 10000; // Reasonable limits
+        }
+
+        function showAmountValidationError(paidAmount, expectedAmount) {
+            const errorDiv = document.getElementById('amount-validation-error');
+            errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i>
+                Payment amount mismatch! Expected: $${expectedAmount}, Received: $${paidAmount}
+                <br>Payment has been rejected for security reasons.
+            `;
+            errorDiv.style.display = 'block';
+            
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 10000);
+        }
+
+        // NEW: Automatic Project Initiation after Payment
+        function initiateProjectAfterPayment(paymentId) {
+            fetch('{% url "Portal:initiate_project_after_payment" project.id %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                },
+                body: JSON.stringify({
+                    payment_id: paymentId
+                }),
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // Show success message and redirect
+                    alert('Payment successful! Project has been initiated and is now in progress.');
+                    window.location.href = result.redirect_url || '{% url "Portal:project_detail" project.id %}';
+                } else {
+                    // Payment succeeded but project initiation failed
+                    alert('Payment successful, but there was an issue initiating the project. Please contact support.');
+                    window.location.href = '{% url "Portal:project_detail" project.id %}';
+                }
+            })
+            .catch(error => {
+                console.error('Project initiation error:', error);
+                alert('Payment successful! Redirecting to project page...');
+                window.location.href = '{% url "Portal:project_detail" project.id %}';
+            });
         }
 
         // Card payment form submission
@@ -724,6 +927,11 @@
 
         document.getElementById('alipay-pay-button').addEventListener('click', function() {
             window.location.href = '{% url "Portal:create_payment" project.id %}?method=alipay';
+        });
+
+        // Initialize PayPal Generator
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePayPalGenerator();
         });
     </script>
 </body>

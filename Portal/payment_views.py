@@ -8,7 +8,6 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.views.decorators.clickjacking import xframe_options_exempt
 from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
@@ -17,17 +16,6 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 
 logger = logging.getLogger(__name__)
-
-def disable_csp(view_func):
-    """Decorator to disable Content Security Policy for PayPal integration"""
-    def wrapper(request, *args, **kwargs):
-        response = view_func(request, *args, **kwargs)
-        # Remove CSP headers that might interfere with PayPal
-        if hasattr(response, 'headers'):
-            response.headers.pop('Content-Security-Policy', None)
-            response.headers.pop('X-Content-Type-Options', None)
-        return response
-    return wrapper
 
 # Configure Stripe with safe fallback
 stripe.api_key = getattr(settings, 'STRIPE_SECRET_KEY', '')
@@ -279,16 +267,35 @@ def create_payment(request, project_id):
         print(f"DEBUG: Created new payment {payment.payment_id} with method {payment_method_type}")
         
         # Handle different payment methods
-        if payment_method_type in ['apple_pay', 'google_pay', 'alipay']:
-            # Use Stripe Checkout for these methods
+        if payment_method_type == 'paypal':
+            # PayPal payment - redirect to PayPal processing page
+            print(f"DEBUG: Processing PayPal payment {payment.payment_id}")
+            return JsonResponse({
+                'success': True,
+                'redirect_url': f'/payment/paypal/{project.id}/',
+                'payment_id': payment.payment_id
+            })
+        
+        elif payment_method_type in ['apple_pay', 'google_pay', 'alipay']:
+            # Use Stripe Checkout for these methods (only if Stripe is configured)
+            if not getattr(settings, 'STRIPE_SECRET_KEY', ''):
+                return JsonResponse({'success': False, 'error': 'Credit card payments not available'})
             return create_stripe_checkout_session(request, payment, payment_method_type)
         
         elif payment_method_type == 'card' and payment_method_id:
-            # Process card payment with Payment Intent
+            # Process card payment with Payment Intent (only if Stripe is configured)
+            if not getattr(settings, 'STRIPE_SECRET_KEY', ''):
+                return JsonResponse({'success': False, 'error': 'Credit card payments not available'})
             return process_card_payment(request, payment, payment_method_id)
         
         else:
-            # Default to Stripe Checkout
+            # Default to PayPal if no Stripe, otherwise Stripe
+            if not getattr(settings, 'STRIPE_SECRET_KEY', ''):
+                return JsonResponse({
+                    'success': True,
+                    'redirect_url': f'/payment/paypal/{project.id}/',
+                    'payment_id': payment.payment_id
+                })
             return create_stripe_checkout_session(request, payment, 'card')
             
     except Exception as e:
@@ -460,8 +467,6 @@ def payment_cancelled(request, payment_id):
 # PayPal Integration Views
 
 @login_required
-@xframe_options_exempt
-@disable_csp
 def paypal_payment(request, project_id):
     """Initiate PayPal payment for a project"""
     try:
@@ -483,7 +488,8 @@ def paypal_payment(request, project_id):
         existing_payment = Payment.objects.filter(
             project=project,
             client=client,
-            status='pending'
+            status='pending',
+            payment_method='paypal'  # Only check PayPal payments
         ).first()
         
         if existing_payment:
@@ -495,13 +501,16 @@ def paypal_payment(request, project_id):
                 existing_payment.status = 'failed'
                 existing_payment.save()
             else:
-                # Show processing page with cancel option
-                print(f"DEBUG: PayPal - Showing processing page for payment {existing_payment.payment_id}")
-                return render(request, 'payment_processing.html', {
+                # Don't show processing page - proceed with PayPal payment form
+                print(f"DEBUG: PayPal - Using existing payment {existing_payment.payment_id} for PayPal form")
+                context = {
                     'payment': existing_payment,
                     'project': project,
-                    'can_cancel': True
-                })
+                    'freelancer': accepted_bid.freelancer,
+                    'gross_amount': existing_payment.gross_amount,
+                    'paypal_client_id': getattr(settings, 'PAYPAL_CLIENT_ID', ''),
+                }
+                return render(request, 'paypal_payment.html', context)
         
         # Check if payment already completed
         completed_payment = Payment.objects.filter(project=project, status='completed').first()
@@ -624,24 +633,17 @@ def paypal_cancel(request, project_id):
 
 @csrf_exempt
 @require_POST
-@disable_csp
 def paypal_success(request, payment_id):
     """Handle successful PayPal payment (webhook/AJAX)"""
     try:
-        print(f"DEBUG: PayPal success webhook called for payment {payment_id}")
-        print(f"DEBUG: Request method: {request.method}")
-        print(f"DEBUG: Request body: {request.body}")
-        
         payment = get_object_or_404(Payment, payment_id=payment_id)
-        print(f"DEBUG: Found payment: {payment}")
         
         # Get PayPal order details from request
         data = json.loads(request.body)
         order_id = data.get('orderID')
         payer_info = data.get('payer', {})
         
-        print(f"DEBUG: PayPal order_id: {order_id}")
-        print(f"DEBUG: PayPal payer_info: {payer_info}")
+        print(f"DEBUG: PayPal success webhook for payment {payment_id}")
         
         # Update payment with PayPal details
         payment.paypal_order_id = order_id
@@ -654,11 +656,7 @@ def paypal_success(request, payment_id):
         payment.project.save()
         
         # Send confirmation emails
-        try:
-            send_payment_confirmation_emails(payment)
-        except Exception as email_error:
-            print(f"DEBUG: Email sending failed: {email_error}")
-            # Don't fail the payment for email issues
+        send_payment_confirmation_emails(payment)
         
         logger.info(f"PayPal payment {payment_id} completed successfully")
         
@@ -669,11 +667,8 @@ def paypal_success(request, payment_id):
         
     except Exception as e:
         print(f"DEBUG: PayPal success error: {str(e)}")
-        print(f"DEBUG: Error type: {type(e)}")
-        import traceback
-        print(f"DEBUG: Traceback: {traceback.format_exc()}")
         logger.error(f"PayPal payment error: {str(e)}")
-        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+        return JsonResponse({'success': False, 'error': str(e)})
 
 @csrf_exempt
 @require_POST
