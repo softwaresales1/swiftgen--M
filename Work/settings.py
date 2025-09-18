@@ -65,13 +65,10 @@ INSTALLED_APPS = [
     'channels',
 ]
 
-# Configure Channels to use Redis as the channel layer
+# Configure Channels to use in-memory channel layer for development (no Redis required)
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [os.environ.get('HEROKU_REDIS_GRAY_URL', 'redis://localhost:6379')],
-        },
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
     },
 }
 

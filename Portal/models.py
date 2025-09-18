@@ -734,3 +734,167 @@ class UserMessageSettings(models.Model):
     
     def __str__(self):
         return f"Message settings for {self.user.username}"
+
+
+class UserViolation(models.Model):
+    """
+    Track user violations for content moderation
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='violations')
+    violation_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('contact_sharing', 'Contact Information Sharing'),
+            ('spam', 'Spam'),
+            ('harassment', 'Harassment'),
+            ('inappropriate_content', 'Inappropriate Content'),
+            ('other', 'Other')
+        ],
+        default='contact_sharing'
+    )
+    violation_data = models.JSONField(default=dict)  # Store detected content and metadata
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_resolved = models.BooleanField(default=False)
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    resolved_by = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='resolved_violations'
+    )
+    notes = models.TextField(blank=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', 'violation_type', 'created_at']),
+            models.Index(fields=['created_at']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.violation_type} - {self.created_at.strftime('%Y-%m-%d')}"
+
+
+class UserSuspension(models.Model):
+    """
+    Track user account suspensions
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='suspensions')
+    reason = models.TextField()
+    suspended_by = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='suspended_users'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    suspension_end = models.DateTimeField()
+    is_active = models.BooleanField(default=True)
+    lifted_at = models.DateTimeField(null=True, blank=True)
+    lifted_by = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='lifted_suspensions'
+    )
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', 'is_active']),
+            models.Index(fields=['suspension_end']),
+        ]
+    
+    def __str__(self):
+        status = "Active" if self.is_active else "Lifted"
+        return f"{self.user.username} - {status} - {self.created_at.strftime('%Y-%m-%d')}"
+    
+    def is_expired(self):
+        """Check if suspension has expired"""
+        return timezone.now() > self.suspension_end
+
+
+class UserNotification(models.Model):
+    """
+    User notifications for warnings, suspensions, etc.
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    notification_type = models.CharField(
+        max_length=30,
+        choices=[
+            ('info', 'Information'),
+            ('warning', 'Warning'),
+            ('suspension', 'Suspension'),
+            ('violation', 'Violation'),
+            ('system', 'System'),
+        ],
+        default='info'
+    )
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    read_at = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', 'is_read']),
+            models.Index(fields=['created_at']),
+        ]
+    
+    def __str__(self):
+        status = "Read" if self.is_read else "Unread"
+        return f"{self.user.username} - {self.title} - {status}"
+    
+    def mark_as_read(self):
+        """Mark notification as read"""
+        if not self.is_read:
+            self.is_read = True
+            self.read_at = timezone.now()
+            self.save()
+
+
+class ContentModerationLog(models.Model):
+    """
+    Log all content moderation actions for audit purposes
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='moderation_logs')
+    action = models.CharField(
+        max_length=30,
+        choices=[
+            ('message_blocked', 'Message Blocked'),
+            ('warning_sent', 'Warning Sent'),
+            ('user_suspended', 'User Suspended'),
+            ('account_terminated', 'Account Terminated'),
+            ('violation_recorded', 'Violation Recorded'),
+        ]
+    )
+    content_type = models.CharField(max_length=30, default='message')
+    original_content = models.TextField(blank=True)  # Original message content
+    detected_violations = models.JSONField(default=dict)  # What was detected
+    created_at = models.DateTimeField(auto_now_add=True)
+    moderator = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='moderation_actions'
+    )  # Null for system actions
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', 'action', 'created_at']),
+            models.Index(fields=['created_at']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.action} - {self.created_at.strftime('%Y-%m-%d %H:%M')}"
