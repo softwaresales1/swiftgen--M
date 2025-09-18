@@ -851,6 +851,157 @@
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
         }
+
+        /* Beautiful Moderation Modal Styles */
+        .moderation-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .moderation-modal-content {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        .moderation-modal-header {
+            background: linear-gradient(135deg, #ff6b6b, #ff5252);
+            color: white;
+            padding: 24px;
+            border-radius: 16px 16px 0 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .final-warning-modal .moderation-modal-header {
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+        }
+
+        .suspension-modal .moderation-modal-header {
+            background: linear-gradient(135deg, #424242, #212121);
+        }
+
+        .warning-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            animation: pulse 2s infinite;
+        }
+
+        .moderation-modal-header h3 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .moderation-modal-body {
+            padding: 32px;
+            line-height: 1.6;
+        }
+
+        .warning-text {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .moderation-modal-footer {
+            padding: 0 32px 32px;
+            text-align: center;
+        }
+
+        .understand-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .understand-btn:hover {
+            background: linear-gradient(135deg, #45a049, #3d8b40);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .moderation-modal-content {
+                width: 95%;
+                margin: 20px;
+            }
+            
+            .moderation-modal-header h3 {
+                font-size: 20px;
+            }
+            
+            .warning-icon {
+                font-size: 36px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1177,8 +1328,13 @@
                     tempMessage.dataset.messageId = data.message.id;
                     tempMessage.classList.remove('message-sending');
                 } else {
-                    // Show error
-                    showError('Failed to send message: ' + data.error);
+                    // Handle moderation blocking
+                    if (data.blocked && data.error === 'message_blocked') {
+                        showModerationWarning(data.moderation_message, data.action, data.severity, data.detected_content);
+                    } else {
+                        // Show general error
+                        showError('Failed to send message: ' + data.error);
+                    }
                     tempMessage.remove();
                 }
             })
@@ -1646,6 +1802,122 @@
         function showError(message) {
             // Simple error display - you can enhance this
             alert(message);
+        }
+
+        function showModerationWarning(message, action, severity, detectedContent) {
+            // Create a comprehensive warning message
+            let warningTitle = '';
+            let warningMessage = '';
+            
+            if (action === 'warning' && severity === 'medium') {
+                warningTitle = '⚠️ FIRST WARNING: Contact Information Sharing Prohibited';
+                warningMessage = `
+Your message was BLOCKED because you tried to share contact information.
+
+� PROHIBITED ACTIVITIES:
+• Email addresses (john@gmail.com, john at gmail dot com)
+• Phone numbers (555-123-4567, WhatsApp numbers)
+• Social media handles (@username, Instagram, Facebook, LinkedIn)
+• External websites and portfolios (mysite.com, github.com/user)
+• Messaging app contacts (Discord, Telegram, Skype)
+• Any attempts to move conversation off this platform
+
+⚠️ THIS IS YOUR FIRST WARNING
+Next violation will result in a FINAL WARNING.
+
+✅ PLATFORM POLICY:
+All communication must stay within our secure messaging system for your safety and security.
+
+Please continue your conversation here without sharing any contact information.`;
+
+            } else if (action === 'warning' && severity === 'high') {
+                warningTitle = '🚨 FINAL WARNING: Contact Information Sharing Prohibited';
+                warningMessage = `
+Your message was BLOCKED because you tried to share contact information.
+
+🚫 PROHIBITED ACTIVITIES:
+• Email addresses (john@gmail.com, john at gmail dot com)  
+• Phone numbers (555-123-4567, WhatsApp numbers)
+• Social media handles (@username, Instagram, Facebook, LinkedIn)
+• External websites and portfolios (mysite.com, github.com/user)
+• Messaging app contacts (Discord, Telegram, Skype)
+• Any attempts to move conversation off this platform
+
+🚨 THIS IS YOUR FINAL WARNING
+Next violation will result in ACCOUNT SUSPENSION for 7 days.
+
+✅ PLATFORM POLICY:
+All communication must stay within our secure messaging system for your safety and security.
+
+Please continue your conversation here without sharing any contact information.`;
+
+            } else if (action === 'suspension') {
+                warningTitle = '🚫 ACCOUNT SUSPENDED: Repeated Policy Violations';
+                warningMessage = `
+Your account has been SUSPENDED for 7 days due to repeated contact information sharing violations.
+
+You ignored our warnings and continued to violate our platform policies.
+
+Your account will be automatically reactivated after the suspension period.
+
+Future violations may result in permanent account termination.`;
+            }
+            
+            // Create a beautiful modal instead of ugly alert
+            createModerationModal(action, severity, warningTitle, warningMessage);
+        }
+
+        function createModerationModal(action, severity, warningTitle, warningMessage) {
+            // Remove existing modal if any
+            const existingModal = document.getElementById('moderation-modal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            let iconClass = '';
+            let modalClass = '';
+            
+            if (action === 'warning' && severity === 'medium') {
+                iconClass = 'fas fa-exclamation-triangle';
+                modalClass = 'warning-modal';
+            } else if (action === 'warning' && severity === 'high') {
+                iconClass = 'fas fa-ban';
+                modalClass = 'final-warning-modal';
+            } else if (action === 'suspension') {
+                iconClass = 'fas fa-user-slash';
+                modalClass = 'suspension-modal';
+            }
+
+            // Create the modal HTML
+            const modalHTML = `
+                <div id="moderation-modal" class="moderation-modal-overlay ${modalClass}">
+                    <div class="moderation-modal-content">
+                        <div class="moderation-modal-header">
+                            <div class="warning-icon">
+                                <i class="${iconClass}"></i>
+                            </div>
+                            <h3>${warningTitle}</h3>
+                            <button class="modal-close" onclick="closeModerationModal()">&times;</button>
+                        </div>
+                        <div class="moderation-modal-body">
+                            <div class="warning-text">${warningMessage.replace(/\n/g, '<br>')}</div>
+                        </div>
+                        <div class="moderation-modal-footer">
+                            <button class="understand-btn" onclick="closeModerationModal()">I Understand</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Add modal to page
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        function closeModerationModal() {
+            const modal = document.getElementById('moderation-modal');
+            if (modal) {
+                modal.remove();
+            }
         }
 
         // Cleanup on page unload

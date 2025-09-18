@@ -26,25 +26,25 @@ class ContactInfoDetector:
         """
         patterns = {
             'email': [
-                # Standard email patterns
+                # Standard email patterns - more specific
                 re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', re.IGNORECASE),
-                # Obfuscated emails (gmail dot com, @ replaced with at, etc.)
+                # Obfuscated emails (only when clearly attempting to share email)
                 re.compile(r'\b[A-Za-z0-9._%+-]+\s*(at|@|\[at\])\s*[A-Za-z0-9.-]+\s*(dot|\.)\s*[A-Z|a-z]{2,}\b', re.IGNORECASE),
-                # Popular email domains mentioned
-                re.compile(r'\b[A-Za-z0-9._%+-]+\s*(gmail|yahoo|outlook|hotmail|protonmail|icloud)\b', re.IGNORECASE),
-                # Email with spaces or special chars
-                re.compile(r'\b[A-Za-z0-9._%+-]+\s+[A-Za-z0-9.-]+\s+[A-Z|a-z]{2,}\b', re.IGNORECASE),
+                # Popular email domains mentioned WITH username context
+                re.compile(r'\b[A-Za-z0-9._%+-]{3,}\s*(gmail|yahoo|outlook|hotmail|protonmail|icloud)(?:\s+com)?\b', re.IGNORECASE),
+                # Email with context words
+                re.compile(r'\b(email|mail|contact)\s*[:\s]*[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', re.IGNORECASE),
             ],
             
             'phone': [
-                # US phone numbers (various formats)
+                # US phone numbers (various formats) - with context
+                re.compile(r'\b(?:phone|call|text|mobile|cell|number)[\s:]*(?:\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})\b', re.IGNORECASE),
+                # International phone numbers with context
+                re.compile(r'\b(phone|call|text|mobile|cell|number|whatsapp|contact)[\s:]*[\+]?[1-9]\d{1,14}\b', re.IGNORECASE),
+                # Standalone formatted phone numbers (clear phone format)
                 re.compile(r'\b(?:\+?1[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})\b'),
-                # International phone numbers
-                re.compile(r'\b\+?[1-9]\d{1,14}\b'),
-                # Phone with text
-                re.compile(r'\b(phone|call|text|mobile|cell|number)[\s:]*[\+]?[0-9\s\-\.\(\)]{10,15}\b', re.IGNORECASE),
-                # Obfuscated phone numbers
-                re.compile(r'\b[0-9]{3}[\s\-\.]*[0-9]{3}[\s\-\.]*[0-9]{4}\b'),
+                # International format with country code
+                re.compile(r'\b\+[1-9]\d{1,14}\b'),
             ],
             
             'social_media': [
@@ -57,13 +57,13 @@ class ContactInfoDetector:
                 re.compile(r'\b(facebook|fb)[\s/]*[A-Za-z0-9.]{1,50}\b', re.IGNORECASE),
                 # TikTok
                 re.compile(r'\b(tiktok|tt)[\s/]*@?[A-Za-z0-9_.]{1,24}\b', re.IGNORECASE),
-                # LinkedIn
-                re.compile(r'\b(linkedin|in)[\s/]*[A-Za-z0-9-]{3,100}\b', re.IGNORECASE),
+                # LinkedIn with profile context
+                re.compile(r'\b(linkedin|in)[\s/]+[A-Za-z0-9-]{3,100}\b', re.IGNORECASE),
                 # YouTube
                 re.compile(r'\b(youtube|yt)[\s/]*[A-Za-z0-9_-]{1,100}\b', re.IGNORECASE),
                 # Snapchat
                 re.compile(r'\b(snapchat|snap)[\s/]*[A-Za-z0-9._-]{1,15}\b', re.IGNORECASE),
-                # General social handle pattern
+                # General social handle pattern with context
                 re.compile(r'\b(follow|add|find)\s+me\s+(on\s+)?@?[A-Za-z0-9_.]{3,30}\b', re.IGNORECASE),
             ],
             
@@ -86,10 +86,22 @@ class ContactInfoDetector:
             'websites_urls': [
                 # HTTP/HTTPS URLs
                 re.compile(r'https?://[^\s<>"{}|\\^`\[\]]+', re.IGNORECASE),
-                # Domain names without protocol
-                re.compile(r'\b[A-Za-z0-9.-]+\.(com|org|net|edu|gov|mil|int|co|io|me|tv|info|biz)\b', re.IGNORECASE),
+                # Domain names without protocol (more specific to avoid false positives)
+                re.compile(r'\b[A-Za-z0-9.-]{3,}\.(com|org|net|edu|gov|mil|int|co|io|me|tv|info|biz|app|tech|design|work|pro|online|space|live|site|website)\b', re.IGNORECASE),
+                # .dev domains with clear website context
+                re.compile(r'\b[A-Za-z0-9.-]{3,}\.dev\b', re.IGNORECASE),
                 # Website references
-                re.compile(r'\b(website|site|blog|domain)[\s:]*[A-Za-z0-9.-]+\.(com|org|net|edu|gov)\b', re.IGNORECASE),
+                re.compile(r'\b(website|site|blog|domain|portfolio|profile|page)[\s:]*[A-Za-z0-9.-]+\.(com|org|net|edu|gov|io|me|dev|tech|design|work|pro)\b', re.IGNORECASE),
+                # Common portfolio/profile platforms
+                re.compile(r'\b(behance|dribbble|github|gitlab|bitbucket|codepen|deviantart|artstation|portfolio|itch\.io|steam|twitch)[\s/.:]*[A-Za-z0-9._-]{1,50}\b', re.IGNORECASE),
+                # Freelance platform profiles
+                re.compile(r'\b(upwork|fiverr|freelancer|99designs|toptal|guru|peopleperhour)[\s/.:]*[A-Za-z0-9._-]{1,50}\b', re.IGNORECASE),
+                # General profile links
+                re.compile(r'\b(my\s+profile|my\s+portfolio|check\s+out|visit\s+my|see\s+my)\s+[A-Za-z0-9.-]+\.(com|org|net|io|me|dev)\b', re.IGNORECASE),
+                # Shortened URLs (common for profile sharing)
+                re.compile(r'\b(bit\.ly|tinyurl|short\.link|t\.co|goo\.gl|ow\.ly)\/[A-Za-z0-9]+\b', re.IGNORECASE),
+                # Direct contact prompts with external links
+                re.compile(r'\b(contact\s+me\s+at|reach\s+me\s+on|find\s+me\s+at)\s+[A-Za-z0-9.-]+\.(com|org|net|io|me)\b', re.IGNORECASE),
             ],
             
             'other_contact': [
@@ -98,9 +110,21 @@ class ContactInfoDetector:
                 # Google Meet links
                 re.compile(r'\b(meet\.google\.com|google\s+meet)\b', re.IGNORECASE),
                 # General contact prompts
-                re.compile(r'\b(contact\s+me|reach\s+me|call\s+me|text\s+me|email\s+me|dm\s+me)\b', re.IGNORECASE),
+                re.compile(r'\b(contact\s+me|reach\s+me|call\s+me|text\s+me|email\s+me|dm\s+me|message\s+me)\b', re.IGNORECASE),
                 # External platform references
-                re.compile(r'\b(outside\s+this\s+platform|off\s+platform|external\s+contact)\b', re.IGNORECASE),
+                re.compile(r'\b(outside\s+this\s+platform|off\s+platform|external\s+contact|move\s+to|continue\s+on|talk\s+outside)\b', re.IGNORECASE),
+                # QR codes and alternative contact methods
+                re.compile(r'\b(qr\s+code|scan\s+code|my\s+code|contact\s+code)\b', re.IGNORECASE),
+                # Professional network references
+                re.compile(r'\b(connect\s+with\s+me|add\s+me|follow\s+me|find\s+me)\s+(on|at)\b', re.IGNORECASE),
+                # Common obfuscation attempts
+                re.compile(r'\b[A-Za-z0-9._%-]+\s*\(\s*at\s*\)\s*[A-Za-z0-9.-]+\s*\(\s*dot\s*\)\s*[A-Za-z]{2,}\b', re.IGNORECASE),
+                # Numbers that could be phone numbers (with context)
+                re.compile(r'\b(call|text|whatsapp|phone|mobile|cell)\s*[:\s]*[\+]?[0-9\s\-\.\(\)]{8,15}\b', re.IGNORECASE),
+                # Calendar/scheduling links
+                re.compile(r'\b(calendly|acuity|booking|schedule|appointment)[\s/.:]*[A-Za-z0-9._-]{1,50}\b', re.IGNORECASE),
+                # Business cards / contact cards
+                re.compile(r'\b(business\s+card|contact\s+card|vcard|contact\s+info)\b', re.IGNORECASE),
             ]
         }
         
@@ -121,6 +145,25 @@ class ContactInfoDetector:
         
         # Check for attempts to bypass detection
         cleaned_message = self._clean_obfuscated_text(message)
+        
+        # Additional checks for creative circumvention
+        creative_patterns = [
+            # Emails spelled out with clear email context
+            r'\b[a-zA-Z0-9._%+-]+\s+(gmail|yahoo|outlook)\s+com\b',
+            # Phone numbers with words  
+            r'\b(call|text|phone|number|mobile|cell)\s+(one|two|three|four|five|six|seven|eight|nine|zero)[\s-]+(one|two|three|four|five|six|seven|eight|nine|zero)',
+            # Profile hints with clear contact intent
+            r'\b(google|search)\s+me\s+(for|at|on)\b',
+            r'\b(look\s+me\s+up|find\s+me|search\s+for\s+me)\s+(on|at)\b',
+            # Contact through work with clear intent
+            r'\b(my\s+company\s+email|work\s+email|office\s+number|business\s+email)\b',
+        ]
+        
+        # Check creative patterns
+        for pattern_str in creative_patterns:
+            pattern = re.compile(pattern_str, re.IGNORECASE)
+            if pattern.search(message) or pattern.search(cleaned_message):
+                detected.setdefault('other_contact', []).append(pattern_str)
         
         for contact_type, pattern_list in self.patterns.items():
             matches = []
@@ -148,21 +191,41 @@ class ContactInfoDetector:
             ' AT ': '@',
             '[at]': '@',
             '(at)': '@',
+            '{at}': '@',
             ' dot ': '.',
             ' DOT ': '.',
             '[dot]': '.',
             '(dot)': '.',
+            '{dot}': '.',
             ' dash ': '-',
             ' underscore ': '_',
             ' plus ': '+',
+            ' forward slash ': '/',
+            ' slash ': '/',
+            ' backslash ': '\\',
+            ' colon ': ':',
+            ' semicolon ': ';',
+            ' comma ': ',',
+            ' period ': '.',
+            ' space ': '',
+            ' star ': '*',
+            ' asterisk ': '*',
         }
         
         cleaned = text
         for old, new in substitutions.items():
             cleaned = cleaned.replace(old, new)
         
-        # Remove excessive spaces
+        # Remove excessive spaces and normalize
         cleaned = re.sub(r'\s+', ' ', cleaned)
+        
+        # Additional cleaning for common tricks
+        # Remove parentheses around single characters
+        cleaned = re.sub(r'\(\s*([a-zA-Z@._-])\s*\)', r'\1', cleaned)
+        # Remove brackets around single characters  
+        cleaned = re.sub(r'\[\s*([a-zA-Z@._-])\s*\]', r'\1', cleaned)
+        # Remove curly braces around single characters
+        cleaned = re.sub(r'\{\s*([a-zA-Z@._-])\s*\}', r'\1', cleaned)
         
         return cleaned
     
@@ -220,7 +283,7 @@ class ViolationTracker:
         
         # Apply action
         if action['type'] == 'warning':
-            self._send_warning(user, violation, detected_content)
+            self._send_warning(user, violation, detected_content, action['severity'])
         elif action['type'] == 'suspension':
             self._suspend_user(user, violation)
         
@@ -236,11 +299,17 @@ class ViolationTracker:
                 'message': 'First warning: Contact information sharing detected',
                 'severity': 'medium'
             }
-        elif violation_count >= 2:
+        elif violation_count == 2:
+            return {
+                'type': 'warning',
+                'message': 'Second warning: Contact information sharing detected - Next violation will result in suspension',
+                'severity': 'high'
+            }
+        elif violation_count >= 3:
             return {
                 'type': 'suspension',
                 'message': 'Account suspended for repeated contact information sharing',
-                'severity': 'high',
+                'severity': 'critical',
                 'duration_days': 7  # 7-day suspension
             }
         else:
@@ -250,7 +319,7 @@ class ViolationTracker:
                 'severity': 'low'
             }
     
-    def _send_warning(self, user: User, violation, detected_content: Dict[str, List[str]]):
+    def _send_warning(self, user: User, violation, detected_content: Dict[str, List[str]], severity: str):
         """
         Send warning to user about contact sharing violation
         """
@@ -258,10 +327,9 @@ class ViolationTracker:
         
         contact_types = ', '.join(detected_content.keys())
         
-        UserNotification.objects.create(
-            user=user,
-            title='⚠️ Contact Information Sharing Warning',
-            message=f"""
+        if severity == 'medium':
+            warning_title = '⚠️ First Warning: Contact Information Sharing'
+            warning_message = f"""
             WARNING: Your message was blocked for sharing contact information ({contact_types}).
             
             Our platform prohibits sharing:
@@ -269,17 +337,36 @@ class ViolationTracker:
             • Phone numbers  
             • Social media handles
             • Messaging app contacts
-            • External websites
+            • External websites/portfolios
             
-            This is your FIRST and FINAL warning. If this happens again, your account will be SUSPENDED.
+            This is your FIRST warning. Please communicate only through our secure messaging system.
+            """
+        else:  # high severity (second warning)
+            warning_title = '🚨 FINAL WARNING: Contact Information Sharing'
+            warning_message = f"""
+            FINAL WARNING: Your message was blocked for sharing contact information ({contact_types}).
+            
+            This is your SECOND violation. One more violation will result in ACCOUNT SUSPENSION.
+            
+            Our platform prohibits sharing:
+            • Email addresses
+            • Phone numbers  
+            • Social media handles
+            • Messaging app contacts
+            • External websites/portfolios
             
             Please communicate only through our secure messaging system.
-            """,
+            """
+        
+        UserNotification.objects.create(
+            user=user,
+            title=warning_title,
+            message=warning_message,
             notification_type='warning',
             is_read=False
         )
         
-        logger.warning(f"Contact sharing warning sent to user {user.username} for: {contact_types}")
+        logger.warning(f"Contact sharing warning sent to user {user.username} for: {contact_types} (severity: {severity})")
     
     def _suspend_user(self, user: User, violation):
         """

@@ -221,7 +221,7 @@ def start_project_conversation(request, project_id):
 @require_POST
 @csrf_exempt
 def send_message(request):
-    """Send a new message via AJAX"""
+    """Send a new message via AJAX with content moderation"""
     try:
         data = json.loads(request.body)
         conversation_id = data.get('conversation_id')
@@ -237,7 +237,33 @@ def send_message(request):
             participants=request.user
         )
         
-        # Create message
+        # 🛡️ CONTENT MODERATION - Check for contact information sharing
+        from .content_moderation import content_moderator
+        from .models import ContentModerationLog
+        
+        moderation_result = content_moderator.moderate_message(request.user, content)
+        
+        if not moderation_result['allowed']:
+            # Message blocked - log the action and return error
+            ContentModerationLog.objects.create(
+                user=request.user,
+                action='message_blocked',
+                content_type='message',
+                original_content=content,
+                detected_violations=moderation_result.get('detected_content', {}),
+                moderator=None  # System action
+            )
+            
+            return JsonResponse({
+                'error': 'message_blocked',
+                'moderation_message': moderation_result['message'],
+                'action': moderation_result['action'],
+                'severity': moderation_result['severity'],
+                'detected_content': moderation_result.get('detected_content', {}),
+                'blocked': True
+            }, status=403)
+        
+        # Create message only if it passes moderation
         message = Message.objects.create(
             conversation=conversation,
             sender=request.user,
