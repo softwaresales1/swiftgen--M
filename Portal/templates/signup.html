@@ -57,12 +57,19 @@
             padding: 8px 16px;
             border-radius: 6px;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .nav-link:hover {
             color: #7c3aed;
             background: #f3f4f6;
             text-decoration: none;
+        }
+
+        .nav-link i {
+            font-size: 0.9rem;
         }
 
         /* Main Container */
@@ -561,33 +568,119 @@
             }
         }
 
-        /* Enhanced Mobile Responsiveness */
-        .nav-toggle {
-            display: none;
-            flex-direction: column;
+        /* Mobile Menu Button and Dropdown - Exact copy from payment dashboard */
+        .mobile-menu-btn {
+            display: none; /* Hidden by default - only show on mobile */
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 8px;
             cursor: pointer;
-            padding: 5px;
+            position: relative;
+            width: 44px;
+            height: 40px;
+            transition: all 0.3s ease;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
         }
 
-        .nav-toggle span {
-            width: 25px;
+        .mobile-menu-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .mobile-menu-btn:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+
+        .hamburger-line {
+            width: 24px;
             height: 3px;
             background: #374151;
             margin: 3px 0;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             border-radius: 2px;
         }
 
-        .nav-toggle.active span:nth-child(1) {
-            transform: rotate(-45deg) translate(-6px, 6px);
+        .mobile-menu-btn.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
         }
 
-        .nav-toggle.active span:nth-child(2) {
+        .mobile-menu-btn.active .hamburger-line:nth-child(2) {
             opacity: 0;
         }
 
-        .nav-toggle.active span:nth-child(3) {
-            transform: rotate(45deg) translate(-6px, -6px);
+        .mobile-menu-btn.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .mobile-dropdown {
+            display: none;
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            min-width: 220px;
+            z-index: 9999;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+        }
+
+        .mobile-dropdown.show {
+            display: block !important;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mobile-nav-link {
+            display: block;
+            padding: 12px 16px;
+            color: #374151;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-bottom: 1px solid #f3f4f6;
+            transition: all 0.2s ease;
+        }
+
+        .mobile-nav-link:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-nav-link:hover {
+            background: #f8fafc;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .mobile-nav-link i {
+            width: 18px;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        /* Ensure mobile elements are hidden on desktop */
+        @media (min-width: 769px) {
+            .mobile-menu-btn,
+            .mobile-dropdown {
+                display: none !important;
+            }
         }
 
         @media (max-width: 768px) {
@@ -597,40 +690,15 @@
             
             .navbar-container {
                 padding: 0 15px;
-            }
-            
-            .nav-toggle {
-                display: flex;
+                position: relative;
             }
             
             .nav-links {
-                position: fixed;
-                top: 60px;
-                left: 0;
-                width: 100%;
-                background: white;
-                flex-direction: column;
-                gap: 0;
-                padding: 20px 0;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-                transform: translateY(-100%);
-                opacity: 0;
-                visibility: hidden;
-                transition: all 0.3s ease;
-                z-index: 1000;
+                display: none;
             }
             
-            .nav-links.active {
-                transform: translateY(0);
-                opacity: 1;
-                visibility: visible;
-            }
-            
-            .nav-link {
-                padding: 15px 30px;
-                width: 100%;
-                justify-content: flex-start;
-                border-radius: 0;
+            .mobile-menu-btn {
+                display: flex;
             }
             
             .main-content {
@@ -687,13 +755,8 @@
                 <i class="fas fa-bolt"></i> SwiftTalentForge
             </a>
             
-            <div class="nav-toggle" id="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            
-            <div class="nav-links" id="navLinks">
+            <!-- Desktop Navigation Links -->
+            <div class="nav-links">
                 <a href="{% url 'Portal:index' %}" class="nav-link">
                     <i class="fas fa-home"></i> Home
                 </a>
@@ -705,6 +768,33 @@
                 </a>
                 <a href="{% url 'Portal:login' %}" class="nav-link">
                     <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+            </button>
+            
+            <!-- Mobile Dropdown Menu -->
+            <div class="mobile-dropdown" id="mobile-dropdown">
+                <a href="{% url 'Portal:index' %}" class="mobile-nav-link">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+                <a href="{% url 'Portal:services' %}" class="mobile-nav-link">
+                    <i class="fas fa-cogs"></i>
+                    Services
+                </a>
+                <a href="{% url 'Portal:contactus' %}" class="mobile-nav-link">
+                    <i class="fas fa-envelope"></i>
+                    Contact Us
+                </a>
+                <a href="{% url 'Portal:login' %}" class="mobile-nav-link">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
                 </a>
             </div>
         </div>
@@ -1244,28 +1334,63 @@
             select.prop('disabled', !this.checked);
         });
 
-        // Mobile navigation toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            const navToggle = document.getElementById('nav-toggle');
-            const navLinks = document.getElementById('navLinks');
+        // Mobile menu functionality - Simplified and direct approach
+        function initializeMobileMenu() {
+            console.log('Initializing mobile menu...');
             
-            if (navToggle && navLinks) {
-                navToggle.addEventListener('click', function() {
-                    navLinks.classList.toggle('active');
-                    navToggle.classList.toggle('active');
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileDropdown = document.getElementById('mobile-dropdown');
+            
+            if (!mobileMenuBtn || !mobileDropdown) {
+                console.error('Mobile menu elements not found:', {
+                    button: !!mobileMenuBtn,
+                    dropdown: !!mobileDropdown
                 });
+                return;
             }
-        });
-
-        // Close mobile nav when clicking on links
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                const navLinks = document.getElementById('navLinks');
-                const navToggle = document.getElementById('nav-toggle');
-                if (navLinks) navLinks.classList.remove('active');
-                if (navToggle) navToggle.classList.remove('active');
-            });
-        });
+            
+            console.log('Mobile menu elements found successfully');
+            
+            // Add click handler to button
+            mobileMenuBtn.onclick = function(e) {
+                console.log('Button clicked!');
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Toggle dropdown visibility
+                const isVisible = mobileDropdown.style.display === 'block';
+                mobileDropdown.style.display = isVisible ? 'none' : 'block';
+                
+                // Toggle button state
+                if (isVisible) {
+                    mobileMenuBtn.classList.remove('active');
+                } else {
+                    mobileMenuBtn.classList.add('active');
+                }
+                
+                console.log('Dropdown toggled to:', mobileDropdown.style.display);
+            };
+            
+            // Close when clicking outside
+            document.onclick = function(e) {
+                if (!mobileMenuBtn.contains(e.target) && !mobileDropdown.contains(e.target)) {
+                    mobileDropdown.style.display = 'none';
+                    mobileMenuBtn.classList.remove('active');
+                }
+            };
+            
+            console.log('Mobile menu initialized successfully');
+        }
+        
+        // Initialize when DOM loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeMobileMenu);
+        } else {
+            initializeMobileMenu();
+        }
+        
+        // Also try after a short delay to ensure everything is loaded
+        setTimeout(initializeMobileMenu, 500);
 
         // ===== MODAL FUNCTIONALITY FOR TERMS AND PRIVACY POLICY =====
         

@@ -208,6 +208,23 @@
             color: #991b1b;
         }
 
+        .earnings-amount {
+            color: #10b981;
+        }
+
+        .escrow-note {
+            color: #f59e0b;
+        }
+
+        .action-released {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .action-pending {
+            color: #6b7280;
+        }
+
         .release-btn {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
@@ -349,6 +366,36 @@
             }
         }
 
+        /* Table container for horizontal scroll */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Hide columns on mobile */
+        .mobile-hide {
+            display: table-cell;
+        }
+
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -365,17 +412,88 @@
                 padding: 0 15px;
             }
             
+            .container {
+                padding: 20px 10px;
+            }
+            
+            .dashboard-header {
+                padding: 20px;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
             .stats-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+            
+            .payments-section {
+                padding: 20px 15px;
+            }
+            
+            /* Hide Payment ID column on mobile */
+            .mobile-hide {
+                display: none;
             }
             
             .payments-table {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
+                min-width: 600px; /* Ensure minimum width for horizontal scroll */
             }
             
             .payments-table th,
             .payments-table td {
-                padding: 10px 8px;
+                padding: 12px 8px;
+                white-space: nowrap;
+            }
+            
+            /* Make project names wrap on mobile */
+            .payments-table td:nth-child(2),
+            .payments-table td:nth-child(3) {
+                white-space: normal;
+                min-width: 120px;
+                max-width: 150px;
+                word-wrap: break-word;
+            }
+            
+            /* Adjust button sizes for mobile */
+            .release-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .payment-status {
+                font-size: 0.75rem;
+                padding: 4px 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .payments-table {
+                min-width: 500px; /* Smaller minimum for very small screens */
+            }
+            
+            .payments-table th,
+            .payments-table td {
+                padding: 10px 6px;
+            }
+            
+            .container {
+                padding: 15px 8px;
+            }
+            
+            .dashboard-header {
+                padding: 15px;
+            }
+            
+            .payments-section {
+                padding: 15px 10px;
             }
         }
     </style>
@@ -515,52 +633,54 @@
             </h2>
             
             {% if payments_made %}
-                <table class="payments-table">
-                    <thead>
-                        <tr>
-                            <th>Payment ID</th>
-                            <th>Project</th>
-                            <th>Freelancer</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for payment in payments_made %}
-                        <tr>
-                            <td>{{ payment.payment_id }}</td>
-                            <td>{{ payment.project.project_name }}</td>
-                            <td>{{ payment.freelancer.user.get_full_name }}</td>
-                            <td>${{ payment.gross_amount }}</td>
-                            <td>
-                                <span class="payment-status status-{{ payment.status }}">
-                                    {{ payment.status|title }}
-                                </span>
-                            </td>
-                            <td>{{ payment.created_at|date:"M d, Y" }}</td>
-                            <td>
-                                {% if payment.status == 'completed' and payment.escrow_held %}
-                                    <a href="{% url 'Portal:release_payment' payment.payment_id %}" 
-                                       class="release-btn"
-                                       onclick="return confirm('Are you sure you want to release this payment?')">
-                                        <i class="fas fa-unlock"></i>
-                                        Release Payment
-                                    </a>
-                                {% elif payment.status == 'completed' and not payment.escrow_held %}
-                                    <span style="color: #10b981; font-weight: 600;">
-                                        <i class="fas fa-check"></i>
-                                        Released
+                <div class="table-container">
+                    <table class="payments-table">
+                        <thead>
+                            <tr>
+                                <th class="mobile-hide">Payment ID</th>
+                                <th>Project</th>
+                                <th>Freelancer</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th class="mobile-hide">Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in payments_made %}
+                            <tr>
+                                <td class="mobile-hide">{{ payment.payment_id }}</td>
+                                <td>{{ payment.project.project_name }}</td>
+                                <td>{{ payment.freelancer.user.get_full_name }}</td>
+                                <td>${{ payment.gross_amount }}</td>
+                                <td>
+                                    <span class="payment-status status-{{ payment.status }}">
+                                        {{ payment.status|title }}
                                     </span>
-                                {% else %}
-                                    <span style="color: #6b7280;">-</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                </td>
+                                <td class="mobile-hide">{{ payment.created_at|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if payment.status == 'completed' and payment.escrow_held %}
+                                        <a href="{% url 'Portal:release_payment' payment.payment_id %}" 
+                                           class="release-btn"
+                                           onclick="return confirm('Are you sure you want to release this payment?')">
+                                            <i class="fas fa-unlock"></i>
+                                            Release Payment
+                                        </a>
+                                    {% elif payment.status == 'completed' and not payment.escrow_held %}
+                                        <span class="action-released">
+                                            <i class="fas fa-check"></i>
+                                            Released
+                                        </span>
+                                    {% else %}
+                                        <span class="action-pending">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             {% else %}
                 <div class="no-payments">
                     <i class="fas fa-credit-card"></i>
@@ -578,41 +698,43 @@
             </h2>
             
             {% if payments_received %}
-                <table class="payments-table">
-                    <thead>
-                        <tr>
-                            <th>Payment ID</th>
-                            <th>Project</th>
-                            <th>Client</th>
-                            <th>Gross Amount</th>
-                            <th>Your Earnings</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for payment in payments_received %}
-                        <tr>
-                            <td>{{ payment.payment_id }}</td>
-                            <td>{{ payment.project.project_name }}</td>
-                            <td>{{ payment.client.user.get_full_name }}</td>
-                            <td>${{ payment.gross_amount }}</td>
-                            <td>
-                                <strong style="color: #10b981;">${{ payment.net_amount }}</strong>
-                                {% if payment.escrow_held %}
-                                    <br><small style="color: #f59e0b;">(In Escrow)</small>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <span class="payment-status status-{{ payment.status }}">
-                                    {{ payment.status|title }}
-                                </span>
-                            </td>
-                            <td>{{ payment.created_at|date:"M d, Y" }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table class="payments-table">
+                        <thead>
+                            <tr>
+                                <th class="mobile-hide">Payment ID</th>
+                                <th>Project</th>
+                                <th>Client</th>
+                                <th>Gross Amount</th>
+                                <th>Your Earnings</th>
+                                <th>Status</th>
+                                <th class="mobile-hide">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in payments_received %}
+                            <tr>
+                                <td class="mobile-hide">{{ payment.payment_id }}</td>
+                                <td>{{ payment.project.project_name }}</td>
+                                <td>{{ payment.client.user.get_full_name }}</td>
+                                <td>${{ payment.gross_amount }}</td>
+                                <td>
+                                    <strong class="earnings-amount">${{ payment.net_amount }}</strong>
+                                    {% if payment.escrow_held %}
+                                        <br><small class="escrow-note">(In Escrow)</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="payment-status status-{{ payment.status }}">
+                                        {{ payment.status|title }}
+                                    </span>
+                                </td>
+                                <td class="mobile-hide">{{ payment.created_at|date:"M d, Y" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             {% else %}
                 <div class="no-payments">
                     <i class="fas fa-wallet"></i>

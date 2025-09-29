@@ -651,65 +651,71 @@
             }
         }
 
-        /* Mobile Menu Styles */
-        .mobile-menu-toggle {
-            display: none;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            color: white;
-            font-size: 1.3rem;
+        /* Mobile Menu Button and Dropdown */
+        .mobile-menu-btn {
+            display: none; /* Hidden by default - only show on mobile */
+            background: none;
+            border: none;
+            border-radius: 6px;
+            padding: 8px;
             cursor: pointer;
-            padding: 0.8rem;
-            border-radius: 12px;
+            position: relative;
+            width: 40px;
+            height: 35px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
-            backdrop-filter: blur(10px);
-            min-width: 45px;
-            min-height: 45px;
-            display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
+            align-items: center;
         }
 
-        .mobile-menu-toggle:hover {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, #8b5cf6 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+        .mobile-menu-btn:hover {
+            background: rgba(102, 126, 234, 0.1);
         }
 
-        .mobile-menu-toggle i {
-            display: block;
-            width: 18px;
-            height: 18px;
-            line-height: 18px;
-            text-align: center;
-            font-weight: bold;
+        .hamburger-line {
+            width: 24px;
+            height: 3px;
+            background: #374151;
+            margin: 3px 0;
+            transition: all 0.3s ease;
+            border-radius: 2px;
         }
 
-        .mobile-menu {
+        .mobile-menu-btn.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .mobile-menu-btn.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-btn.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .mobile-dropdown {
             display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            left: auto;
-            width: 280px;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            border-radius: 0 0 15px 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            z-index: 9999;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
         }
 
-        .mobile-menu.active {
+        .mobile-dropdown.show {
             display: block;
-            animation: slideDown 0.3s ease;
+            animation: slideDown 0.3s ease-out;
         }
 
         @keyframes slideDown {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translateY(-10px);
             }
             to {
                 opacity: 1;
@@ -717,56 +723,42 @@
             }
         }
 
-        .mobile-menu ul {
-            list-style: none;
-            margin: 0;
-            padding: 1rem 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .mobile-menu ul li {
-            margin: 0;
-        }
-
-        .mobile-menu ul li a {
+        .mobile-nav-link {
             display: block;
-            padding: 1rem 2rem;
-            color: var(--text-dark);
+            padding: 12px 16px;
+            color: #1f2937 !important;
             text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .mobile-menu ul li:last-child a {
-            border-bottom: none;
-        }
-
-        .mobile-menu ul li a:hover {
-            background: var(--gradient-1);
-            color: white;
-            transform: translateX(10px);
-        }
-
-        .mobile-menu ul li a.btn {
-            margin: 0.5rem 1rem;
-            border-radius: 25px;
-            text-align: center;
-            border-bottom: none;
+            font-size: 0.95rem;
             font-weight: 600;
-        }
-
-        .mobile-menu ul li a.btn-outline {
+            border-bottom: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
             background: transparent;
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color);
         }
 
-        .mobile-menu ul li a.btn-primary {
-            background: var(--gradient-1);
-            color: white;
-            border: none;
+        .mobile-nav-link:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-nav-link:hover {
+            background: #f3f4f6 !important;
+            color: #667eea !important;
+            text-decoration: none;
+        }
+
+        .mobile-nav-link i {
+            width: 18px;
+            margin-right: 10px;
+            text-align: center;
+            color: inherit;
+        }
+        }
+
+        /* Ensure mobile elements are hidden on desktop */
+        @media (min-width: 769px) {
+            .mobile-menu-btn,
+            .mobile-dropdown {
+                display: none !important;
+            }
         }
 
         @media (max-width: 768px) {
@@ -789,13 +781,22 @@
                 display: none !important;
             }
             
-            .mobile-menu-toggle {
-                display: block !important;
-                z-index: 1001;
+            .mobile-menu-btn {
+                display: flex !important;
+                z-index: 10000;
                 position: absolute;
                 top: 0.5rem;
                 right: 1rem;
                 margin: 0;
+            }
+            
+            .mobile-dropdown {
+                display: none;
+                position: fixed;
+                top: 60px;
+                right: 15px;
+                z-index: 9999;
+                max-width: calc(100vw - 30px);
             }
             
             .hero-section {
@@ -1087,22 +1088,43 @@
                 </ul>
             </nav>
             
-            <!-- Mobile Menu Toggle -->
-            <button class="mobile-menu-toggle" id="mobileMenuToggle">
-                <i class="fas fa-bars"></i>
+            <!-- Mobile Menu Button -->
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
             </button>
             
             <!-- Mobile Dropdown Menu -->
-            <div class="mobile-menu" id="mobileMenu">
-                <ul>
-                    <li><a href="{% url 'Portal:home' %}">Home</a></li>
-                    <li><a href="{% url 'Portal:services' %}">Features</a></li>
-                    <li><a href="{% url 'Portal:post_project' %}">Post Project</a></li>
-                    <li><a href="{% url 'Portal:contactus' %}">Contact</a></li>
-                    <li><a href="{% url 'Portal:get_started' %}">Tutorial</a></li>
-                    <li><a href="{% url 'Portal:login' %}" class="btn btn-outline">Login</a></li>
-                    <li><a href="{% url 'Portal:signup' %}" class="btn btn-primary">Sign Up</a></li>
-                </ul>
+            <div class="mobile-dropdown" id="mobile-dropdown">
+                <a href="{% url 'Portal:home' %}" class="mobile-nav-link">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+                <a href="{% url 'Portal:services' %}" class="mobile-nav-link">
+                    <i class="fas fa-cogs"></i>
+                    Features
+                </a>
+                <a href="{% url 'Portal:post_project' %}" class="mobile-nav-link">
+                    <i class="fas fa-plus"></i>
+                    Post Project
+                </a>
+                <a href="{% url 'Portal:contactus' %}" class="mobile-nav-link">
+                    <i class="fas fa-envelope"></i>
+                    Contact
+                </a>
+                <a href="{% url 'Portal:get_started' %}" class="mobile-nav-link">
+                    <i class="fas fa-book"></i>
+                    Tutorial
+                </a>
+                <a href="{% url 'Portal:login' %}" class="mobile-nav-link">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </a>
+                <a href="{% url 'Portal:signup' %}" class="mobile-nav-link">
+                    <i class="fas fa-user-plus"></i>
+                    Sign Up
+                </a>
             </div>
         </div>
     </nav>
@@ -1299,39 +1321,34 @@
         });
 
         // Mobile menu functionality
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const menuIcon = mobileMenuToggle.querySelector('i');
-
-        mobileMenuToggle.addEventListener('click', function() {
-            mobileMenu.classList.toggle('active');
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileDropdown = document.getElementById('mobile-dropdown');
             
-            // Toggle menu icon
-            if (mobileMenu.classList.contains('active')) {
-                menuIcon.classList.remove('fa-bars');
-                menuIcon.classList.add('fa-times');
-            } else {
-                menuIcon.classList.remove('fa-times');
-                menuIcon.classList.add('fa-bars');
-            }
-        });
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const isClickInsideNav = document.querySelector('.navbar').contains(event.target);
-            if (!isClickInsideNav && mobileMenu.classList.contains('active')) {
-                mobileMenu.classList.remove('active');
-                menuIcon.classList.remove('fa-times');
-                menuIcon.classList.add('fa-bars');
-            }
-        });
-
-        // Close mobile menu when clicking on a link
-        mobileMenu.addEventListener('click', function(event) {
-            if (event.target.tagName === 'A') {
-                mobileMenu.classList.remove('active');
-                menuIcon.classList.remove('fa-times');
-                menuIcon.classList.add('fa-bars');
+            if (mobileMenuBtn && mobileDropdown) {
+                // Toggle dropdown when hamburger button is clicked
+                mobileMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    mobileDropdown.classList.toggle('show');
+                    mobileMenuBtn.classList.toggle('active');
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!mobileMenuBtn.contains(e.target) && !mobileDropdown.contains(e.target)) {
+                        mobileDropdown.classList.remove('show');
+                        mobileMenuBtn.classList.remove('active');
+                    }
+                });
+                
+                // Close dropdown when a link is clicked
+                const mobileNavLinks = mobileDropdown.querySelectorAll('.mobile-nav-link');
+                mobileNavLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileDropdown.classList.remove('show');
+                        mobileMenuBtn.classList.remove('active');
+                    });
+                });
             }
         });
 
