@@ -1,0 +1,567 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - SwiftTalentForge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --white: #ffffff;
+            --light-gray: #f8fafc;
+            --border-color: #e2e8f0;
+            --success-color: #48bb78;
+            --info-color: #4299e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--light-gray);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: var(--white);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            border-radius: 12px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            background: linear-gradient(135deg, var(--info-color) 0%, var(--primary-color) 100%);
+            color: var(--white);
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 0 20px;
+        }
+
+        .last-updated {
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--info-color);
+        }
+
+        .last-updated strong {
+            color: var(--info-color);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.4rem;
+            font-weight: 500;
+            margin: 30px 0 15px 0;
+        }
+
+        h4 {
+            color: var(--text-dark);
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            background: #e6fffa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--success-color);
+            margin: 20px 0;
+        }
+
+        .info-box {
+            background: #ebf8ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--info-color);
+            margin: 20px 0;
+        }
+
+        .warning {
+            background: #fed7d7;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #fc8181;
+            margin: 20px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .data-table th {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .contact-info {
+            background: var(--light-gray);
+            padding: 25px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .contact-info h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--info-color) 0%, var(--primary-color) 100%);
+            color: var(--white);
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            margin: 20px 0;
+            transition: transform 0.2s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .section-number {
+            display: inline-block;
+            background: var(--info-color);
+            color: var(--white);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .rights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .right-card {
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .right-card h4 {
+            margin-top: 0;
+            color: var(--success-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 0 10px;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .data-table {
+                font-size: 0.9rem;
+            }
+
+            .rights-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-shield-alt"></i> Privacy Policy</h1>
+            <p>How we protect and handle your personal information</p>
+        </div>
+
+        <div class="content">
+            <div class="last-updated">
+                <strong>Last Updated:</strong> September 21, 2025
+            </div>
+
+            <div class="highlight">
+                <strong>Your Privacy Matters:</strong> SwiftTalentForge is committed to protecting your privacy and ensuring transparent data practices. This policy explains how we collect, use, and safeguard your information.
+            </div>
+
+            <h2><span class="section-number">1</span>Information We Collect</h2>
+            
+            <h3>1.1 Personal Information You Provide</h3>
+            <p>When you create an account or use our services, we collect information you voluntarily provide:</p>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Information Type</th>
+                        <th>Examples</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Account Information</strong></td>
+                        <td>Name, username, email, password, phone number</td>
+                        <td>Account creation and authentication</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Profile Information</strong></td>
+                        <td>Bio, skills, experience, portfolio, profile picture</td>
+                        <td>Professional matching and discovery</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Financial Information</strong></td>
+                        <td>Payment methods, billing address, tax information</td>
+                        <td>Payment processing and compliance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Communication Data</strong></td>
+                        <td>Messages, project communications, support tickets</td>
+                        <td>Service delivery and support</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Project Information</strong></td>
+                        <td>Project descriptions, requirements, deliverables</td>
+                        <td>Facilitating work relationships</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>1.2 Information We Collect Automatically</h3>
+            <p>When you use our platform, we automatically collect certain information:</p>
+            <ul>
+                <li><strong>Device Information:</strong> IP address, browser type, operating system, device identifiers</li>
+                <li><strong>Usage Data:</strong> Pages visited, features used, time spent on platform, click patterns</li>
+                <li><strong>Location Data:</strong> General geographic location based on IP address</li>
+                <li><strong>Performance Data:</strong> Error reports, loading times, platform performance metrics</li>
+            </ul>
+
+            <h3>1.3 Information from Third Parties</h3>
+            <p>We may receive information from:</p>
+            <ul>
+                <li><strong>Payment Processors:</strong> Transaction data from Stripe, PayPal, and other payment providers</li>
+                <li><strong>Identity Verification Services:</strong> Information to verify your identity and prevent fraud</li>
+                <li><strong>Social Media:</strong> If you connect social media accounts (with your permission)</li>
+                <li><strong>Public Sources:</strong> Publicly available information to verify credentials</li>
+            </ul>
+
+            <h2><span class="section-number">2</span>How We Use Your Information</h2>
+            
+            <div class="info-box">
+                <strong>Legal Basis:</strong> We process your information based on legitimate business interests, contractual necessity, legal compliance, and your consent where required.
+            </div>
+
+            <h3>2.1 Primary Uses</h3>
+            <ul>
+                <li><strong>Service Provision:</strong> Creating accounts, facilitating connections, processing payments</li>
+                <li><strong>Platform Security:</strong> Fraud prevention, content moderation, security monitoring</li>
+                <li><strong>Communication:</strong> Sending notifications, updates, and support responses</li>
+                <li><strong>Improvement:</strong> Analyzing usage patterns to enhance platform features</li>
+                <li><strong>Compliance:</strong> Meeting legal obligations and regulatory requirements</li>
+            </ul>
+
+            <h3>2.2 Marketing and Communications</h3>
+            <p>With your consent, we may use your information for:</p>
+            <ul>
+                <li>Sending promotional emails about new features or services</li>
+                <li>Providing personalized recommendations</li>
+                <li>Inviting participation in surveys or feedback programs</li>
+                <li>Sharing relevant industry insights and tips</li>
+            </ul>
+            <p><em>You can opt out of marketing communications at any time.</em></p>
+
+            <h2><span class="section-number">3</span>Information Sharing and Disclosure</h2>
+
+            <h3>3.1 When We Share Information</h3>
+            <p>We only share your information in specific circumstances:</p>
+            <ul>
+                <li><strong>With Other Users:</strong> Profile information visible to facilitate business connections</li>
+                <li><strong>Service Providers:</strong> Trusted third parties who help operate our platform</li>
+                <li><strong>Payment Processing:</strong> Financial institutions and payment processors for transactions</li>
+                <li><strong>Legal Requirements:</strong> When required by law, court order, or regulatory request</li>
+                <li><strong>Business Transfers:</strong> In case of merger, acquisition, or asset sale</li>
+                <li><strong>Safety and Security:</strong> To protect users, prevent fraud, or address security issues</li>
+            </ul>
+
+            <h3>3.2 What We Never Share</h3>
+            <div class="warning">
+                <strong>We Never:</strong>
+                <ul style="margin: 10px 0;">
+                    <li>Sell your personal information to third parties</li>
+                    <li>Share private messages without legal requirement</li>
+                    <li>Disclose financial information beyond transaction necessities</li>
+                    <li>Provide contact information to unauthorized parties</li>
+                </ul>
+            </div>
+
+            <h2><span class="section-number">4</span>Data Security and Protection</h2>
+
+            <h3>4.1 Security Measures</h3>
+            <p>We implement comprehensive security measures to protect your information:</p>
+            <ul>
+                <li><strong>Encryption:</strong> All data transmitted using SSL/TLS encryption</li>
+                <li><strong>Access Controls:</strong> Strict employee access controls and authentication</li>
+                <li><strong>Monitoring:</strong> 24/7 security monitoring and threat detection</li>
+                <li><strong>Regular Audits:</strong> Periodic security assessments and vulnerability testing</li>
+                <li><strong>Data Backup:</strong> Secure, encrypted backups with redundancy</li>
+            </ul>
+
+            <h3>4.2 Payment Security</h3>
+            <p>Financial information is protected through:</p>
+            <ul>
+                <li>PCI DSS compliant payment processors</li>
+                <li>Tokenization of payment information</li>
+                <li>Fraud detection and prevention systems</li>
+                <li>Secure escrow services for project payments</li>
+            </ul>
+
+            <h2><span class="section-number">5</span>Your Privacy Rights</h2>
+
+            <div class="rights-grid">
+                <div class="right-card">
+                    <h4><i class="fas fa-eye"></i> Access</h4>
+                    <p>Request copies of your personal data and understand how it's being used.</p>
+                </div>
+                <div class="right-card">
+                    <h4><i class="fas fa-edit"></i> Correction</h4>
+                    <p>Update or correct inaccurate personal information in your account.</p>
+                </div>
+                <div class="right-card">
+                    <h4><i class="fas fa-trash"></i> Deletion</h4>
+                    <p>Request deletion of your personal data, subject to legal and contractual obligations.</p>
+                </div>
+                <div class="right-card">
+                    <h4><i class="fas fa-download"></i> Portability</h4>
+                    <p>Receive your data in a structured, machine-readable format.</p>
+                </div>
+                <div class="right-card">
+                    <h4><i class="fas fa-ban"></i> Opt-Out</h4>
+                    <p>Unsubscribe from marketing communications and data processing where applicable.</p>
+                </div>
+                <div class="right-card">
+                    <h4><i class="fas fa-pause"></i> Restriction</h4>
+                    <p>Request limitation of processing in certain circumstances.</p>
+                </div>
+            </div>
+
+            <h3>5.1 Exercising Your Rights</h3>
+            <p>To exercise any of these rights:</p>
+            <ul>
+                <li>Contact us at <strong>privacy@swifttalentforge.com</strong></li>
+                <li>Access account settings for basic data management</li>
+                <li>We will respond to requests within 30 days</li>
+                <li>Identity verification may be required</li>
+            </ul>
+
+            <h2><span class="section-number">6</span>Cookies and Tracking Technologies</h2>
+
+            <h3>6.1 Types of Cookies We Use</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Cookie Type</th>
+                        <th>Purpose</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Essential</strong></td>
+                        <td>Basic platform functionality, security, authentication</td>
+                        <td>Session/1 year</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Performance</strong></td>
+                        <td>Analytics, error reporting, platform optimization</td>
+                        <td>2 years</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Functional</strong></td>
+                        <td>User preferences, settings, personalization</td>
+                        <td>1 year</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Advertising</strong></td>
+                        <td>Targeted advertising, conversion tracking</td>
+                        <td>90 days</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>6.2 Managing Cookies</h3>
+            <p>You can control cookies through:</p>
+            <ul>
+                <li>Browser settings to block or delete cookies</li>
+                <li>Our cookie preference center</li>
+                <li>Opting out of advertising cookies</li>
+                <li>Using browser "Do Not Track" settings</li>
+            </ul>
+
+            <h2><span class="section-number">7</span>Data Retention</h2>
+
+            <h3>7.1 Retention Periods</h3>
+            <p>We retain information for different periods based on purpose:</p>
+            <ul>
+                <li><strong>Account Data:</strong> Until account deletion + 30 days</li>
+                <li><strong>Financial Records:</strong> 7 years for tax and legal compliance</li>
+                <li><strong>Communication Data:</strong> 3 years for dispute resolution</li>
+                <li><strong>Analytics Data:</strong> 26 months in aggregated form</li>
+                <li><strong>Legal Holds:</strong> Extended retention when legally required</li>
+            </ul>
+
+            <h3>7.2 Data Deletion</h3>
+            <p>When you delete your account:</p>
+            <ul>
+                <li>Personal data is deleted within 30 days</li>
+                <li>Some data may be retained for legal compliance</li>
+                <li>Anonymized data may be retained for analytics</li>
+                <li>Public content may remain visible until manually removed</li>
+            </ul>
+
+            <h2><span class="section-number">8</span>International Data Transfers</h2>
+            <p>Our services may involve transferring data internationally. When we transfer data outside your region:</p>
+            <ul>
+                <li>We ensure adequate protection through approved mechanisms</li>
+                <li>Standard contractual clauses govern data transfers</li>
+                <li>We work only with certified and compliant service providers</li>
+                <li>Regular assessments ensure ongoing protection standards</li>
+            </ul>
+
+            <h2><span class="section-number">9</span>Children's Privacy</h2>
+            <div class="warning">
+                <strong>Age Restriction:</strong> Our platform is not intended for users under 18 years old. We do not knowingly collect personal information from children. If we discover we have collected information from a child, we will delete it immediately.
+            </div>
+
+            <h2><span class="section-number">10</span>Third-Party Services</h2>
+            <p>Our platform integrates with third-party services:</p>
+            <ul>
+                <li><strong>Payment Processors:</strong> Stripe, PayPal (covered by their privacy policies)</li>
+                <li><strong>Analytics:</strong> Google Analytics (you can opt out via browser settings)</li>
+                <li><strong>Communication Tools:</strong> Email and messaging services</li>
+                <li><strong>Cloud Storage:</strong> Secure file storage and backup services</li>
+            </ul>
+            <p>Each service has its own privacy policy that governs their data practices.</p>
+
+            <h2><span class="section-number">11</span>Changes to This Policy</h2>
+            <p>We may update this Privacy Policy periodically to reflect:</p>
+            <ul>
+                <li>Changes in our data practices</li>
+                <li>New features or services</li>
+                <li>Legal or regulatory requirements</li>
+                <li>Industry best practices</li>
+            </ul>
+            <p>We will notify you of significant changes via email or platform notifications. Continued use constitutes acceptance of updated terms.</p>
+
+            <h2><span class="section-number">12</span>Contact Us</h2>
+            <div class="contact-info">
+                <h3>Privacy Questions or Concerns?</h3>
+                <p>Our Privacy Team is here to help:</p>
+                <p><strong>Email:</strong> privacy@swifttalentforge.com</p>
+                <p><strong>Data Protection Officer:</strong> dpo@swifttalentforge.com</p>
+                <p><strong>Address:</strong> SwiftTalentForge Privacy Department<br>
+                [Your Business Address]</p>
+                <p><strong>Response Time:</strong> We respond to privacy inquiries within 72 hours</p>
+            </div>
+
+            <div class="highlight">
+                <p><strong>Your Consent:</strong> By clicking "I have read and understood the Privacy Policy" during registration, you acknowledge that you have read this policy and consent to our data practices as described.</p>
+            </div>
+
+            <a href="javascript:history.back()" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Registration
+            </a>
+        </div>
+    </div>
+</body>
+</html>

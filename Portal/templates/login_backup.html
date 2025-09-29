@@ -346,128 +346,6 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        /* Mobile Responsiveness */
-        .nav-toggle {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            padding: 5px;
-        }
-
-        .nav-toggle span {
-            width: 25px;
-            height: 3px;
-            background: #374151;
-            margin: 3px 0;
-            transition: 0.3s;
-            border-radius: 2px;
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 10px 0;
-            }
-            
-            .nav-container {
-                padding: 0 15px;
-            }
-            
-            .nav-toggle {
-                display: flex;
-            }
-            
-            .nav-links {
-                position: fixed;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background: white;
-                flex-direction: column;
-                gap: 0;
-                padding: 20px 0;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-                transform: translateY(-100%);
-                opacity: 0;
-                visibility: hidden;
-                transition: all 0.3s ease;
-            }
-            
-            .nav-links.active {
-                transform: translateY(0);
-                opacity: 1;
-                visibility: visible;
-            }
-            
-            .nav-link {
-                padding: 15px 30px;
-                width: 100%;
-                justify-content: flex-start;
-                border-radius: 0;
-            }
-            
-            .login-container {
-                max-width: 90%;
-                margin: 100px auto 50px;
-                padding: 30px 20px;
-            }
-            
-            .login-title {
-                font-size: 2rem;
-            }
-            
-            .login-subtitle {
-                font-size: 0.95rem;
-            }
-            
-            .form-group {
-                margin-bottom: 20px;
-            }
-            
-            .form-input {
-                padding: 14px 20px;
-                font-size: 16px; /* Prevents zoom on iOS */
-            }
-            
-            .login-btn {
-                padding: 14px;
-                font-size: 1rem;
-            }
-            
-            .social-login {
-                flex-direction: column;
-                gap: 12px;
-            }
-            
-            .social-btn {
-                padding: 12px;
-                font-size: 0.9rem;
-            }
-            
-            .features-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .login-container {
-                margin: 80px auto 30px;
-                padding: 25px 15px;
-            }
-            
-            .login-title {
-                font-size: 1.8rem;
-            }
-            
-            .form-input {
-                padding: 12px 16px;
-            }
-            
-            .feature-card {
-                padding: 20px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -481,14 +359,7 @@
                 <i class="fas fa-bolt"></i>
                 SwiftTalentForge
             </a>
-            
-            <div class="nav-toggle" onclick="toggleNav()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            
-            <div class="nav-links" id="navLinks">
+            <div class="nav-links">
                 <a href="{% url 'Portal:index' %}" class="nav-link">
                     <i class="fas fa-home"></i>
                     Home
@@ -596,19 +467,6 @@
             
             input.addEventListener('blur', function() {
                 this.parentNode.style.transform = 'scale(1)';
-            });
-        });
-
-        // Mobile navigation toggle
-        function toggleNav() {
-            const navLinks = document.getElementById('navLinks');
-            navLinks.classList.toggle('active');
-        }
-
-        // Close mobile nav when clicking on links
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                document.getElementById('navLinks').classList.remove('active');
             });
         });
     </script>

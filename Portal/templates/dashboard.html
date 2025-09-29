@@ -363,32 +363,362 @@
             margin-top: 10px;
         }
 
+        /* Mobile Menu Button and Dropdown */
+        .mobile-menu-btn {
+            display: none; /* Hidden by default - only show on mobile */
+            background: none;
+            border: none;
+            border-radius: 6px;
+            padding: 8px;
+            cursor: pointer;
+            position: relative;
+            width: 40px;
+            height: 35px;
+            transition: all 0.3s ease;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 3px;
+            background: #374151;
+            margin: 3px 0;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .mobile-menu-btn.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .mobile-menu-btn.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-btn.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .mobile-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            z-index: 1000;
+            overflow: hidden;
+            margin-top: 10px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .mobile-dropdown.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mobile-nav-link {
+            display: block;
+            padding: 12px 16px;
+            color: #374151;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-bottom: 1px solid #f3f4f6;
+            transition: all 0.2s ease;
+        }
+
+        .mobile-nav-link:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-nav-link:hover {
+            background: #f8fafc;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .mobile-nav-link i {
+            width: 18px;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        /* Ensure mobile elements are hidden on desktop */
+        @media (min-width: 769px) {
+            .mobile-menu-btn,
+            .mobile-dropdown {
+                display: none !important;
+            }
+        }
+
         @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-container {
+                justify-content: space-between;
+                flex-wrap: nowrap;
+                position: relative;
+                padding: 0 15px;
+            }
+            
             .dashboard-grid {
                 grid-template-columns: 1fr;
+                gap: 20px;
             }
             
             .quick-actions {
                 grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .nav-links {
                 gap: 15px;
-            }
-            
-            .nav-link {
-                padding: 6px 12px;
-                font-size: 0.9rem;
             }
             
             .container {
                 padding: 20px 15px;
+            }
+            
+            .header {
+                padding: 25px 20px;
+                margin-bottom: 20px;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .page-subtitle {
+                font-size: 1rem;
+            }
+            
+            .action-card {
+                padding: 20px 15px;
+            }
+            
+            .action-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+                margin-bottom: 12px;
+            }
+            
+            .action-title {
+                font-size: 1rem;
+            }
+            
+            .action-desc {
+                font-size: 0.85rem;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .status-card {
+                padding: 20px;
+            }
+            
+            .logo {
+                font-size: 1.3rem;
             }
         }
 
         @media (max-width: 480px) {
             .quick-actions {
                 grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .header {
+                padding: 20px 15px;
+                margin-bottom: 15px;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .page-subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 20px;
+            }
+            
+            .action-card {
+                padding: 18px 12px;
+            }
+            
+            .action-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+            }
+            
+            .action-title {
+                font-size: 0.95rem;
+                margin-bottom: 6px;
+            }
+            
+            .action-desc {
+                font-size: 0.8rem;
+                line-height: 1.4;
+            }
+            
+            .main-content {
+                padding: 18px 15px;
+            }
+            
+            .status-card {
+                padding: 18px 15px;
+            }
+            
+            .content-title {
+                font-size: 1.1rem;
+            }
+            
+            .content-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+            
+            .container {
+                padding: 15px 10px;
+            }
+            
+            .nav-container {
+                padding: 0 10px;
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+            }
+            
+            .mobile-menu-btn {
+                width: 40px;
+                height: 36px;
+                padding: 8px;
+            }
+            
+            .mobile-dropdown {
+                min-width: 180px;
+                right: -10px;
+            }
+            
+            .mobile-nav-link {
+                padding: 10px 14px;
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .header {
+                padding: 15px 10px;
+                margin-bottom: 12px;
+            }
+            
+            .page-title {
+                font-size: 1.3rem;
+            }
+            
+            .page-subtitle {
+                font-size: 0.85rem;
+                margin-bottom: 15px;
+            }
+            
+            .action-card {
+                padding: 15px 10px;
+            }
+            
+            .action-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+                margin-bottom: 8px;
+            }
+            
+            .action-title {
+                font-size: 0.9rem;
+                margin-bottom: 5px;
+            }
+            
+            .action-desc {
+                font-size: 0.75rem;
+                line-height: 1.3;
+            }
+            
+            .main-content {
+                padding: 15px 10px;
+            }
+            
+            .status-card {
+                padding: 15px 10px;
+            }
+            
+            .content-title {
+                font-size: 1rem;
+            }
+            
+            .content-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+            
+            .container {
+                padding: 12px 8px;
+            }
+            
+            .nav-container {
+                padding: 0 8px;
+            }
+            
+            .logo {
+                font-size: 1.1rem;
+            }
+            
+            .mobile-menu-btn {
+                width: 36px;
+                height: 32px;
+                padding: 6px;
+            }
+            
+            .hamburger-line {
+                height: 2px;
+                margin: 3px 0;
+            }
+            
+            .mobile-dropdown {
+                min-width: 160px;
+                right: -5px;
+            }
+            
+            .mobile-nav-link {
+                padding: 8px 12px;
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -401,6 +731,62 @@
                 <i class="fas fa-bolt"></i>
                 SwiftTalentForge
             </a>
+            
+            <!-- Mobile Menu Button -->
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+            </button>
+            
+            <!-- Mobile Dropdown Menu -->
+            <div class="mobile-dropdown" id="mobile-dropdown">
+                <a href="{% url 'Portal:home' %}" class="mobile-nav-link">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+                <a href="{% url 'Portal:browse_jobs' %}" class="mobile-nav-link">
+                    <i class="fas fa-briefcase"></i>
+                    Browse Jobs
+                </a>
+                
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'Portal:post_project' %}" class="mobile-nav-link">
+                        <i class="fas fa-plus"></i>
+                        Post Project
+                    </a>
+                    <a href="{% url 'Portal:myprojects' %}" class="mobile-nav-link">
+                        <i class="fas fa-folder"></i>
+                        My Projects
+                    </a>
+                    <a href="{% url 'Portal:payment_dashboard' %}" class="mobile-nav-link">
+                        <i class="fas fa-credit-card"></i>
+                        Payments
+                    </a>
+                    <a href="{% url 'Portal:profile' request.user.username %}" class="mobile-nav-link">
+                        <i class="fas fa-user"></i>
+                        Profile
+                    </a>
+                    <a href="{% url 'Portal:messages' %}" class="mobile-nav-link">
+                        <i class="fas fa-comments"></i>
+                        Messages
+                    </a>
+                    <a href="{% url 'Portal:logout' %}" class="mobile-nav-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                {% else %}
+                    <a href="{% url 'Portal:login' %}" class="mobile-nav-link">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </a>
+                    <a href="{% url 'Portal:signup' %}" class="mobile-nav-link">
+                        <i class="fas fa-user-plus"></i>
+                        Sign Up
+                    </a>
+                {% endif %}
+            </div>
+            
             <div class="nav-links">
                 <a href="{% url 'Portal:home' %}" class="nav-link">
                     <i class="fas fa-home"></i>
@@ -672,6 +1058,38 @@
                     console.log('New message check failed');
                 });
         }
+
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileDropdown = document.getElementById('mobile-dropdown');
+            
+            if (mobileMenuBtn && mobileDropdown) {
+                // Toggle dropdown when hamburger button is clicked
+                mobileMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    mobileDropdown.classList.toggle('show');
+                    mobileMenuBtn.classList.toggle('active');
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!mobileMenuBtn.contains(e.target) && !mobileDropdown.contains(e.target)) {
+                        mobileDropdown.classList.remove('show');
+                        mobileMenuBtn.classList.remove('active');
+                    }
+                });
+                
+                // Close dropdown when a link is clicked
+                const mobileNavLinks = mobileDropdown.querySelectorAll('.mobile-nav-link');
+                mobileNavLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileDropdown.classList.remove('show');
+                        mobileMenuBtn.classList.remove('active');
+                    });
+                });
+            }
+        });
     </script>
 </body>
 </html>

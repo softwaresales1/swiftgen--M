@@ -284,6 +284,15 @@ def signup_user(request):
                 if not request.POST.get(field):
                     raise ValueError(f"{field.replace('_', ' ').title()} is required")
 
+            # Validate Terms of Service and Privacy Policy agreement
+            terms_agreement = request.POST.get('terms_agreement')
+            privacy_agreement = request.POST.get('privacy_agreement')
+            
+            if not terms_agreement:
+                raise ValueError("You must read and accept the Terms of Service to create an account")
+            if not privacy_agreement:
+                raise ValueError("You must read and accept the Privacy Policy to create an account")
+
             # Get form data
             username = request.POST['name']
             first_name = request.POST['fname']
@@ -1135,6 +1144,13 @@ def user_profile(request, username):
     user = User.objects.get(username=username)
     cuser = CustomUser.objects.get(user=user)
     context['cuser'] = cuser
+    
+    # Check if the current user is viewing their own profile
+    is_own_profile = False
+    if request.user.is_authenticated:
+        is_own_profile = request.user.username == username
+    context['is_own_profile'] = is_own_profile
+    
     if request.user.is_authenticated:
         if request.method == "POST":
             bio = request.POST['bio']
@@ -1334,3 +1350,15 @@ def task_editfunction(request, project_id, task_id):
         context['date'] = date
         return render(request,'edittask.html',context)
     return redirect("Portal:task_description", project_id, task_id)
+
+def terms_of_service(request):
+    """
+    Render the Terms of Service page
+    """
+    return render(request, 'terms_of_service.html')
+
+def privacy_policy(request):
+    """
+    Render the Privacy Policy page
+    """
+    return render(request, 'privacy_policy.html')

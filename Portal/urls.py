@@ -121,4 +121,8 @@ urlpatterns = [
     # Mobile API endpoints (for future mobile app)
     path('api/mobile/messages/sync/', message_views.mobile_message_sync, name='mobile_message_sync'),
     path('api/mobile/conversations/list/', message_views.mobile_conversations_list, name='mobile_conversations_list'),
+    
+    # Legal Pages
+    path('terms-of-service/', views.terms_of_service, name='terms_of_service'),
+    path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
 ]

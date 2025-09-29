@@ -1,0 +1,415 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - SwiftTalentForge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --white: #ffffff;
+            --light-gray: #f8fafc;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--light-gray);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: var(--white);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            border-radius: 12px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 0 20px;
+        }
+
+        .last-updated {
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .last-updated strong {
+            color: var(--primary-color);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            font-size: 1.4rem;
+            font-weight: 500;
+            margin: 30px 0 15px 0;
+        }
+
+        h4 {
+            color: var(--text-dark);
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            background: #fef5e7;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #f6ad55;
+            margin: 20px 0;
+        }
+
+        .warning {
+            background: #fed7d7;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #fc8181;
+            margin: 20px 0;
+        }
+
+        .contact-info {
+            background: var(--light-gray);
+            padding: 25px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .contact-info h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            margin: 20px 0;
+            transition: transform 0.2s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .section-number {
+            display: inline-block;
+            background: var(--primary-color);
+            color: var(--white);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 0 10px;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-file-contract"></i> Terms of Service</h1>
+            <p>SwiftTalentForge Platform Agreement</p>
+        </div>
+
+        <div class="content">
+            <div class="last-updated">
+                <strong>Last Updated:</strong> September 21, 2025
+            </div>
+
+            <div class="highlight">
+                <strong>Important Notice:</strong> By creating an account and using SwiftTalentForge, you agree to be bound by these Terms of Service. Please read carefully before proceeding.
+            </div>
+
+            <h2><span class="section-number">1</span>Acceptance of Terms</h2>
+            <p>Welcome to SwiftTalentForge ("Platform," "Service," "we," "us," or "our"). These Terms of Service ("Terms") constitute a legally binding agreement between you ("User," "you," or "your") and SwiftTalentForge regarding your use of our freelance marketplace platform.</p>
+            
+            <p>By accessing, browsing, or using our Platform, you acknowledge that you have read, understood, and agree to be bound by these Terms and our Privacy Policy. If you do not agree to these Terms, you must not use our Platform.</p>
+
+            <h2><span class="section-number">2</span>Platform Overview</h2>
+            <p>SwiftTalentForge is a digital marketplace that connects clients ("Buyers") with freelance professionals ("Sellers") for the purpose of completing various digital services and projects. Our Platform facilitates:</p>
+            <ul>
+                <li>Project posting and discovery</li>
+                <li>Freelancer bidding and selection</li>
+                <li>Secure payment processing and escrow services</li>
+                <li>Communication tools and project management</li>
+                <li>Dispute resolution and customer support</li>
+                <li>Quality assurance and review systems</li>
+            </ul>
+
+            <h2><span class="section-number">3</span>Eligibility and Account Registration</h2>
+            
+            <h3>3.1 Age Requirements</h3>
+            <p>You must be at least 18 years old to use our Platform. By using our services, you represent and warrant that you meet this age requirement.</p>
+
+            <h3>3.2 Account Information</h3>
+            <p>When creating an account, you agree to:</p>
+            <ul>
+                <li>Provide accurate, current, and complete information</li>
+                <li>Maintain and promptly update your account information</li>
+                <li>Keep your login credentials secure and confidential</li>
+                <li>Accept responsibility for all activities under your account</li>
+                <li>Notify us immediately of any unauthorized account use</li>
+            </ul>
+
+            <h3>3.3 Account Verification</h3>
+            <p>We may require verification of your identity, contact information, or payment methods. Failure to provide requested verification may result in account limitations or suspension.</p>
+
+            <h2><span class="section-number">4</span>User Conduct and Prohibited Activities</h2>
+
+            <h3>4.1 General Conduct</h3>
+            <p>All users must maintain professional standards and treat others with respect. You agree to:</p>
+            <ul>
+                <li>Communicate professionally and courteously</li>
+                <li>Honor all agreements and commitments made through the Platform</li>
+                <li>Provide honest and accurate service descriptions</li>
+                <li>Respect intellectual property rights</li>
+                <li>Comply with all applicable laws and regulations</li>
+            </ul>
+
+            <h3>4.2 Strictly Prohibited Activities</h3>
+            <div class="warning">
+                <strong>Zero Tolerance Policy:</strong> The following activities will result in immediate account suspension or termination:
+            </div>
+            <ul>
+                <li><strong>Contact Information Sharing:</strong> Sharing emails, phone numbers, social media handles, or any external contact information</li>
+                <li><strong>Platform Circumvention:</strong> Attempting to conduct business outside the Platform to avoid fees</li>
+                <li><strong>Fraudulent Activities:</strong> Any form of fraud, scam, or deceptive practices</li>
+                <li><strong>Multiple Accounts:</strong> Creating or operating multiple accounts without permission</li>
+                <li><strong>Spam and Harassment:</strong> Sending unsolicited messages or engaging in harassment</li>
+                <li><strong>False Reviews:</strong> Creating fake reviews or manipulating the rating system</li>
+                <li><strong>Intellectual Property Theft:</strong> Using copyrighted material without permission</li>
+                <li><strong>Prohibited Content:</strong> Adult content, illegal services, or harmful material</li>
+            </ul>
+
+            <h2><span class="section-number">5</span>Services and Project Management</h2>
+
+            <h3>5.1 For Buyers (Clients)</h3>
+            <p>As a buyer, you agree to:</p>
+            <ul>
+                <li>Provide clear, detailed project requirements</li>
+                <li>Communicate project scope and expectations clearly</li>
+                <li>Make timely payments for completed work</li>
+                <li>Provide constructive feedback and reviews</li>
+                <li>Respect intellectual property created by freelancers</li>
+            </ul>
+
+            <h3>5.2 For Sellers (Freelancers)</h3>
+            <p>As a seller, you agree to:</p>
+            <ul>
+                <li>Accurately represent your skills and experience</li>
+                <li>Deliver work that meets agreed specifications</li>
+                <li>Meet agreed deadlines and milestones</li>
+                <li>Maintain confidentiality of client information</li>
+                <li>Provide original work unless otherwise specified</li>
+            </ul>
+
+            <h3>5.3 Project Completion and Revisions</h3>
+            <p>Work is considered complete when the buyer approves the delivery. Reasonable revisions may be requested based on original requirements. Excessive revision requests beyond scope may incur additional charges.</p>
+
+            <h2><span class="section-number">6</span>Payment Terms and Financial Policies</h2>
+
+            <h3>6.1 Platform Fees</h3>
+            <p>SwiftTalentForge charges a service fee of 10% on all completed transactions. This fee covers:</p>
+            <ul>
+                <li>Secure payment processing</li>
+                <li>Escrow protection services</li>
+                <li>Customer support and dispute resolution</li>
+                <li>Platform maintenance and security</li>
+            </ul>
+
+            <h3>6.2 Payment Processing</h3>
+            <p>We use secure third-party payment processors including Stripe and PayPal. All payments are held in escrow until work is completed and approved. Payment terms include:</p>
+            <ul>
+                <li>Payments are processed within 24-48 hours of approval</li>
+                <li>Refunds are subject to our refund policy and dispute resolution</li>
+                <li>Currency conversion fees may apply for international transactions</li>
+                <li>All prices are exclusive of applicable taxes</li>
+            </ul>
+
+            <h3>6.3 Escrow Protection</h3>
+            <p>Our escrow system protects both buyers and sellers by holding payments until project completion. Funds are released when:</p>
+            <ul>
+                <li>Buyer approves completed work</li>
+                <li>Automatic release after 7 days of delivery (if no disputes)</li>
+                <li>Dispute resolution determines fair outcome</li>
+            </ul>
+
+            <h2><span class="section-number">7</span>Dispute Resolution</h2>
+
+            <h3>7.1 Dispute Process</h3>
+            <p>If disputes arise, we encourage direct communication first. If unresolved, our dispute resolution process includes:</p>
+            <ol>
+                <li><strong>Mediation:</strong> Platform mediators review evidence and facilitate resolution</li>
+                <li><strong>Evidence Review:</strong> All communication, deliverables, and requirements are examined</li>
+                <li><strong>Fair Resolution:</strong> Decisions are made based on original agreements and evidence</li>
+                <li><strong>Final Decision:</strong> Platform decisions on disputes are final and binding</li>
+            </ol>
+
+            <h3>7.2 Dispute Timeline</h3>
+            <p>Disputes must be filed within 14 days of project delivery. We aim to resolve all disputes within 7-10 business days.</p>
+
+            <h2><span class="section-number">8</span>Intellectual Property</h2>
+
+            <h3>8.1 Ownership Rights</h3>
+            <p>Unless otherwise agreed in writing:</p>
+            <ul>
+                <li>Buyers receive full rights to custom work upon payment completion</li>
+                <li>Sellers retain rights to general techniques and knowledge</li>
+                <li>Portfolios may include completed work with client permission</li>
+                <li>All parties must respect third-party intellectual property</li>
+            </ul>
+
+            <h3>8.2 Platform Content</h3>
+            <p>SwiftTalentForge retains all rights to platform content, features, and branding. Users may not reproduce, distribute, or create derivative works without permission.</p>
+
+            <h2><span class="section-number">9</span>Content Moderation and Safety</h2>
+
+            <h3>9.1 Automated Monitoring</h3>
+            <p>Our platform employs advanced content moderation systems to:</p>
+            <ul>
+                <li>Detect and prevent contact information sharing</li>
+                <li>Monitor for prohibited content and activities</li>
+                <li>Ensure platform safety and compliance</li>
+                <li>Protect users from fraud and scams</li>
+            </ul>
+
+            <h3>9.2 Enforcement Actions</h3>
+            <p>Violations may result in:</p>
+            <ul>
+                <li><strong>Warning:</strong> First-time minor violations</li>
+                <li><strong>Temporary Suspension:</strong> Repeated or moderate violations</li>
+                <li><strong>Permanent Ban:</strong> Serious violations or repeated offenses</li>
+                <li><strong>Legal Action:</strong> Criminal activities or severe policy violations</li>
+            </ul>
+
+            <h2><span class="section-number">10</span>Privacy and Data Protection</h2>
+            <p>Your privacy is important to us. Our data practices are detailed in our Privacy Policy, which is incorporated into these Terms by reference. By using our Platform, you consent to our data collection and processing practices.</p>
+
+            <h2><span class="section-number">11</span>Platform Modifications</h2>
+            <p>We reserve the right to modify, suspend, or discontinue any aspect of our Platform at any time. We will provide reasonable notice for significant changes that affect your use of the service.</p>
+
+            <h2><span class="section-number">12</span>Limitation of Liability</h2>
+            <p>To the maximum extent permitted by law, SwiftTalentForge shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of the Platform. Our total liability shall not exceed the amount of fees paid by you in the 12 months preceding the claim.</p>
+
+            <h2><span class="section-number">13</span>Indemnification</h2>
+            <p>You agree to indemnify and hold harmless SwiftTalentForge from any claims, damages, or expenses arising from your use of the Platform, violation of these Terms, or infringement of any rights of another party.</p>
+
+            <h2><span class="section-number">14</span>Governing Law</h2>
+            <p>These Terms are governed by and construed in accordance with the laws of [Your Jurisdiction]. Any disputes shall be resolved in the courts of [Your Jurisdiction].</p>
+
+            <h2><span class="section-number">15</span>Modifications to Terms</h2>
+            <p>We may update these Terms periodically. Continued use of the Platform after changes constitutes acceptance of the updated Terms. We will notify users of significant changes via email or platform notifications.</p>
+
+            <h2><span class="section-number">16</span>Contact Information</h2>
+            <div class="contact-info">
+                <h3>Questions About These Terms?</h3>
+                <p>If you have any questions about these Terms of Service, please contact us:</p>
+                <p><strong>Email:</strong> legal@swifttalentforge.com</p>
+                <p><strong>Address:</strong> SwiftTalentForge Legal Department<br>
+                [Your Business Address]</p>
+                <p><strong>Response Time:</strong> We aim to respond within 2-3 business days</p>
+            </div>
+
+            <div class="highlight">
+                <p><strong>Agreement Acknowledgment:</strong> By clicking "I have read and understood the Terms of Service" during registration, you acknowledge that you have read, understood, and agree to be bound by these Terms.</p>
+            </div>
+
+            <a href="javascript:history.back()" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Registration
+            </a>
+        </div>
+    </div>
+</body>
+</html>
