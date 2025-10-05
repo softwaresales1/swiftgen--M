@@ -172,6 +172,143 @@
     animation: slideUp 0.3s ease-out;
 }
 
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .support-widget {
+        bottom: 15px;
+        right: 15px;
+        left: 15px;
+    }
+    
+    .support-button {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .support-button i {
+        font-size: 20px;
+    }
+    
+    .support-text {
+        display: none; /* Hide text tooltip on mobile */
+    }
+    
+    .support-chat {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        z-index: 10001;
+        max-width: none;
+        animation: slideUpMobile 0.3s ease-out;
+    }
+    
+    .support-header {
+        padding: 20px 16px 16px 16px;
+        padding-top: calc(env(safe-area-inset-top, 0px) + 20px);
+    }
+    
+    .support-messages {
+        padding: 16px 12px;
+        max-height: calc(100vh - 200px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    }
+    
+    .quick-actions {
+        gap: 8px;
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .quick-action-btn {
+        padding: 12px 8px;
+        font-size: 11px;
+    }
+    
+    .support-input {
+        padding: 16px 12px;
+        padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    }
+    
+    .support-footer {
+        font-size: 11px;
+        text-align: center;
+    }
+    
+    .message-content {
+        max-width: calc(100% - 20px);
+    }
+    
+    .message-text {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+}
+
+@media (max-width: 480px) {
+    .support-widget {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+    }
+    
+    .support-button {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .support-button i {
+        font-size: 18px;
+    }
+    
+    .support-notification {
+        width: 18px;
+        height: 18px;
+        font-size: 11px;
+    }
+    
+    .support-header {
+        padding: 16px 12px 12px 12px;
+    }
+    
+    .support-info h4 {
+        font-size: 16px;
+    }
+    
+    .support-status {
+        font-size: 12px;
+    }
+    
+    .support-messages {
+        padding: 12px 8px;
+    }
+    
+    .quick-action-btn {
+        padding: 10px 6px;
+        font-size: 10px;
+    }
+    
+    .quick-action-btn i {
+        font-size: 14px;
+    }
+    
+    .input-container {
+        gap: 6px;
+    }
+    
+    #supportMessageInput {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+    
+    .send-button {
+        width: 36px;
+        height: 36px;
+    }
+}
+
 .support-chat.active {
     display: flex;
 }
@@ -180,6 +317,17 @@
     from {
         opacity: 0;
         transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUpMobile {
+    from {
+        opacity: 0;
+        transform: translateY(100%);
     }
     to {
         opacity: 1;
@@ -416,19 +564,17 @@
     margin-top: 8px;
 }
 
-/* Mobile Responsiveness */
+/* Mobile Responsiveness - Full Screen Optimized */
 @media (max-width: 768px) {
-    .support-chat {
-        width: calc(100vw - 40px);
-        height: 80vh;
-        bottom: 80px;
-        right: 20px;
-        left: 20px;
+    .support-widget {
+        bottom: 15px;
+        right: 15px;
+        left: 15px;
     }
     
     .support-button {
-        width: 55px;
-        height: 55px;
+        width: 50px;
+        height: 50px;
     }
     
     .support-button i {
@@ -436,21 +582,142 @@
     }
     
     .support-text {
-        display: none;
+        display: none; /* Hide text tooltip on mobile */
+    }
+    
+    .support-chat {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: 0;
+        width: 100%;
+        height: 100vh;
+        height: calc(var(--vh, 1vh) * 100); /* Use custom vh for iOS fix */
+        border-radius: 0;
+        z-index: 10001;
+        max-width: none;
+        animation: slideUpMobile 0.3s ease-out;
+    }
+    
+    .support-header {
+        padding: 20px 16px 16px 16px;
+        padding-top: calc(env(safe-area-inset-top, 0px) + 20px);
+    }
+    
+    .support-messages {
+        padding: 16px 12px;
+        height: calc(100vh - 200px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+        height: calc(var(--vh, 1vh) * 100 - 200px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    }
+    
+    .quick-actions {
+        gap: 8px;
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .quick-action-btn {
+        padding: 12px 8px;
+        font-size: 11px;
+        min-height: 44px; /* Touch-friendly minimum */
+    }
+    
+    .support-input {
+        padding: 16px 12px;
+        padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    }
+    
+    .support-footer {
+        font-size: 11px;
+        text-align: center;
+    }
+    
+    .message-content {
+        max-width: calc(100% - 20px);
+    }
+    
+    .message-text {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+    
+    .support-close {
+        min-width: 44px; /* Touch-friendly close button */
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }
 
 @media (max-width: 480px) {
-    .support-chat {
-        width: calc(100vw - 20px);
-        height: 85vh;
-        bottom: 75px;
+    .support-widget {
+        bottom: 10px;
         right: 10px;
         left: 10px;
     }
     
+    .support-button {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .support-button i {
+        font-size: 18px;
+    }
+    
+    .support-notification {
+        width: 18px;
+        height: 18px;
+        font-size: 11px;
+    }
+    
+    .support-header {
+        padding: 16px 12px 12px 12px;
+    }
+    
+    .support-info h4 {
+        font-size: 16px;
+    }
+    
+    .support-status {
+        font-size: 12px;
+    }
+    
+    .support-messages {
+        padding: 12px 8px;
+    }
+    
     .quick-actions {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .quick-action-btn {
+        padding: 10px 6px;
+        font-size: 10px;
+        min-height: 44px;
+    }
+    
+    .quick-action-btn i {
+        font-size: 14px;
+    }
+    
+    .input-container {
+        gap: 6px;
+    }
+    
+    #supportMessageInput {
+        padding: 10px 14px;
+        font-size: 14px;
+        min-height: 44px;
+    }
+    
+    .send-button {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
     }
 }
 </style>
@@ -869,20 +1136,56 @@ class SupportWidget {
 document.addEventListener('DOMContentLoaded', function() {
     window.supportWidget = new SupportWidget();
     
-    // Close chat when clicking outside
+    // Enhanced mobile support - Close chat when clicking outside (but not on mobile)
     document.addEventListener('click', function(e) {
         const supportChat = document.getElementById('supportChat');
         const supportButton = document.getElementById('supportButton');
+        const isMobile = window.innerWidth <= 768;
         
         if (supportChat && supportButton && 
             !supportChat.contains(e.target) && 
-            !supportButton.contains(e.target)) {
+            !supportButton.contains(e.target) &&
+            !isMobile) { // Only close on click outside for desktop
             supportChat.classList.remove('active');
             if (window.supportWidget) {
                 window.supportWidget.isOpen = false;
             }
         }
     });
+    
+    // Mobile-specific: Prevent body scrolling when chat is open
+    const supportChat = document.getElementById('supportChat');
+    if (supportChat) {
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const isMobile = window.innerWidth <= 768;
+                    if (isMobile) {
+                        if (supportChat.classList.contains('active')) {
+                            document.body.style.overflow = 'hidden';
+                        } else {
+                            document.body.style.overflow = '';
+                        }
+                    }
+                }
+            });
+        });
+        
+        observer.observe(supportChat, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+    }
+    
+    // Mobile viewport height fix for iOS
+    function setVH() {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    
+    setVH();
+    window.addEventListener('resize', setVH);
+    window.addEventListener('orientationchange', setVH);
 });
 
 // Add typing animation CSS
