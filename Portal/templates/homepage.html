@@ -751,7 +751,6 @@
             text-align: center;
             color: inherit;
         }
-        }
 
         /* Ensure mobile elements are hidden on desktop */
         @media (min-width: 769px) {
@@ -1283,6 +1282,7 @@
                     <li><a href="{% url 'Portal:home' %}">Home</a></li>
                     <li><a href="{% url 'Portal:services' %}">Key Features</a></li>
                     <li><a href="{% url 'Portal:contactus' %}">Contact Us</a></li>
+                    <li><a href="{% url 'Portal:support_center' %}">Support Center</a></li>
                 </ul>
             </div>
             <div class="footer-social">
@@ -1374,5 +1374,8 @@
             observer.observe(element);
         });
     </script>
+
+    <!-- Support Widget -->
+    {% include 'support_widget.html' %}
 </body>
 </html>
