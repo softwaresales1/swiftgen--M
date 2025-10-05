@@ -1,0 +1,465 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Verification - SwiftTalentForge</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .verification-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .status-pending {
+            background: #fef3cd;
+            color: #92400e;
+        }
+        
+        .status-approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .status-resubmission_required {
+            background: #fde2e2;
+            color: #b91c1c;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+        
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-item {
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-item h4 {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-item p {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .alert-info {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            color: #1e40af;
+        }
+        
+        .alert-warning {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            color: #92400e;
+        }
+        
+        .alert-success {
+            background: #f0fdf4;
+            border-left: 4px solid #10b981;
+            color: #065f46;
+        }
+        
+        .alert-danger {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            color: #991b1b;
+        }
+        
+        .requirements-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+        
+        .requirements-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .requirements-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .requirements-list i {
+            color: #10b981;
+            font-size: 1.1rem;
+        }
+        
+        .paypal-info {
+            background: linear-gradient(135deg, #0070ba 0%, #003087 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        
+        .paypal-info h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .nav-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .nav-link:hover {
+            color: #4f46e5;
+        }
+        
+        .nav-link i {
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <a href="{% url 'Portal:home' %}" class="nav-link" style="color: white; opacity: 0.9;">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <h1><i class="fas fa-shield-alt"></i> Client Verification</h1>
+            <p>Verify your identity to start receiving payments securely</p>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fas fa-info-circle"></i>
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if has_verification %}
+            <!-- Existing Verification Status -->
+            <div class="verification-card">
+                <div class="status-badge status-{{ verification.status }}">
+                    {% if verification.status == 'pending' %}
+                        <i class="fas fa-clock"></i> Pending Review
+                    {% elif verification.status == 'approved' %}
+                        <i class="fas fa-check-circle"></i> Verified
+                    {% elif verification.status == 'rejected' %}
+                        <i class="fas fa-times-circle"></i> Rejected
+                    {% elif verification.status == 'resubmission_required' %}
+                        <i class="fas fa-exclamation-triangle"></i> Resubmission Required
+                    {% endif %}
+                </div>
+
+                <h2>Verification Status</h2>
+
+                {% if verification.status == 'pending' %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-hourglass-half"></i>
+                        <div>
+                            <strong>Under Review</strong><br>
+                            Your verification is being reviewed by our team. This typically takes 2-3 business days.
+                            We'll notify you once the review is complete.
+                        </div>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <h4>Submitted</h4>
+                            <p>{{ verification.submitted_at|date:"M d, Y g:i A" }}</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>PayPal Email</h4>
+                            <p>{{ verification.paypal_email }}</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>Document Type</h4>
+                            <p>{{ verification.get_document_type_display }}</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>Full Name</h4>
+                            <p>{{ verification.full_name }}</p>
+                        </div>
+                    </div>
+
+                {% elif verification.status == 'approved' %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong>Congratulations! You're Verified</strong><br>
+                            Your identity has been verified and you can now receive payments through PayPal.
+                        </div>
+                    </div>
+
+                    <div class="paypal-info">
+                        <h3><i class="fab fa-paypal"></i> PayPal Account Ready</h3>
+                        <p><strong>Email:</strong> {{ verification.paypal_email }}</p>
+                        <p>You can now receive payments directly to this PayPal account for completed projects.</p>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <h4>Verified Date</h4>
+                            <p>{{ verification.reviewed_at|date:"M d, Y g:i A" }}</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>Verified Name</h4>
+                            <p>{{ verification.full_name }}</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>PayPal Email</h4>
+                            <p>{{ verification.paypal_email }}</p>
+                        </div>
+                        <div class="info-item">
+                            <h4>Status</h4>
+                            <p>✅ Ready for Payments</p>
+                        </div>
+                    </div>
+
+                {% elif verification.status == 'rejected' %}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle"></i>
+                        <div>
+                            <strong>Verification Rejected</strong><br>
+                            {{ verification.rejection_reason }}
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>What's Next?</strong><br>
+                            You can submit a new verification with corrected information. Please ensure all documents are clear and valid.
+                        </div>
+                    </div>
+
+                    <a href="{% url 'Portal:verification_form' %}" class="btn">
+                        <i class="fas fa-redo"></i> Submit New Verification
+                    </a>
+
+                {% elif verification.status == 'resubmission_required' %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Resubmission Required</strong><br>
+                            {{ verification.rejection_reason }}
+                        </div>
+                    </div>
+
+                    <a href="{% url 'Portal:verification_form' %}" class="btn">
+                        <i class="fas fa-edit"></i> Update Verification
+                    </a>
+                {% endif %}
+            </div>
+
+        {% else %}
+            <!-- No Verification Submitted Yet -->
+            <div class="verification-card">
+                <h2><i class="fas fa-shield-alt"></i> Get Verified to Receive Payments</h2>
+                <p>Complete identity verification to start receiving payments securely through PayPal.</p>
+
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Why Verify?</strong><br>
+                        Verification ensures secure transactions and builds trust with freelancers. It's required to receive payments on our platform.
+                    </div>
+                </div>
+
+                <h3>Verification Requirements</h3>
+                <ul class="requirements-list">
+                    <li>
+                        <i class="fas fa-check"></i>
+                        <span>Government-issued ID (Passport, Driver's License, or National ID)</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        <span>Proof of address (Utility bill or bank statement - within 3 months)</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        <span>Selfie with your ID document</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        <span>Valid PayPal account for receiving payments</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        <span>Business documents (if applying as a business)</span>
+                    </li>
+                </ul>
+
+                <div class="paypal-info">
+                    <h3><i class="fab fa-paypal"></i> PayPal Integration</h3>
+                    <p>We use PayPal for secure payment processing. You'll need to provide your PayPal email address during verification. Once approved, you'll receive payments directly to your PayPal account.</p>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <a href="{% url 'Portal:verification_form' %}" class="btn">
+                        <i class="fas fa-user-check"></i> Start Verification Process
+                    </a>
+                    <a href="{% url 'Portal:home' %}" class="btn btn-outline" style="margin-left: 1rem;">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Additional Information -->
+        <div class="verification-card">
+            <h3><i class="fas fa-question-circle"></i> Frequently Asked Questions</h3>
+            
+            <div style="margin-top: 1rem;">
+                <h4 style="margin-bottom: 0.5rem;">How long does verification take?</h4>
+                <p style="margin-bottom: 1rem; color: #6b7280;">Typically 2-3 business days. We'll notify you via email once your verification is reviewed.</p>
+                
+                <h4 style="margin-bottom: 0.5rem;">What documents are accepted?</h4>
+                <p style="margin-bottom: 1rem; color: #6b7280;">Government-issued photo ID (passport, driver's license, national ID card) and recent proof of address.</p>
+                
+                <h4 style="margin-bottom: 0.5rem;">Is my information secure?</h4>
+                <p style="margin-bottom: 1rem; color: #6b7280;">Yes, all verification data is encrypted and stored securely. We comply with international data protection standards.</p>
+                
+                <h4 style="margin-bottom: 0.5rem;">Need help?</h4>
+                <p style="color: #6b7280;">Contact our support team at <strong>info@swifttalentforge.com</strong> if you have any questions about the verification process.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Support Widget -->
+    {% include 'support_widget.html' %}
+</body>
+</html>

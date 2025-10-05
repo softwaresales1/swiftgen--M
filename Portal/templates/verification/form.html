@@ -1,0 +1,578 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identity Verification Form - SwiftTalentForge</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .required {
+            color: #ef4444;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .file-upload {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            background: #f9fafb;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .file-upload:hover {
+            border-color: #667eea;
+            background: #f0f9ff;
+        }
+        
+        .file-upload.has-file {
+            border-color: #10b981;
+            background: #ecfdf5;
+        }
+        
+        .file-upload input[type="file"] {
+            display: none;
+        }
+        
+        .upload-icon {
+            font-size: 2rem;
+            color: #9ca3af;
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-text {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+        
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-top: 0.25rem;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .alert-warning {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            color: #92400e;
+        }
+        
+        .nav-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .business-section {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .business-section.active {
+            display: block;
+        }
+        
+        .form-help {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1><i class="fas fa-user-check"></i> Identity Verification</h1>
+            <p>Please provide accurate information for identity verification</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <a href="{% url 'Portal:verification_dashboard' %}" class="nav-link">
+            <i class="fas fa-arrow-left"></i> Back to Verification Dashboard
+        </a>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fas fa-info-circle"></i>
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" id="verificationForm">
+            {% csrf_token %}
+            
+            <div class="form-card">
+                <!-- Personal Information -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-user"></i> Personal Information
+                    </h2>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="first_name">First Name <span class="required">*</span></label>
+                            <input type="text" id="first_name" name="first_name" value="{{ verification.first_name|default:'' }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="last_name">Last Name <span class="required">*</span></label>
+                            <input type="text" id="last_name" name="last_name" value="{{ verification.last_name|default:'' }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="date_of_birth">Date of Birth <span class="required">*</span></label>
+                            <input type="date" id="date_of_birth" name="date_of_birth" value="{{ verification.date_of_birth|default:'' }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone_number">Phone Number <span class="required">*</span></label>
+                            <input type="tel" id="phone_number" name="phone_number" value="{{ verification.phone_number|default:'' }}" required>
+                            <div class="form-help">Include country code (e.g., +1 555-123-4567)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-map-marker-alt"></i> Address Information
+                    </h2>
+                    
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="address_line_1">Address Line 1 <span class="required">*</span></label>
+                            <input type="text" id="address_line_1" name="address_line_1" value="{{ verification.address_line_1|default:'' }}" required>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="address_line_2">Address Line 2</label>
+                            <input type="text" id="address_line_2" name="address_line_2" value="{{ verification.address_line_2|default:'' }}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="city">City <span class="required">*</span></label>
+                            <input type="text" id="city" name="city" value="{{ verification.city|default:'' }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="state_province">State/Province <span class="required">*</span></label>
+                            <input type="text" id="state_province" name="state_province" value="{{ verification.state_province|default:'' }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="postal_code">Postal Code <span class="required">*</span></label>
+                            <input type="text" id="postal_code" name="postal_code" value="{{ verification.postal_code|default:'' }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="country">Country <span class="required">*</span></label>
+                            <select id="country" name="country" required>
+                                <option value="">Select Country</option>
+                                {% for country in countries %}
+                                    <option value="{{ country }}" {% if verification.country == country %}selected{% endif %}>{{ country }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Information -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-id-card"></i> Identity Document
+                    </h2>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="document_type">Document Type <span class="required">*</span></label>
+                            <select id="document_type" name="document_type" required>
+                                <option value="">Select Document Type</option>
+                                <option value="passport" {% if verification.document_type == 'passport' %}selected{% endif %}>Passport</option>
+                                <option value="drivers_license" {% if verification.document_type == 'drivers_license' %}selected{% endif %}>Driver's License</option>
+                                <option value="national_id" {% if verification.document_type == 'national_id' %}selected{% endif %}>National ID Card</option>
+                                <option value="other" {% if verification.document_type == 'other' %}selected{% endif %}>Other Government ID</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="document_number">Document Number <span class="required">*</span></label>
+                            <input type="text" id="document_number" name="document_number" value="{{ verification.document_number|default:'' }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="document_expiry_date">Expiry Date <span class="required">*</span></label>
+                            <input type="date" id="document_expiry_date" name="document_expiry_date" value="{{ verification.document_expiry_date|default:'' }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="document_front_image">Document Front Image <span class="required">*</span></label>
+                            <div class="file-upload" onclick="document.getElementById('document_front_image').click()">
+                                <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                <div class="upload-text">Click to upload front of document</div>
+                                <input type="file" id="document_front_image" name="document_front_image" accept="image/*" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="document_back_image">Document Back Image</label>
+                            <div class="file-upload" onclick="document.getElementById('document_back_image').click()">
+                                <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                <div class="upload-text">Click to upload back of document (if applicable)</div>
+                                <input type="file" id="document_back_image" name="document_back_image" accept="image/*">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PayPal Information -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fab fa-paypal"></i> PayPal Information
+                    </h2>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>Important:</strong> This PayPal email will be used to send you payments. Make sure it's accurate and belongs to you.
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="paypal_email">PayPal Email Address <span class="required">*</span></label>
+                        <input type="email" id="paypal_email" name="paypal_email" value="{{ verification.paypal_email|default:'' }}" required>
+                        <div class="form-help">This must be the email address associated with your PayPal account</div>
+                    </div>
+                </div>
+
+                <!-- Additional Documents -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-file-image"></i> Additional Documents
+                    </h2>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="proof_of_address_image">Proof of Address <span class="required">*</span></label>
+                            <div class="file-upload" onclick="document.getElementById('proof_of_address_image').click()">
+                                <div class="upload-icon"><i class="fas fa-home"></i></div>
+                                <div class="upload-text">Upload utility bill or bank statement (within 3 months)</div>
+                                <input type="file" id="proof_of_address_image" name="proof_of_address_image" accept="image/*" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="selfie_with_document">Selfie with Document <span class="required">*</span></label>
+                            <div class="file-upload" onclick="document.getElementById('selfie_with_document').click()">
+                                <div class="upload-icon"><i class="fas fa-camera"></i></div>
+                                <div class="upload-text">Upload a selfie holding your ID document</div>
+                                <input type="file" id="selfie_with_document" name="selfie_with_document" accept="image/*" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Information (Optional) -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-building"></i> Business Information (Optional)
+                    </h2>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="is_business_account" name="is_business_account" onchange="toggleBusinessSection()" {% if verification.is_business_account %}checked{% endif %}>
+                        <label for="is_business_account">I am applying as a business entity</label>
+                    </div>
+                    
+                    <div class="business-section" id="businessSection">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="business_name">Business Name</label>
+                                <input type="text" id="business_name" name="business_name" value="{{ verification.business_name|default:'' }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="business_registration_number">Registration Number</label>
+                                <input type="text" id="business_registration_number" name="business_registration_number" value="{{ verification.business_registration_number|default:'' }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="business_tax_id">Tax ID</label>
+                                <input type="text" id="business_tax_id" name="business_tax_id" value="{{ verification.business_tax_id|default:'' }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="business_license_image">Business License/Certificate</label>
+                                <div class="file-upload" onclick="document.getElementById('business_license_image').click()">
+                                    <div class="upload-icon"><i class="fas fa-certificate"></i></div>
+                                    <div class="upload-text">Upload business registration document</div>
+                                    <input type="file" id="business_license_image" name="business_license_image" accept="image/*">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Section -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-check-circle"></i> Review & Submit
+                    </h2>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Please review all information carefully.</strong><br>
+                            Submitting false or misleading information may result in permanent account suspension.
+                            Ensure all uploaded documents are clear and readable.
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 2rem;">
+                        <button type="submit" class="btn">
+                            <i class="fas fa-paper-plane"></i> Submit for Verification
+                        </button>
+                        <a href="{% url 'Portal:verification_dashboard' %}" class="btn btn-outline" style="margin-left: 1rem;">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function toggleBusinessSection() {
+            const checkbox = document.getElementById('is_business_account');
+            const section = document.getElementById('businessSection');
+            
+            if (checkbox.checked) {
+                section.classList.add('active');
+            } else {
+                section.classList.remove('active');
+            }
+        }
+        
+        // Initialize business section on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleBusinessSection();
+            
+            // Handle file upload visual feedback
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            fileInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    const uploadDiv = this.parentElement;
+                    if (this.files.length > 0) {
+                        uploadDiv.classList.add('has-file');
+                        const textDiv = uploadDiv.querySelector('.upload-text');
+                        textDiv.textContent = this.files[0].name;
+                    } else {
+                        uploadDiv.classList.remove('has-file');
+                    }
+                });
+            });
+        });
+        
+        // Form validation before submit
+        document.getElementById('verificationForm').addEventListener('submit', function(e) {
+            const requiredFields = this.querySelectorAll('[required]');
+            let allValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    allValid = false;
+                    field.style.borderColor = '#ef4444';
+                } else {
+                    field.style.borderColor = '#e5e7eb';
+                }
+            });
+            
+            if (!allValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+            }
+        });
+    </script>
+
+    <!-- Include Support Widget -->
+    {% include 'support_widget.html' %}
+</body>
+</html>
