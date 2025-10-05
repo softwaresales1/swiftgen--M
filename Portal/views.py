@@ -462,7 +462,7 @@ def home(request):
         context['jobs_recommended'] = jobs_recommended
         return render(request, 'dashboard.html', context)
     elif request.user.is_superuser:
-        return HttpResponseRedirect(reverse('Portal:admin'))
+        return HttpResponseRedirect('/admin/')
     else:
         return HttpResponseRedirect(reverse('Portal:index'))
 
@@ -1362,3 +1362,9 @@ def privacy_policy(request):
     Render the Privacy Policy page
     """
     return render(request, 'privacy_policy.html')
+
+def support_center(request):
+    """
+    Render the Support Center page with help articles and grievance system
+    """
+    return render(request, 'support_center.html')

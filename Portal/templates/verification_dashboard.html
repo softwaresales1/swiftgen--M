@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Verification - SwiftTalentForge</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            color: #1f2937;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 1.2rem;
+        }
+
+        .verification-card {
+            background: #f8fafc;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .verification-icon {
+            font-size: 4rem;
+            color: #fbbf24;
+            margin-bottom: 1rem;
+        }
+
+        .verification-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+
+        .verification-text {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f0f9ff;
+            border-radius: 12px;
+        }
+
+        .feature i {
+            font-size: 2rem;
+            color: #0ea5e9;
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .verification-form {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .form-section h3 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group small {
+            display: block;
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-top: 0.25rem;
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        .messages {
+            margin-bottom: 2rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-shield-check"></i> Account Verification</h1>
+            <p>Verify your identity to unlock full platform features</p>
+        </div>
+
+        <!-- Django Messages -->
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        <i class="fas {% if message.tags == 'error' %}fa-exclamation-triangle{% elif message.tags == 'success' %}fa-check-circle{% else %}fa-info-circle{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="verification-card">
+            <div class="verification-icon">
+                <i class="fas fa-shield-check"></i>
+            </div>
+            <h2 class="verification-title">Account Verification</h2>
+            <p class="verification-text">
+                Please complete the verification form below to unlock full platform features including PayPal payments.
+            </p>
+            
+            <!-- Verification Form -->
+            <form method="post" enctype="multipart/form-data" class="verification-form">
+                {% csrf_token %}
+                
+                <div class="form-section">
+                    <h3><i class="fas fa-user"></i> Personal Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="full_name">Full Legal Name</label>
+                        <input type="text" id="full_name" name="full_name" required placeholder="Enter your full legal name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date_of_birth">Date of Birth</label>
+                        <input type="date" id="date_of_birth" name="date_of_birth" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone_number">Phone Number</label>
+                        <input type="tel" id="phone_number" name="phone_number" required placeholder="+1 (555) 123-4567">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">Full Address</label>
+                        <textarea id="address" name="address" required placeholder="Enter your complete address"></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3><i class="fas fa-id-card"></i> Identity Documents</h3>
+                    
+                    <div class="form-group">
+                        <label for="id_type">Document Type</label>
+                        <select id="id_type" name="id_type" required>
+                            <option value="">Select ID Type</option>
+                            <option value="passport">Passport</option>
+                            <option value="drivers_license">Driver's License</option>
+                            <option value="national_id">National ID Card</option>
+                            <option value="state_id">State ID Card</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_number">ID Number</label>
+                        <input type="text" id="id_number" name="id_number" required placeholder="Enter ID number">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_front">Upload ID Front</label>
+                        <input type="file" id="id_front" name="id_front" accept="image/*,.pdf" required>
+                        <small>Upload clear photo of front side (JPG, PNG, PDF)</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_back">Upload ID Back</label>
+                        <input type="file" id="id_back" name="id_back" accept="image/*,.pdf" required>
+                        <small>Upload clear photo of back side (JPG, PNG, PDF)</small>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3><i class="fas fa-credit-card"></i> PayPal Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="paypal_email">PayPal Email Address</label>
+                        <input type="email" id="paypal_email" name="paypal_email" required placeholder="your.paypal@email.com">
+                        <small>This email must match your PayPal account</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm_paypal_email">Confirm PayPal Email</label>
+                        <input type="email" id="confirm_paypal_email" name="confirm_paypal_email" required placeholder="Confirm PayPal email">
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="terms_agreement" name="terms_agreement" required>
+                        <label for="terms_agreement">
+                            I agree to the <a href="{% url 'Portal:terms_of_service' %}" target="_blank">Terms of Service</a> 
+                            and <a href="{% url 'Portal:privacy_policy' %}" target="_blank">Privacy Policy</a>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="data_accuracy" name="data_accuracy" required>
+                        <label for="data_accuracy">
+                            I certify that all information provided is accurate and truthful
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn submit-btn">
+                    <i class="fas fa-paper-plane"></i> Submit Verification
+                </button>
+            </form>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <i class="fas fa-shield-check"></i>
+                <h3>Secure Processing</h3>
+                <p>Your verification data is encrypted and securely processed</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-clock"></i>
+                <h3>Quick Review</h3>
+                <p>Most verifications are reviewed within 24-48 hours</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-user-check"></i>
+                <h3>Trusted Platform</h3>
+                <p>Join thousands of verified freelancers on SwiftTalentForge</p>
+            </div>
+        </div>
+
+        <a href="{% url 'Portal:home' %}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</body>
+</html>

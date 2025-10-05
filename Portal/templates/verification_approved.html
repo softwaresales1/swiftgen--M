@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Approved - SwiftTalentForge</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            color: #1f2937;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-card {
+            background: #d1fae5;
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .status-icon {
+            font-size: 4rem;
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .status-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #065f46;
+            margin-bottom: 1rem;
+        }
+
+        .status-text {
+            color: #065f46;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .benefits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .benefit {
+            background: #f0f9ff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #bfdbfe;
+        }
+
+        .benefit i {
+            font-size: 2rem;
+            color: #2563eb;
+            margin-bottom: 1rem;
+        }
+
+        .benefit h3 {
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+        }
+
+        .benefit p {
+            color: #1e40af;
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: #10b981;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-check-circle"></i> Verification Complete</h1>
+        </div>
+
+        <div class="status-card">
+            <div class="status-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 class="status-title">Verification Approved!</h2>
+            <p class="status-text">
+                Congratulations! Your account has been successfully verified. You can now receive payments 
+                through PayPal and access all premium features on SwiftTalentForge.
+            </p>
+        </div>
+
+        <div class="benefits">
+            <div class="benefit">
+                <i class="fas fa-credit-card"></i>
+                <h3>PayPal Payments</h3>
+                <p>Receive secure payments directly to your PayPal account</p>
+            </div>
+            <div class="benefit">
+                <i class="fas fa-star"></i>
+                <h3>Premium Features</h3>
+                <p>Access to advanced tools and priority support</p>
+            </div>
+            <div class="benefit">
+                <i class="fas fa-shield-check"></i>
+                <h3>Verified Badge</h3>
+                <p>Display your verified status to potential clients</p>
+            </div>
+        </div>
+
+        <a href="{% url 'Portal:home' %}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</body>
+</html>

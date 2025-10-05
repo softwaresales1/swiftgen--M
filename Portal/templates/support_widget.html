@@ -1,0 +1,925 @@
+<!-- Support Widget - Floating Chat Support -->
+<div class="support-widget" id="supportWidget">
+    <!-- Support Button -->
+    <div class="support-button" id="supportButton">
+        <i class="fas fa-headset"></i>
+        <span class="support-text">Support</span>
+        <div class="support-notification" id="supportNotification">
+            <span>1</span>
+        </div>
+    </div>
+    
+    <!-- Support Chat Window -->
+    <div class="support-chat" id="supportChat">
+        <!-- Chat Header -->
+        <div class="support-header">
+            <div class="support-header-content">
+                <div class="support-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="support-info">
+                    <h4>SwiftTalentForge Support</h4>
+                    <span class="support-status online">Online 24/7</span>
+                </div>
+            </div>
+            <button class="support-close" id="supportClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <!-- Chat Messages -->
+        <div class="support-messages" id="supportMessages">
+            <!-- Messages will be added dynamically -->
+            
+            <!-- Quick Action Buttons -->
+            <div class="quick-actions">
+                <button class="quick-action-btn" data-action="payment">
+                    <i class="fas fa-credit-card"></i>
+                    Payment Issues
+                </button>
+                <button class="quick-action-btn" data-action="account">
+                    <i class="fas fa-user-cog"></i>
+                    Account Help
+                </button>
+                <button class="quick-action-btn" data-action="project">
+                    <i class="fas fa-briefcase"></i>
+                    Project Support
+                </button>
+                <button class="quick-action-btn" data-action="general">
+                    <i class="fas fa-question-circle"></i>
+                    General Questions
+                </button>
+            </div>
+        </div>
+        
+        <!-- Chat Input -->
+        <div class="support-input">
+            <div class="input-container">
+                <input type="text" id="supportMessageInput" placeholder="Type your message..." autocomplete="off">
+                <button class="send-button" id="sendSupportMessage">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            <div class="support-footer">
+                Powered by SwiftTalentForge AI • Available 24/7
+                <br>
+                <a href="{% url 'Portal:support_center' %}" target="_blank" style="color: #667eea; text-decoration: none;">
+                    For more information visit Support Center
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Support Widget Styles */
+.support-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10000;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Support Button */
+.support-button {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.support-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+}
+
+.support-button i {
+    color: white;
+    font-size: 24px;
+    transition: all 0.3s ease;
+}
+
+.support-text {
+    position: absolute;
+    right: 70px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    color: #374151;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.support-button:hover .support-text {
+    opacity: 1;
+    visibility: visible;
+    right: 75px;
+}
+
+.support-notification {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Support Chat Window */
+.support-chat {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 380px;
+    height: 500px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    animation: slideUp 0.3s ease-out;
+}
+
+.support-chat.active {
+    display: flex;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Chat Header */
+.support-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.support-header-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.support-avatar {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.support-avatar i {
+    font-size: 18px;
+}
+
+.support-info h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.support-status {
+    font-size: 12px;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.support-status.online::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.support-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s ease;
+}
+
+.support-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Chat Messages */
+.support-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.support-message {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.message-avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.message-avatar i {
+    color: white;
+    font-size: 14px;
+}
+
+.message-content {
+    flex: 1;
+}
+
+.message-text {
+    background: #f8fafc;
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #374151;
+    word-wrap: break-word;
+}
+
+.user-message {
+    flex-direction: row-reverse;
+}
+
+.user-message .message-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.user-message .message-avatar {
+    background: #e5e7eb;
+}
+
+.user-message .message-avatar i {
+    color: #6b7280;
+}
+
+.message-time {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 4px;
+    text-align: right;
+}
+
+.user-message .message-time {
+    text-align: left;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.quick-action-btn {
+    background: white;
+    border: 2px solid #e5e7eb;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.quick-action-btn:hover {
+    border-color: #667eea;
+    background: #f8fafc;
+    color: #667eea;
+}
+
+.quick-action-btn i {
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+/* Chat Input */
+.support-input {
+    padding: 16px;
+    border-top: 1px solid #e5e7eb;
+    background: white;
+}
+
+.input-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+#supportMessageInput {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 25px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+#supportMessageInput:focus {
+    border-color: #667eea;
+}
+
+.send-button {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.send-button:hover {
+    transform: scale(1.05);
+}
+
+.support-footer {
+    font-size: 11px;
+    color: #9ca3af;
+    text-align: center;
+    margin-top: 8px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .support-chat {
+        width: calc(100vw - 40px);
+        height: 80vh;
+        bottom: 80px;
+        right: 20px;
+        left: 20px;
+    }
+    
+    .support-button {
+        width: 55px;
+        height: 55px;
+    }
+    
+    .support-button i {
+        font-size: 20px;
+    }
+    
+    .support-text {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .support-chat {
+        width: calc(100vw - 20px);
+        height: 85vh;
+        bottom: 75px;
+        right: 10px;
+        left: 10px;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+// Enhanced Support Widget with Backend Integration
+class SupportWidget {
+    constructor() {
+        this.isOpen = false;
+        this.sessionId = null;
+        this.messageHistory = [];
+        this.isTyping = false;
+        this.currentCategory = null;
+        
+        this.initializeWidget();
+        this.loadCategories();
+    }
+    
+    initializeWidget() {
+        // Get widget elements
+        this.supportButton = document.getElementById('supportButton');
+        this.supportChat = document.getElementById('supportChat');
+        this.supportClose = document.getElementById('supportClose');
+        this.supportMessageInput = document.getElementById('supportMessageInput');
+        this.sendSupportMessage = document.getElementById('sendSupportMessage');
+        this.supportMessages = document.getElementById('supportMessages');
+        this.categorySelect = document.getElementById('supportCategory');
+        
+        // Bind events
+        this.supportButton.addEventListener('click', () => this.toggleWidget());
+        this.supportClose.addEventListener('click', () => this.closeWidget());
+        this.sendSupportMessage.addEventListener('click', () => this.sendMessage());
+        this.supportMessageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                this.sendMessage();
+            }
+        });
+        
+        // Quick action buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('quick-action-btn')) {
+                const action = e.target.getAttribute('data-action');
+                let message = '';
+                
+                switch(action) {
+                    case 'payment':
+                        message = 'I need help with payment issues';
+                        break;
+                    case 'account':
+                        message = 'I need help with my account';
+                        break;
+                    case 'project':
+                        message = 'I need help with a project';
+                        break;
+                    case 'general':
+                        message = 'I have a general question';
+                        break;
+                }
+                
+                if (message) {
+                    this.supportMessageInput.value = message;
+                    this.sendMessage();
+                }
+            }
+        });
+        
+        // Generate session ID
+        this.sessionId = this.generateSessionId();
+        
+        // Show quick actions on initial load
+        this.showQuickActions();
+    }
+    
+    showQuickActions() {
+        const quickActionsHtml = `
+            <div class="support-message bot-message">
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">
+                        👋 Welcome to SwiftTalentForge Support! I'm here to help you 24/7. How can I assist you today?
+                    </div>
+                    <div class="message-time">Just now</div>
+                </div>
+            </div>
+            <div class="quick-actions">
+                <button class="quick-action-btn" data-action="payment">
+                    <i class="fas fa-credit-card"></i>
+                    Payment Issues
+                </button>
+                <button class="quick-action-btn" data-action="account">
+                    <i class="fas fa-user-cog"></i>
+                    Account Help
+                </button>
+                <button class="quick-action-btn" data-action="project">
+                    <i class="fas fa-briefcase"></i>
+                    Project Support
+                </button>
+                <button class="quick-action-btn" data-action="general">
+                    <i class="fas fa-question-circle"></i>
+                    General Questions
+                </button>
+            </div>
+        `;
+        
+        this.supportMessages.innerHTML = quickActionsHtml;
+    }
+    
+    async loadCategories() {
+        try {
+            const response = await fetch('/api/support/categories/');
+            const data = await response.json();
+            
+            if (data.categories && this.categorySelect) {
+                this.categorySelect.innerHTML = '<option value="">Select a category (optional)</option>';
+                
+                data.categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.name;
+                    this.categorySelect.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Failed to load support categories:', error);
+        }
+    }
+    
+    toggleWidget() {
+        if (this.isOpen) {
+            this.closeWidget();
+        } else {
+            this.openWidget();
+        }
+    }
+    
+    openWidget() {
+        this.isOpen = true;
+        this.supportChat.classList.add('active');
+        this.supportMessageInput.focus();
+        
+        // Hide notification when chat is opened
+        const notification = document.getElementById('supportNotification');
+        if (notification) {
+            notification.style.display = 'none';
+        }
+    }
+    
+    closeWidget() {
+        this.isOpen = false;
+        this.supportChat.classList.remove('active');
+    }
+    
+    async sendMessage() {
+        const message = this.supportMessageInput.value.trim();
+        if (!message) return;
+        
+        // Add user message to chat
+        this.addUserMessage(message);
+        this.supportMessageInput.value = '';
+        
+        // Use simple bot responses (the working version)
+        setTimeout(() => {
+            this.handleSimpleBotResponse(message.toLowerCase());
+        }, 1000);
+    }
+    
+    handleSimpleBotResponse(userMessage) {
+        let botResponse = '';
+        
+        if (userMessage.includes('payment') || userMessage.includes('billing') || userMessage.includes('charge')) {
+            botResponse = `I understand you're having payment issues. I can help with:
+            
+            • Transaction not processing
+            • Billing questions
+            • Refund requests
+            • Payment method updates
+            
+            For complex payment disputes, I recommend emailing <strong>info@swifttalentforge.com</strong> with your transaction details.`;
+        } else if (userMessage.includes('account') || userMessage.includes('login') || userMessage.includes('password')) {
+            botResponse = `I can help with account-related issues:
+            
+            • Password reset
+            • Profile updates
+            • Account verification
+            • Security settings
+            
+            If you need immediate assistance, please email <strong>info@swifttalentforge.com</strong> with your account details.`;
+        } else if (userMessage.includes('project') || userMessage.includes('freelancer') || userMessage.includes('client')) {
+            botResponse = `I can assist with project-related questions:
+            
+            • Project disputes
+            • Communication issues
+            • Milestone problems
+            • Work quality concerns
+            
+            For serious disputes requiring mediation, please contact <strong>info@swifttalentforge.com</strong> with project details.`;
+        } else if (userMessage.includes('hello') || userMessage.includes('hi') || userMessage.includes('help')) {
+            botResponse = `Hello! I'm here to help you with SwiftTalentForge. I can assist with:
+            
+            • Payment and billing issues
+            • Account management
+            • Project support
+            • General platform questions
+            
+            What specific issue can I help you with today?`;
+        } else {
+            botResponse = `I understand your concern. For the best assistance with your specific issue, I recommend:
+            
+            1. Checking our FAQ section
+            2. Contacting our human support team at <strong>info@swifttalentforge.com</strong>
+            
+            Our support team is available 24/7 and will respond within 2-4 hours. Please include as much detail as possible about your issue.`;
+        }
+        
+        this.addBotMessage(botResponse);
+    }
+    
+    addUserMessage(messageText) {
+        const messageTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        const messageHtml = `
+            <div class="support-message user-message">
+                <div class="message-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">${this.escapeHtml(messageText)}</div>
+                    <div class="message-time">${messageTime}</div>
+                </div>
+            </div>
+        `;
+        
+        // Remove quick actions if they exist
+        const quickActions = this.supportMessages.querySelector('.quick-actions');
+        if (quickActions) {
+            quickActions.remove();
+        }
+        
+        this.supportMessages.insertAdjacentHTML('beforeend', messageHtml);
+        this.scrollToBottom();
+    }
+    
+    addBotMessage(messageText) {
+        const messageTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        const messageHtml = `
+            <div class="support-message bot-message">
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">${messageText}</div>
+                    <div class="message-time">${messageTime}</div>
+                </div>
+            </div>
+        `;
+        
+        this.supportMessages.insertAdjacentHTML('beforeend', messageHtml);
+        this.scrollToBottom();
+    }
+    
+    showTypingIndicator() {
+        if (document.getElementById('typing-indicator')) return; // Already showing
+        
+        const typingHtml = `
+            <div id="typing-indicator" class="support-message bot-message">
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        this.supportMessages.insertAdjacentHTML('beforeend', typingHtml);
+        this.scrollToBottom();
+    }
+    
+    hideTypingIndicator() {
+        const typingIndicator = document.getElementById('typing-indicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
+    }
+    
+    showEscalationOptions(data) {
+        const escalationHtml = `
+            <div class="support-message bot-message escalation-options">
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">
+                        ${data.escalation_message || "Would you like to create a support ticket for human assistance?"}
+                    </div>
+                    <div class="escalation-buttons" style="margin-top: 10px;">
+                        <button class="escalation-btn" onclick="supportWidget.createTicket()" style="background: #667eea; color: white; border: none; padding: 8px 16px; border-radius: 5px; margin-right: 8px; cursor: pointer;">Create Ticket</button>
+                        <button class="escalation-btn secondary" onclick="supportWidget.emailSupport()" style="background: #6b7280; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">Email Support</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        this.supportMessages.insertAdjacentHTML('beforeend', escalationHtml);
+        this.scrollToBottom();
+    }
+    
+    async createTicket() {
+        const subject = prompt("What's the subject of your support request?");
+        if (!subject) return;
+        
+        const message = prompt("Please describe your issue in detail:");
+        if (!message) return;
+        
+        try {
+            const response = await fetch('/api/support/ticket/create/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken()
+                },
+                body: JSON.stringify({
+                    subject: subject,
+                    message: message,
+                    category_id: this.categorySelect ? this.categorySelect.value || null : null,
+                    session_id: this.sessionId
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                this.addBotMessage(`✅ ${data.message}<br><br>Your ticket ID is: <strong>${data.ticket_id}</strong>`);
+            } else {
+                this.addBotMessage("Sorry, there was an error creating your ticket. Please email us directly at <strong>info@swifttalentforge.com</strong>");
+            }
+            
+        } catch (error) {
+            console.error('Failed to create ticket:', error);
+            this.addBotMessage("Sorry, there was an error creating your ticket. Please email us directly at <strong>info@swifttalentforge.com</strong>");
+        }
+    }
+    
+    emailSupport() {
+        const subject = "Support Request - SwiftTalentForge";
+        const body = "Please describe your issue here:";
+        const mailtoLink = `mailto:info@swifttalentforge.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.open(mailtoLink);
+        
+        this.addBotMessage("I've opened your email client. Please send your message to <strong>info@swifttalentforge.com</strong> and our team will respond within 2-4 hours.");
+    }
+    
+    async provideFeedback(rating) {
+        try {
+            const response = await fetch('/api/support/feedback/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken()
+                },
+                body: JSON.stringify({
+                    session_id: this.sessionId,
+                    rating: rating
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                this.addBotMessage("Thank you for your feedback! 😊");
+            }
+            
+        } catch (error) {
+            console.error('Failed to submit feedback:', error);
+        }
+    }
+    
+    scrollToBottom() {
+        this.supportMessages.scrollTop = this.supportMessages.scrollHeight;
+    }
+    
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    generateSessionId() {
+        return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+    
+    getCSRFToken() {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            const [name, value] = cookie.trim().split('=');
+            if (name === 'csrftoken') {
+                return value;
+            }
+        }
+        
+        // Fallback: try to get from meta tag
+        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        return csrfMeta ? csrfMeta.getAttribute('content') : '';
+    }
+}
+
+// Initialize widget when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    window.supportWidget = new SupportWidget();
+    
+    // Close chat when clicking outside
+    document.addEventListener('click', function(e) {
+        const supportChat = document.getElementById('supportChat');
+        const supportButton = document.getElementById('supportButton');
+        
+        if (supportChat && supportButton && 
+            !supportChat.contains(e.target) && 
+            !supportButton.contains(e.target)) {
+            supportChat.classList.remove('active');
+            if (window.supportWidget) {
+                window.supportWidget.isOpen = false;
+            }
+        }
+    });
+});
+
+// Add typing animation CSS
+const typingStyle = document.createElement('style');
+typingStyle.textContent = `
+.typing-dots {
+    display: flex;
+    gap: 4px;
+    padding: 8px 0;
+}
+
+.typing-dots span {
+    width: 8px;
+    height: 8px;
+    background: #667eea;
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 80%, 100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+`;
+document.head.appendChild(typingStyle);
+</script>

@@ -2,6 +2,8 @@ from django.urls import path
 from . import views
 from . import file_views
 from . import message_views  # NEW: Import message views
+from . import support_views  # NEW: Import support views
+from . import verification_views  # NEW: Import verification views
 from .payment_views import (
     create_payment, payment_success, payment_cancelled, 
     stripe_webhook, release_payment, payment_dashboard, payment_options,
@@ -121,6 +123,24 @@ urlpatterns = [
     # Mobile API endpoints (for future mobile app)
     path('api/mobile/messages/sync/', message_views.mobile_message_sync, name='mobile_message_sync'),
     path('api/mobile/conversations/list/', message_views.mobile_conversations_list, name='mobile_conversations_list'),
+    
+    # ===== SUPPORT SYSTEM URLS =====
+    
+    # Support chat bot API
+    path('api/support/chat/', support_views.support_chat_message, name='support_chat_message'),
+    path('api/support/categories/', support_views.support_categories, name='support_categories'),
+    path('api/support/knowledge-base/', support_views.support_knowledge_base, name='support_knowledge_base'),
+    path('api/support/feedback/', support_views.support_feedback, name='support_feedback'),
+    
+    # Support ticket system
+    path('api/support/ticket/create/', support_views.support_create_ticket, name='support_create_ticket'),
+    path('api/support/tickets/my/', support_views.support_my_tickets, name='support_my_tickets'),
+    
+    # Support Center Page
+    path('support/', views.support_center, name='support_center'),
+    
+    # Verification System
+    path('verification/', verification_views.verification_dashboard, name='verification_dashboard'),
     
     # Legal Pages
     path('terms-of-service/', views.terms_of_service, name='terms_of_service'),

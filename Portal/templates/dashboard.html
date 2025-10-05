@@ -763,6 +763,10 @@
                         <i class="fas fa-credit-card"></i>
                         Payments
                     </a>
+                    <a href="{% url 'Portal:verification_dashboard' %}" class="mobile-nav-link">
+                        <i class="fas fa-shield-check"></i>
+                        Verification
+                    </a>
                     <a href="{% url 'Portal:profile' request.user.username %}" class="mobile-nav-link">
                         <i class="fas fa-user"></i>
                         Profile
@@ -809,6 +813,10 @@
                     <a href="{% url 'Portal:payment_dashboard' %}" class="nav-link">
                         <i class="fas fa-credit-card"></i>
                         Payments
+                    </a>
+                    <a href="{% url 'Portal:verification_dashboard' %}" class="nav-link">
+                        <i class="fas fa-shield-check"></i>
+                        Verification
                     </a>
                     <a href="{% url 'Portal:profile' request.user.username %}" class="nav-link">
                         <i class="fas fa-user"></i>

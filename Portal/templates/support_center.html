@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Center - SwiftTalentForge</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8fafc;
+        }
+        
+        /* Header */
+        .support-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .support-header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .support-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Search Box */
+        .search-section {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .search-box {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 1.2rem;
+        }
+        
+        /* Quick Actions */
+        .quick-actions-section {
+            padding: 3rem 0;
+            background: white;
+        }
+        
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .quick-action-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .quick-action-card:hover {
+            border-color: #667eea;
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.1);
+        }
+        
+        .quick-action-card i {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        .quick-action-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+        }
+        
+        .quick-action-card p {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+        
+        /* Support Categories */
+        .categories-section {
+            padding: 4rem 0;
+            background: #f8fafc;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            font-size: 1.1rem;
+            color: #6b7280;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+        
+        .category-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .category-info h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.3rem;
+        }
+        
+        .category-info .article-count {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        
+        .article-list {
+            list-style: none;
+        }
+        
+        .article-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f3f4f6;
+            transition: all 0.2s ease;
+        }
+        
+        .article-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .article-list li:hover {
+            background: #f8fafc;
+            margin: 0 -1rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            border-radius: 8px;
+        }
+        
+        .article-list a {
+            color: #374151;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 500;
+        }
+        
+        .article-list a:hover {
+            color: #667eea;
+        }
+        
+        .article-list i {
+            color: #9ca3af;
+            font-size: 0.8rem;
+        }
+        
+        /* Contact Section */
+        .contact-section {
+            padding: 4rem 0;
+            background: white;
+        }
+        
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .contact-card {
+            text-align: center;
+            padding: 2rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-card:hover {
+            border-color: #667eea;
+            transform: translateY(-4px);
+        }
+        
+        .contact-card i {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 1.5rem;
+        }
+        
+        .contact-card h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-card p {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+        
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        /* Grievance Form Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px 16px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+        
+        .close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .support-header h1 {
+                font-size: 2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .quick-actions-grid,
+            .categories-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+        }
+        
+        /* Footer Navigation */
+        .footer-nav {
+            background: #1f2937;
+            color: white;
+            padding: 3rem 0 2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a {
+            color: #d1d5db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-section a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 2rem;
+            text-align: center;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="support-header">
+        <div class="container">
+            <h1><i class="fas fa-headset"></i> Support Center</h1>
+            <p>Get help, find answers, and connect with our support team. We're here for you 24/7.</p>
+        </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search for help articles, guides, or FAQs..." id="searchInput">
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="quick-actions-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Quick Actions</h2>
+                <p>Get immediate help with the most common issues</p>
+            </div>
+            
+            <div class="quick-actions-grid">
+                <div class="quick-action-card" onclick="openGrievanceModal()">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Submit Grievance</h3>
+                    <p>Report issues, disputes, or concerns that need immediate attention</p>
+                </div>
+                
+                <div class="quick-action-card" onclick="openChatBot()">
+                    <i class="fas fa-robot"></i>
+                    <h3>Chat with Bot</h3>
+                    <p>Get instant answers to common questions 24/7</p>
+                </div>
+                
+                <div class="quick-action-card" onclick="scrollToContact()">
+                    <i class="fas fa-envelope"></i>
+                    <h3>Contact Support</h3>
+                    <p>Speak directly with our human support team</p>
+                </div>
+                
+                <div class="quick-action-card" onclick="openTicketTracker()">
+                    <i class="fas fa-ticket-alt"></i>
+                    <h3>Track Ticket</h3>
+                    <p>Check the status of your existing support tickets</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Categories -->
+    <section class="categories-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Browse Help Topics</h2>
+                <p>Find detailed guides and solutions organized by category</p>
+            </div>
+            
+            <div class="categories-grid">
+                <!-- Payments & Billing -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="category-info">
+                            <h3>Payments & Billing</h3>
+                            <span class="article-count">8 articles</span>
+                        </div>
+                    </div>
+                    <ul class="article-list">
+                        <li><a href="#" onclick="openArticle('payment-process')">How Payments Work <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('payment-disputes')">Resolving Payment Disputes <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('refund-policy')">Refund Policy & Process <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('escrow-system')">Understanding Escrow <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('payment-methods')">Supported Payment Methods <i class="fas fa-chevron-right"></i></a></li>
+                    </ul>
+                </div>
+
+                <!-- Account Management -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-user-cog"></i>
+                        </div>
+                        <div class="category-info">
+                            <h3>Account Management</h3>
+                            <span class="article-count">6 articles</span>
+                        </div>
+                    </div>
+                    <ul class="article-list">
+                        <li><a href="#" onclick="openArticle('account-suspension')">Account Suspension Reasons <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('profile-verification')">Profile Verification Process <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('password-security')">Password & Security Settings <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('account-recovery')">Account Recovery Guide <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('privacy-settings')">Privacy & Data Settings <i class="fas fa-chevron-right"></i></a></li>
+                    </ul>
+                </div>
+
+                <!-- Projects & Bidding -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="category-info">
+                            <h3>Projects & Bidding</h3>
+                            <span class="article-count">10 articles</span>
+                        </div>
+                    </div>
+                    <ul class="article-list">
+                        <li><a href="#" onclick="openArticle('bidding-disputes')">Resolving Bidding Disputes <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('project-guidelines')">Project Posting Guidelines <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('milestone-management')">Milestone Management <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('dispute-resolution')">Project Dispute Resolution <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('quality-standards')">Work Quality Standards <i class="fas fa-chevron-right"></i></a></li>
+                    </ul>
+                </div>
+
+                <!-- Platform Conduct -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-gavel"></i>
+                        </div>
+                        <div class="category-info">
+                            <h3>Platform Conduct</h3>
+                            <span class="article-count">7 articles</span>
+                        </div>
+                    </div>
+                    <ul class="article-list">
+                        <li><a href="#" onclick="openArticle('community-guidelines')">Community Guidelines <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('prohibited-activities')">Prohibited Activities <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('reporting-violations')">Reporting Violations <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('warning-system')">Warning & Penalty System <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('appeal-process')">Appeal Process <i class="fas fa-chevron-right"></i></a></li>
+                    </ul>
+                </div>
+
+                <!-- Technical Support -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="category-info">
+                            <h3>Technical Support</h3>
+                            <span class="article-count">5 articles</span>
+                        </div>
+                    </div>
+                    <ul class="article-list">
+                        <li><a href="#" onclick="openArticle('browser-compatibility')">Browser Compatibility <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('file-upload-issues')">File Upload Problems <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('mobile-app')">Mobile App Support <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('performance-issues')">Performance Issues <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('system-requirements')">System Requirements <i class="fas fa-chevron-right"></i></a></li>
+                    </ul>
+                </div>
+
+                <!-- Getting Started -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="category-info">
+                            <h3>Getting Started</h3>
+                            <span class="article-count">4 articles</span>
+                        </div>
+                    </div>
+                    <ul class="article-list">
+                        <li><a href="#" onclick="openArticle('new-user-guide')">New User Complete Guide <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('first-project')">Posting Your First Project <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('first-bid')">Submitting Your First Bid <i class="fas fa-chevron-right"></i></a></li>
+                        <li><a href="#" onclick="openArticle('best-practices')">Platform Best Practices <i class="fas fa-chevron-right"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Still Need Help?</h2>
+                <p>Contact our support team directly for personalized assistance</p>
+            </div>
+            
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <i class="fas fa-envelope"></i>
+                    <h3>Email Support</h3>
+                    <p>Get detailed help via email. We respond within 2-4 hours.</p>
+                    <a href="mailto:info@swifttalentforge.com" class="btn">Send Email</a>
+                </div>
+                
+                <div class="contact-card">
+                    <i class="fas fa-comments"></i>
+                    <h3>Live Chat</h3>
+                    <p>Chat with our AI assistant or human agents in real-time.</p>
+                    <button class="btn" onclick="openChatBot()">Start Chat</button>
+                    <br><br>
+                    <small style="color: #6b7280;">Or click the floating chat icon <i class="fas fa-comments" style="color: #667eea;"></i> at the bottom right</small>
+                </div>
+                
+                <div class="contact-card">
+                    <i class="fas fa-book"></i>
+                    <h3>Knowledge Base</h3>
+                    <p>Browse our comprehensive library of help articles.</p>
+                    <button class="btn btn-outline" onclick="scrollToTop()">Browse Articles</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Grievance Form Modal -->
+    <div id="grievanceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-exclamation-triangle"></i> Submit Grievance</h2>
+                <button class="close" onclick="closeGrievanceModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="grievanceForm">
+                    <div class="form-group">
+                        <label for="grievanceType">Grievance Type *</label>
+                        <select id="grievanceType" required>
+                            <option value="">Select type...</option>
+                            <option value="payment-dispute">Payment Dispute</option>
+                            <option value="bidding-dispute">Bidding Dispute</option>
+                            <option value="account-suspension">Account Suspension Appeal</option>
+                            <option value="conduct-violation">Conduct Violation Report</option>
+                            <option value="quality-dispute">Work Quality Dispute</option>
+                            <option value="technical-issue">Technical Issue</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="projectId">Project ID (if applicable)</label>
+                        <input type="text" id="projectId" placeholder="Enter project ID">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="urgency">Urgency Level *</label>
+                        <select id="urgency" required>
+                            <option value="">Select urgency...</option>
+                            <option value="low">Low - General inquiry</option>
+                            <option value="medium">Medium - Important issue</option>
+                            <option value="high">High - Urgent matter</option>
+                            <option value="critical">Critical - Immediate attention required</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject *</label>
+                        <input type="text" id="subject" placeholder="Brief description of the issue" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Detailed Description *</label>
+                        <textarea id="description" placeholder="Please provide a detailed description of your grievance, including relevant dates, amounts, and any other pertinent information..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="expectedResolution">Expected Resolution</label>
+                        <textarea id="expectedResolution" placeholder="What outcome are you hoping for?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn" style="width: 100%;">
+                            <i class="fas fa-paper-plane"></i> Submit Grievance
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Article Modal -->
+    <div id="articleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="articleTitle"><i class="fas fa-book"></i> Help Article</h2>
+                <button class="close" onclick="closeArticleModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="articleContent">
+                    <!-- Article content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-nav">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SwiftTalentForge</h3>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/browse_projects/">Browse Projects</a></li>
+                        <li><a href="/post_project/">Post Project</a></li>
+                        <li><a href="/support/">Support Center</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#" onclick="openGrievanceModal()">Submit Grievance</a></li>
+                        <li><a href="#" onclick="openChatBot()">Live Chat</a></li>
+                        <li><a href="mailto:info@swifttalentforge.com">Email Support</a></li>
+                        <li><a href="#" onclick="openTicketTracker()">Track Ticket</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#payment-process">Payment Guide</a></li>
+                        <li><a href="#community-guidelines">Community Guidelines</a></li>
+                        <li><a href="#new-user-guide">Getting Started</a></li>
+                        <li><a href="/terms-of-service/">Terms of Service</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li><a href="mailto:info@swifttalentforge.com">info@swifttalentforge.com</a></li>
+                        <li><a href="#">24/7 Support Available</a></li>
+                        <li><a href="#">Response within 2-4 hours</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 SwiftTalentForge. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Support Widget Integration -->
+    <div id="support-widget-container">
+        {% include 'support_widget.html' %}
+    </div>
+
+    <script>
+        // Grievance Modal Functions
+        function openGrievanceModal() {
+            document.getElementById('grievanceModal').style.display = 'block';
+        }
+        
+        function closeGrievanceModal() {
+            document.getElementById('grievanceModal').style.display = 'none';
+        }
+        
+        // Support Functions
+        function openChatBot() {
+            // Try multiple ways to open the chat widget
+            console.log('Attempting to open chat bot...');
+            
+            // Method 1: Check if support widget exists
+            if (window.supportWidget) {
+                console.log('Support widget found, opening...');
+                window.supportWidget.openWidget();
+                return;
+            }
+            
+            // Method 2: Try to find and click the support button directly
+            const supportButton = document.getElementById('supportButton');
+            if (supportButton) {
+                console.log('Support button found, clicking...');
+                supportButton.click();
+                return;
+            }
+            
+            // Method 3: Wait for widget to load and try again
+            console.log('Widget not ready, waiting...');
+            let attempts = 0;
+            const maxAttempts = 10;
+            
+            const checkWidget = setInterval(() => {
+                attempts++;
+                console.log(`Attempt ${attempts} to find widget...`);
+                
+                if (window.supportWidget) {
+                    console.log('Widget found after waiting, opening...');
+                    clearInterval(checkWidget);
+                    window.supportWidget.openWidget();
+                } else if (attempts >= maxAttempts) {
+                    console.log('Widget not found after maximum attempts');
+                    clearInterval(checkWidget);
+                    alert('Chat widget is still loading. Please try clicking the floating support button on the bottom right of the page.');
+                }
+            }, 200);
+        }
+        
+        function scrollToContact() {
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function openTicketTracker() {
+            alert('Ticket tracking system will be available soon. For now, please email info@swifttalentforge.com with your ticket ID.');
+        }
+        
+        // Search Functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const articles = document.querySelectorAll('.article-list li');
+            
+            articles.forEach(article => {
+                const text = article.textContent.toLowerCase();
+                if (text.includes(searchTerm) || searchTerm === '') {
+                    article.style.display = 'block';
+                } else {
+                    article.style.display = 'none';
+                }
+            });
+        });
+        
+        // Grievance Form Submission
+        document.getElementById('grievanceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                type: document.getElementById('grievanceType').value,
+                projectId: document.getElementById('projectId').value,
+                urgency: document.getElementById('urgency').value,
+                subject: document.getElementById('subject').value,
+                description: document.getElementById('description').value,
+                expectedResolution: document.getElementById('expectedResolution').value
+            };
+            
+            // Create email content
+            const emailBody = `
+Grievance Type: ${formData.type}
+Project ID: ${formData.projectId || 'N/A'}
+Urgency: ${formData.urgency}
+Subject: ${formData.subject}
+
+Description:
+${formData.description}
+
+Expected Resolution:
+${formData.expectedResolution || 'Not specified'}
+
+Please respond to this grievance as soon as possible.
+            `;
+            
+            const emailSubject = `GRIEVANCE - ${formData.urgency.toUpperCase()} - ${formData.subject}`;
+            const mailtoLink = `mailto:info@swifttalentforge.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+            
+            window.open(mailtoLink);
+            
+            alert('Your email client has been opened with the grievance details. Please send the email to submit your grievance.');
+            closeGrievanceModal();
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            const grievanceModal = document.getElementById('grievanceModal');
+            const articleModal = document.getElementById('articleModal');
+            
+            if (e.target === grievanceModal) {
+                closeGrievanceModal();
+            }
+            if (e.target === articleModal) {
+                closeArticleModal();
+            }
+        });
+        
+        // Debug: Check if support widget is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Support page loaded');
+            
+            // Check if support widget elements exist
+            setTimeout(() => {
+                const supportButton = document.getElementById('supportButton');
+                const supportWidget = window.supportWidget;
+                
+                console.log('Support button element:', supportButton);
+                console.log('Support widget object:', supportWidget);
+                
+                if (!supportButton) {
+                    console.error('Support button not found!');
+                }
+                if (!supportWidget) {
+                    console.error('Support widget object not initialized!');
+                }
+            }, 1000);
+        });
+        
+        // Article Link Handlers - Remove old handler
+        // All article links now use openArticle() function
+        
+        // Article Modal Functions
+        function openArticle(articleId) {
+            const modal = document.getElementById('articleModal');
+            const title = document.getElementById('articleTitle');
+            const content = document.getElementById('articleContent');
+            
+            const articles = {
+                // Payments & Billing Articles
+                'payment-process': {
+                    title: 'How Payments Work on SwiftTalentForge',
+                    content: `
+                        <h3>🔒 Secure Escrow System</h3>
+                        <p>SwiftTalentForge uses a secure escrow system to protect both clients and freelancers:</p>
+                        
+                        <h4>For Clients:</h4>
+                        <ul>
+                            <li><strong>Deposit Funds:</strong> When you hire a freelancer, deposit project funds into escrow</li>
+                            <li><strong>Funds Held Safely:</strong> Money is held securely until work is completed</li>
+                            <li><strong>Review & Release:</strong> Review deliverables and release payment when satisfied</li>
+                        </ul>
+                        
+                        <h4>For Freelancers:</h4>
+                        <ul>
+                            <li><strong>Secured Payment:</strong> Funds are guaranteed once deposited by client</li>
+                            <li><strong>Milestone Payments:</strong> Get paid as you complete project milestones</li>
+                            <li><strong>Fast Withdrawal:</strong> Withdraw earnings quickly to your preferred method</li>
+                        </ul>
+                        
+                        <div class="alert" style="background: #f0f9ff; padding: 1rem; border-left: 4px solid #0ea5e9; margin: 1rem 0;">
+                            <strong>💡 Pro Tip:</strong> Always discuss milestones clearly before starting work to ensure smooth payments.
+                        </div>
+                    `
+                },
+                
+                'payment-disputes': {
+                    title: 'Resolving Payment Disputes',
+                    content: `
+                        <h3>⚖️ Step-by-Step Resolution Process</h3>
+                        
+                        <h4>1. Direct Communication</h4>
+                        <p>Try to resolve the issue directly with the other party through our messaging system.</p>
+                        
+                        <h4>2. Submit Evidence</h4>
+                        <ul>
+                            <li>Screenshots of completed work</li>
+                            <li>Project requirements documentation</li>
+                            <li>Communication history</li>
+                            <li>Time tracking records</li>
+                        </ul>
+                        
+                        <h4>3. Mediation Process</h4>
+                        <p>If direct communication fails:</p>
+                        <ul>
+                            <li>Submit a grievance through our system</li>
+                            <li>Our mediation team reviews all evidence</li>
+                            <li>Decision made within 48-72 hours</li>
+                            <li>Funds released according to decision</li>
+                        </ul>
+                        
+                        <div class="alert" style="background: #fef3cd; padding: 1rem; border-left: 4px solid #f59e0b; margin: 1rem 0;">
+                            <strong>⚠️ Important:</strong> Document everything! Good records make dispute resolution much faster.
+                        </div>
+                        
+                        <h4>Contact Support</h4>
+                        <p>For urgent payment disputes, email <strong>info@swifttalentforge.com</strong> with "PAYMENT DISPUTE" in the subject line.</p>
+                    `
+                },
+                
+                'refund-policy': {
+                    title: 'Refund Policy & Process',
+                    content: `
+                        <h3>💰 When Refunds Are Available</h3>
+                        
+                        <h4>Full Refund Scenarios:</h4>
+                        <ul>
+                            <li>Work hasn't started yet</li>
+                            <li>Freelancer violates platform policies</li>
+                            <li>Freelancer is unresponsive for 7+ days</li>
+                            <li>Technical issues prevent project completion</li>
+                        </ul>
+                        
+                        <h4>Partial Refund Scenarios:</h4>
+                        <ul>
+                            <li>Work is partially completed</li>
+                            <li>Some milestones are delivered</li>
+                            <li>Mutual agreement for early termination</li>
+                        </ul>
+                        
+                        <h4>Refund Process:</h4>
+                        <ol>
+                            <li>Submit refund request with reason</li>
+                            <li>Provide supporting documentation</li>
+                            <li>Review period (1-3 business days)</li>
+                            <li>Refund processed to original payment method</li>
+                            <li>Processing time: 5-10 business days</li>
+                        </ol>
+                        
+                        <div class="alert" style="background: #ecfdf5; padding: 1rem; border-left: 4px solid #10b981; margin: 1rem 0;">
+                            <strong>✅ Quick Tip:</strong> Most refund requests are processed within 24 hours when proper documentation is provided.
+                        </div>
+                    `
+                },
+                
+                'escrow-system': {
+                    title: 'Understanding Our Escrow System',
+                    content: `
+                        <h3>🛡️ How Escrow Protects You</h3>
+                        
+                        <h4>What is Escrow?</h4>
+                        <p>Escrow is a financial arrangement where funds are held by a trusted third party (SwiftTalentForge) until both parties fulfill their obligations.</p>
+                        
+                        <h4>Benefits for Clients:</h4>
+                        <ul>
+                            <li>Money is only released when you're satisfied with the work</li>
+                            <li>Protection against poor quality deliverables</li>
+                            <li>Ability to request revisions before payment</li>
+                            <li>Full dispute resolution support</li>
+                        </ul>
+                        
+                        <h4>Benefits for Freelancers:</h4>
+                        <ul>
+                            <li>Guaranteed payment when work is completed</li>
+                            <li>Protection against payment delays</li>
+                            <li>Clear milestone-based payments</li>
+                            <li>Professional dispute resolution</li>
+                        </ul>
+                        
+                        <h4>Escrow Process:</h4>
+                        <ol>
+                            <li><strong>Deposit:</strong> Client deposits funds into escrow</li>
+                            <li><strong>Work:</strong> Freelancer completes the project</li>
+                            <li><strong>Review:</strong> Client reviews deliverables</li>
+                            <li><strong>Release:</strong> Funds released upon approval</li>
+                        </ol>
+                        
+                        <div class="alert" style="background: #f0f9ff; padding: 1rem; border-left: 4px solid #0ea5e9; margin: 1rem 0;">
+                            <strong>💡 Security Note:</strong> All escrow transactions are encrypted and monitored 24/7 for maximum security.
+                        </div>
+                    `
+                },
+                
+                'payment-methods': {
+                    title: 'Supported Payment Methods',
+                    content: `
+                        <h3>💳 Available Payment Options</h3>
+                        
+                        <h4>Credit & Debit Cards:</h4>
+                        <ul>
+                            <li>Visa, MasterCard, American Express</li>
+                            <li>Instant processing</li>
+                            <li>Worldwide acceptance</li>
+                            <li>3D Secure authentication</li>
+                        </ul>
+                        
+                        <h4>Digital Wallets:</h4>
+                        <ul>
+                            <li>PayPal - Global coverage</li>
+                            <li>Apple Pay - iOS devices</li>
+                            <li>Google Pay - Android devices</li>
+                            <li>Stripe Wallet - Fast checkout</li>
+                        </ul>
+                        
+                        <h4>Bank Transfers:</h4>
+                        <ul>
+                            <li>Direct bank transfer for large amounts</li>
+                            <li>SEPA transfers for EU clients</li>
+                            <li>Wire transfers for international payments</li>
+                            <li>2-3 business days processing</li>
+                        </ul>
+                        
+                        <h4>Withdrawal Methods for Freelancers:</h4>
+                        <ul>
+                            <li>Bank transfer (most popular)</li>
+                            <li>PayPal withdrawal</li>
+                            <li>Check by mail (some regions)</li>
+                            <li>Cryptocurrency (coming soon)</li>
+                        </ul>
+                        
+                        <div class="alert" style="background: #fef3cd; padding: 1rem; border-left: 4px solid #f59e0b; margin: 1rem 0;">
+                            <strong>⚠️ Fees:</strong> Payment processing fees range from 2.9% to 3.9% depending on the method used.
+                        </div>
+                    `
+                },
+                
+                // Account Management Articles
+                'account-suspension': {
+                    title: 'Account Suspension Reasons & Appeals',
+                    content: `
+                        <h3>⚠️ Common Suspension Reasons</h3>
+                        
+                        <h4>Policy Violations:</h4>
+                        <ul>
+                            <li>Fraudulent activity or scam attempts</li>
+                            <li>Creating multiple accounts</li>
+                            <li>Harassment or inappropriate behavior</li>
+                            <li>Spam or unwanted solicitation</li>
+                            <li>Sharing personal contact information</li>
+                        </ul>
+                        
+                        <h4>Quality Issues:</h4>
+                        <ul>
+                            <li>Repeatedly delivering poor quality work</li>
+                            <li>Missing multiple deadlines</li>
+                            <li>Fake reviews or ratings manipulation</li>
+                            <li>Misrepresenting skills or experience</li>
+                        </ul>
+                        
+                        <h4>Financial Violations:</h4>
+                        <ul>
+                            <li>Payment disputes and chargebacks</li>
+                            <li>Attempting to bypass platform fees</li>
+                            <li>Fraudulent payment methods</li>
+                        </ul>
+                        
+                        <h4>Appeal Process:</h4>
+                        <ol>
+                            <li>Submit appeal within 30 days</li>
+                            <li>Provide detailed explanation</li>
+                            <li>Include supporting evidence</li>
+                            <li>Wait for review (5-7 business days)</li>
+                            <li>Receive decision and next steps</li>
+                        </ol>
+                        
+                        <div class="alert" style="background: #fef2f2; padding: 1rem; border-left: 4px solid #ef4444; margin: 1rem 0;">
+                            <strong>🚨 Important:</strong> Permanent bans are issued for severe violations like fraud or illegal activities.
+                        </div>
+                    `
+                },
+                
+                'profile-verification': {
+                    title: 'Profile Verification Process',
+                    content: `
+                        <h3>✅ Complete Verification Guide</h3>
+                        
+                        <h4>Required Documents:</h4>
+                        <ul>
+                            <li><strong>Government-issued ID:</strong> Passport, driver's license, or national ID</li>
+                            <li><strong>Proof of Address:</strong> Utility bill, bank statement (within 3 months)</li>
+                            <li><strong>Bank Information:</strong> For payment processing</li>
+                            <li><strong>Professional Profile:</strong> Portfolio, certifications, references</li>
+                        </ul>
+                        
+                        <h4>Verification Steps:</h4>
+                        <ol>
+                            <li>Upload clear, high-quality photos of documents</li>
+                            <li>Ensure all text is readable</li>
+                            <li>Submit application</li>
+                            <li>Wait for review (24-48 hours)</li>
+                            <li>Receive verification status</li>
+                        </ol>
+                        
+                        <h4>Tips for Faster Approval:</h4>
+                        <ul>
+                            <li>Use good lighting when taking photos</li>
+                            <li>Ensure documents are not expired</li>
+                            <li>Provide documents in original language + translation if needed</li>
+                            <li>Double-check all information matches exactly</li>
+                        </ul>
+                        
+                        <h4>Verification Benefits:</h4>
+                        <ul>
+                            <li>Verified badge on your profile</li>
+                            <li>Higher trust score with clients</li>
+                            <li>Access to premium features</li>
+                            <li>Priority customer support</li>
+                        </ul>
+                        
+                        <div class="alert" style="background: #ecfdf5; padding: 1rem; border-left: 4px solid #10b981; margin: 1rem 0;">
+                            <strong>✅ Success Rate:</strong> 95% of properly submitted verifications are approved within 24 hours.
+                        </div>
+                    `
+                },
+                
+                // Continue with remaining articles...
+                'password-security': {
+                    title: 'Password & Security Settings',
+                    content: `
+                        <h3>🔐 Account Security Best Practices</h3>
+                        
+                        <h4>Strong Password Requirements:</h4>
+                        <ul>
+                            <li>Minimum 8 characters</li>
+                            <li>Mix of uppercase and lowercase letters</li>
+                            <li>Include numbers and special characters</li>
+                            <li>Avoid personal information</li>
+                            <li>Don't reuse passwords from other sites</li>
+                        </ul>
+                        
+                        <h4>Two-Factor Authentication (2FA):</h4>
+                        <p>Enable 2FA for extra security:</p>
+                        <ol>
+                            <li>Go to Account Settings → Security</li>
+                            <li>Click "Enable 2FA"</li>
+                            <li>Download authenticator app (Google Authenticator, Authy)</li>
+                            <li>Scan QR code</li>
+                            <li>Enter verification code</li>
+                        </ol>
+                        
+                        <h4>Security Features:</h4>
+                        <ul>
+                            <li>Login alerts for new devices</li>
+                            <li>Session management</li>
+                            <li>Password change notifications</li>
+                            <li>Suspicious activity monitoring</li>
+                        </ul>
+                        
+                        <div class="alert" style="background: #fef3cd; padding: 1rem; border-left: 4px solid #f59e0b; margin: 1rem 0;">
+                            <strong>⚠️ Security Tip:</strong> Never share your login credentials. SwiftTalentForge will never ask for your password via email or chat.
+                        </div>
+                    `
+                },
+                
+                'account-recovery': {
+                    title: 'Account Recovery Guide',
+                    content: `
+                        <h3>🔄 Recovering Your Account</h3>
+                        
+                        <h4>Forgot Password:</h4>
+                        <ol>
+                            <li>Go to login page</li>
+                            <li>Click "Forgot Password"</li>
+                            <li>Enter your email address</li>
+                            <li>Check email for reset link</li>
+                            <li>Create new strong password</li>
+                        </ol>
+                        
+                        <h4>Email Access Lost:</h4>
+                        <p>If you no longer have access to your registered email:</p>
+                        <ol>
+                            <li>Contact support at info@swifttalentforge.com</li>
+                            <li>Provide account verification details</li>
+                            <li>Submit government-issued ID</li>
+                            <li>Wait for manual verification</li>
+                            <li>Update email address</li>
+                        </ol>
+                        
+                        <h4>Compromised Account:</h4>
+                        <p>If you suspect unauthorized access:</p>
+                        <ul>
+                            <li>Change password immediately</li>
+                            <li>Enable 2FA</li>
+                            <li>Review recent activity</li>
+                            <li>Report to support team</li>
+                            <li>Update payment methods if needed</li>
+                        </ul>
+                        
+                        <div class="alert" style="background: #fef2f2; padding: 1rem; border-left: 4px solid #ef4444; margin: 1rem 0;">
+                            <strong>🚨 Emergency:</strong> If you notice unauthorized transactions, contact support immediately and your bank/payment provider.
+                        </div>
+                    `
+                },
+                
+                // Add more articles for the remaining categories...
+                'bidding-disputes': {
+                    title: 'Resolving Bidding Disputes',
+                    content: `
+                        <h3>⚖️ Fair Bidding Resolution</h3>
+                        
+                        <h4>Common Bidding Issues:</h4>
+                        <ul>
+                            <li>Freelancer withdraws after being hired</li>
+                            <li>Scope changes after project starts</li>
+                            <li>Communication breakdown</li>
+                            <li>Timeline disagreements</li>
+                        </ul>
+                        
+                        <h4>Resolution Steps:</h4>
+                        <ol>
+                            <li>Document all communications</li>
+                            <li>Try direct negotiation first</li>
+                            <li>Use our mediation service</li>
+                            <li>Submit evidence to support team</li>
+                            <li>Await binding decision</li>
+                        </ol>
+                        
+                        <h4>Prevention Tips:</h4>
+                        <ul>
+                            <li>Be specific in project descriptions</li>
+                            <li>Set clear milestones and deadlines</li>
+                            <li>Communicate expectations upfront</li>
+                            <li>Use project contracts</li>
+                        </ul>
+                        
+                        <div class="alert" style="background: #f0f9ff; padding: 1rem; border-left: 4px solid #0ea5e9; margin: 1rem 0;">
+                            <strong>💡 Best Practice:</strong> Always discuss project details thoroughly before accepting or awarding a bid.
+                        </div>
+                    `
+                },
+                
+                'community-guidelines': {
+                    title: 'Community Guidelines',
+                    content: `
+                        <h3>🤝 Building a Professional Community</h3>
+                        
+                        <h4>Respect & Professionalism:</h4>
+                        <ul>
+                            <li>Treat all users with respect</li>
+                            <li>Use professional language</li>
+                            <li>No harassment or discrimination</li>
+                            <li>Respect cultural differences</li>
+                        </ul>
+                        
+                        <h4>Honest Communication:</h4>
+                        <ul>
+                            <li>Be truthful about skills and experience</li>
+                            <li>Provide accurate project descriptions</li>
+                            <li>Communicate delays promptly</li>
+                            <li>Give honest feedback and reviews</li>
+                        </ul>
+                        
+                        <h4>Quality Standards:</h4>
+                        <ul>
+                            <li>Deliver work as promised</li>
+                            <li>Meet agreed deadlines</li>
+                            <li>Maintain professional standards</li>
+                            <li>Provide reasonable revisions</li>
+                        </ul>
+                        
+                        <h4>Prohibited Behavior:</h4>
+                        <ul>
+                            <li>Spam or unwanted solicitation</li>
+                            <li>Sharing personal contact information</li>
+                            <li>Attempting to bypass platform fees</li>
+                            <li>Creating fake accounts or reviews</li>
+                        </ul>
+                        
+                        <div class="alert" style="background: #ecfdf5; padding: 1rem; border-left: 4px solid #10b981; margin: 1rem 0;">
+                            <strong>✅ Remember:</strong> Following guidelines creates a better experience for everyone and helps build trust in our community.
+                        </div>
+                    `
+                },
+                
+                'new-user-guide': {
+                    title: 'New User Complete Guide',
+                    content: `
+                        <h3>🚀 Welcome to SwiftTalentForge!</h3>
+                        
+                        <h4>Getting Started Checklist:</h4>
+                        <ol>
+                            <li>✅ Complete your profile (photo, bio, skills)</li>
+                            <li>✅ Verify your identity</li>
+                            <li>✅ Add portfolio samples</li>
+                            <li>✅ Set up payment methods</li>
+                            <li>✅ Read platform guidelines</li>
+                        </ol>
+                        
+                        <h4>For Freelancers:</h4>
+                        <ul>
+                            <li><strong>Create compelling proposals:</strong> Personalize each bid</li>
+                            <li><strong>Build your reputation:</strong> Start with smaller projects</li>
+                            <li><strong>Showcase your work:</strong> Upload portfolio samples</li>
+                            <li><strong>Stay active:</strong> Respond quickly to messages</li>
+                        </ul>
+                        
+                        <h4>For Clients:</h4>
+                        <ul>
+                            <li><strong>Write clear project descriptions:</strong> Be specific about requirements</li>
+                            <li><strong>Set realistic budgets:</strong> Research market rates</li>
+                            <li><strong>Review freelancer profiles:</strong> Check ratings and portfolios</li>
+                            <li><strong>Communicate clearly:</strong> Provide detailed feedback</li>
+                        </ul>
+                        
+                        <h4>Success Tips:</h4>
+                        <ul>
+                            <li>Complete your profile 100%</li>
+                            <li>Respond to messages within 24 hours</li>
+                            <li>Be honest about timelines and capabilities</li>
+                            <li>Build long-term relationships</li>
+                        </ul>
+                        
+                        <div class="alert" style="background: #f0f9ff; padding: 1rem; border-left: 4px solid #0ea5e9; margin: 1rem 0;">
+                            <strong>💡 Quick Start:</strong> Complete users earn 3x more than incomplete profiles. Take 10 minutes to set up properly!
+                        </div>
+                    `
+                }
+            };
+            
+            const article = articles[articleId];
+            if (article) {
+                title.innerHTML = `<i class="fas fa-book"></i> ${article.title}`;
+                content.innerHTML = article.content;
+                modal.style.display = 'block';
+            } else {
+                alert('Article not found. Please try again.');
+            }
+        }
+        
+        function closeArticleModal() {
+            document.getElementById('articleModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
